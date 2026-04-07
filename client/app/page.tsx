@@ -56,7 +56,7 @@ export default function Home() {
           </div>
         </div>
 
-        <div className="relative h-100 w-full overflow-hidden rounded-2xl bg-white shadow-xl">
+        <div className="relative cursor-pointer h-100 w-full overflow-hidden rounded-2xl bg-white shadow-xl hover:shadow-2xl hover:scale-105 transform-3d duration-300">
           <Image
             src="/scan.png"
             alt="pic"
@@ -107,23 +107,23 @@ export default function Home() {
         {/*3 feature */}
         <div className="grid md:grid-cols-3 gap-8 mt-10">
           <div className=" bg-gray-100 text-left p-6 rounded-lg shadow-2xl cursor-pointer hover:shadow-2xl hover:scale-105 transition-all duration-300">
-            <ScanEye className="text-6xl text-indigo-600 p-1 bg-gray-200 mb-4" />
+            <ScanEye className="text-6xl text-indigo-600 p-1 bg-gray-200 mb-4 rounded-sm" />
             <h4 className="font-semibold text-lg">Face Recognition</h4>
             <p className="text-sm text-gray-600 mt-2">
               Military-grade accuracy with liveness detection to prevent photo
               spoofing.
             </p>
           </div>
-          <div className=" bg-gray-100 text-left p-6 rounded-lg shadow-2xl cursor-pointer hover:shadow-2xl hover:scale-105 transition-all duration-300">
-            <Clock className="text-6xl text-indigo-600  p-1 bg-gray-200 mb-4" />
+          <div className=" bg-gray-100 text-left p-6 rounded-lg shadow-2xl cursor-pointer hover:shadow-2xl hover:scale-105 transition-all duration-300 ">
+            <Clock className="text-6xl text-indigo-600  p-1 bg-gray-200 mb-4 rounded-sm" />
             <h4 className="font-semibold text-lg">Real-time tracking</h4>
             <p className="text-sm text-gray-600 mt-2">
               Instant updates to your dashboard as soon as a student or employee
               check in.
             </p>
           </div>
-          <div className=" bg-gray-100 text-left p-6 rounded-lg shadow-2xl cursor-pointer hover:shadow-2xl hover:scale-105 transition-all duration-300">
-            <LayoutDashboard className="text-6xl text-indigo-600 p-1 bg-gray-200 mb-4" />
+          <div className=" bg-gray-100 text-left p-6 rounded-lg shadow-2xl cursor-pointer hover:shadow-2xl hover:scale-105 transition-all duration-300 ">
+            <LayoutDashboard className="text-6xl text-indigo-600 p-1 bg-gray-200 mb-4 rounded-sm" />
             <h4 className="font-semibold text-lg">Cloud Dashboard</h4>
             <p className="text-sm text-gray-600 mt-2">
               Access compreshensive attendance data from any device, anywhere in
@@ -134,7 +134,7 @@ export default function Home() {
         {/*3 feature */}
         <div className="grid md:grid-cols-3 gap-8 mt-10">
           <div className=" bg-gray-100 text-left p-6 rounded-lg shadow-2xl cursor-pointer hover:shadow-2xl hover:scale-105 transition-all duration-300">
-            <Users className="text-6xl text-indigo-600 p-1 bg-gray-200 mb-4" />
+            <Users className="text-6xl text-indigo-600 p-1 bg-gray-200 mb-4 rounded-sm" />
             <h4 className="font-semibold text-lg">Student Panel</h4>
             <p className="text-sm text-gray-600 mt-2">
               Dedicated portal for students to track their own attendance and
@@ -142,7 +142,7 @@ export default function Home() {
             </p>
           </div>
           <div className=" bg-gray-100 text-left p-6 rounded-lg shadow-2xl cursor-pointer hover:shadow-2xl hover:scale-105 transition-all duration-300">
-            <CalendarCheck className="text-6xl text-indigo-600  p-1 bg-gray-200 mb-4" />
+            <CalendarCheck className="text-6xl text-indigo-600  p-1 bg-gray-200 mb-4 rounded-sm" />
             <h4 className="font-semibold text-lg">Leave Management</h4>
             <p className="text-sm text-gray-600 mt-2">
               Integrated digital leave requests and apporval workflows for
@@ -150,7 +150,7 @@ export default function Home() {
             </p>
           </div>
           <div className=" bg-gray-100 text-left p-6 rounded-lg shadow-2xl cursor-pointer hover:shadow-2xl hover:scale-105 transition-all duration-300">
-            <ShieldCheck className="text-6xl text-indigo-600 p-1 bg-gray-200 mb-4" />
+            <ShieldCheck className="text-6xl text-indigo-600 p-1 bg-gray-200 mb-4 rounded-sm" />
             <h4 className="font-semibold text-lg">Data Encryption</h4>
             <p className="text-sm text-gray-600 mt-2">
               All data is hashed and encrypted with industry-standard protocals.
@@ -164,20 +164,99 @@ export default function Home() {
         <h3 className="text-2xl font-semibold">
           Deployment in Minutes, Not Days
         </h3>
-        <div className="flex flex-col md:flex-row justify-between mt-10 gap-6">
-          {[
-            "Registration",
-            "Face Enrollment",
-            "Hardware Setup",
-            "Live Insights",
-          ].map((step, i) => (
-            <div key={i} className="flex-1">
-              <div className="bg-indigo-600 text-white w-10 h-10 flex items-center justify-center rounded-full mx-auto">
-                {i + 1}
+        <p className="text-sm text-gray-600 mt-2">
+          Our cloud-first architecture ensures a seamless transition from legacy
+          systems <br /> to AI-powered tracking.
+        </p>
+        <div className="hidden sm:block h-0.5 w-full bg-gray-300 mt-5"></div>
+        <div className="relative mt-16">
+          {/* SVG Lines */}
+          <svg
+            className="absolute top-0 left-0 w-full h-50 pointer-events-none"
+            viewBox="0 0 1000 200"
+            fill="none"
+          >
+            {/* Arrow Marker */}
+            <defs>
+              <marker
+                id="arrow"
+                markerWidth="10"
+                markerHeight="10"
+                refX="5"
+                refY="5"
+                orient="auto"
+                markerUnits="strokeWidth"
+              >
+                <path d="M0,0 L10,5 L0,10 Z" fill="#4f46e5" />
+              </marker>
+            </defs>
+
+            {/* Curved dashed paths */}
+            <path
+              d="M120,40 C220,120 280,0 380,40"
+              stroke="#4f46e5"
+              strokeWidth="1"
+              strokeDasharray="6,6"
+              markerEnd="url(#arrow)"
+            />
+            <path
+              d="M380,40 C480,120 540,0 640,40"
+              stroke="#4f46e5"
+              strokeWidth="1"
+              strokeDasharray="6,6"
+              markerEnd="url(#arrow)"
+            />
+            <path
+              d="M640,40 C740,120 800,0 900,40"
+              stroke="#4f46e5"
+              strokeWidth="1"
+              strokeDasharray="6,6"
+              markerEnd="url(#arrow)"
+            />
+          </svg>
+
+          {/* Steps */}
+          <div className="grid grid-cols-4 gap-6 relative z-10">
+            <div className="text-center hover:shadow-2xl hover:scale-105 transition-all duration-300 rounded-xl">
+              <div className="bg-indigo-600 text-white w-10 h-10 flex items-center justify-center rounded-full mx-auto ">
+                01
               </div>
-              <p className="mt-3">{step}</p>
+              <h4 className="font-semibold text-lg mt-3">Registration</h4>
+              <p className="text-sm text-gray-600 mt-2">
+                Upload student or employee database easily.
+              </p>
             </div>
-          ))}
+
+            <div className="text-center hover:shadow-2xl hover:scale-105 transition-all duration-300 rounded-xl">
+              <div className="bg-indigo-600 text-white w-10 h-10 flex items-center justify-center rounded-full mx-auto">
+                02
+              </div>
+              <h4 className="font-semibold text-lg mt-3">Face Enrollment</h4>
+              <p className="text-sm text-gray-600 mt-2">
+                Quick 5-second scan for each individual.
+              </p>
+            </div>
+
+            <div className="text-center hover:shadow-2xl hover:scale-105 transition-all duration-300 rounded-xl">
+              <div className="bg-indigo-600 text-white w-10 h-10 flex items-center justify-center rounded-full mx-auto">
+                03
+              </div>
+              <h4 className="font-semibold text-lg mt-3">Hardware Setup</h4>
+              <p className="text-sm text-gray-600 mt-2">
+                Deploy our application compatible hardware.
+              </p>
+            </div>
+
+            <div className="text-center hover:shadow-2xl hover:scale-105 transition-all duration-300 rounded-xl">
+              <div className="bg-indigo-600 text-white w-10 h-10 flex items-center justify-center rounded-full mx-auto">
+                04
+              </div>
+              <h4 className="font-semibold text-lg mt-3">Live Insights</h4>
+              <p className="text-sm text-gray-600 mt-2">
+                Start receiving real-time attendance data.
+              </p>
+            </div>
+          </div>
         </div>
       </section>
 
