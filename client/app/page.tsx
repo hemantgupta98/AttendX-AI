@@ -2,6 +2,14 @@
 
 import React from "react";
 import Image from "next/image";
+import {
+  ScanEye,
+  Clock,
+  LayoutDashboard,
+  Users,
+  CalendarCheck,
+  ShieldCheck,
+} from "lucide-react";
 
 export default function Home() {
   const buttonStyle =
@@ -92,22 +100,62 @@ export default function Home() {
         <h3 className="text-2xl font-semibold">
           Features Built for High Performance
         </h3>
+        <p className="text-sm text-gray-600 mt-2">
+          Everything you need to modernize you attendance tracking and <br />
+          streamline campus management.
+        </p>
+        {/*3 feature */}
         <div className="grid md:grid-cols-3 gap-8 mt-10">
-          {[
-            "Face Recognition",
-            "Real-Time Tracking",
-            "Cloud Dashboard",
-            "Student Panel",
-            "Leave Management",
-            "Data Encryption",
-          ].map((item) => (
-            <div key={item} className="bg-white p-6 rounded-2xl shadow">
-              <h4 className="font-semibold">{item}</h4>
-              <p className="text-sm text-gray-500 mt-2">
-                High performance and secure system
-              </p>
-            </div>
-          ))}
+          <div className=" bg-gray-100 text-left p-6 rounded-lg shadow-2xl cursor-pointer hover:shadow-2xl hover:scale-105 transition-all duration-300">
+            <ScanEye className="text-6xl text-indigo-600 p-1 bg-gray-200 mb-4" />
+            <h4 className="font-semibold text-lg">Face Recognition</h4>
+            <p className="text-sm text-gray-600 mt-2">
+              Military-grade accuracy with liveness detection to prevent photo
+              spoofing.
+            </p>
+          </div>
+          <div className=" bg-gray-100 text-left p-6 rounded-lg shadow-2xl cursor-pointer hover:shadow-2xl hover:scale-105 transition-all duration-300">
+            <Clock className="text-6xl text-indigo-600  p-1 bg-gray-200 mb-4" />
+            <h4 className="font-semibold text-lg">Real-time tracking</h4>
+            <p className="text-sm text-gray-600 mt-2">
+              Instant updates to your dashboard as soon as a student or employee
+              check in.
+            </p>
+          </div>
+          <div className=" bg-gray-100 text-left p-6 rounded-lg shadow-2xl cursor-pointer hover:shadow-2xl hover:scale-105 transition-all duration-300">
+            <LayoutDashboard className="text-6xl text-indigo-600 p-1 bg-gray-200 mb-4" />
+            <h4 className="font-semibold text-lg">Cloud Dashboard</h4>
+            <p className="text-sm text-gray-600 mt-2">
+              Access compreshensive attendance data from any device, anywhere in
+              the world.
+            </p>
+          </div>
+        </div>
+        {/*3 feature */}
+        <div className="grid md:grid-cols-3 gap-8 mt-10">
+          <div className=" bg-gray-100 text-left p-6 rounded-lg shadow-2xl cursor-pointer hover:shadow-2xl hover:scale-105 transition-all duration-300">
+            <Users className="text-6xl text-indigo-600 p-1 bg-gray-200 mb-4" />
+            <h4 className="font-semibold text-lg">Student Panel</h4>
+            <p className="text-sm text-gray-600 mt-2">
+              Dedicated portal for students to track their own attendance and
+              leave history.
+            </p>
+          </div>
+          <div className=" bg-gray-100 text-left p-6 rounded-lg shadow-2xl cursor-pointer hover:shadow-2xl hover:scale-105 transition-all duration-300">
+            <CalendarCheck className="text-6xl text-indigo-600  p-1 bg-gray-200 mb-4" />
+            <h4 className="font-semibold text-lg">Leave Management</h4>
+            <p className="text-sm text-gray-600 mt-2">
+              Integrated digital leave requests and apporval workflows for
+              administration.
+            </p>
+          </div>
+          <div className=" bg-gray-100 text-left p-6 rounded-lg shadow-2xl cursor-pointer hover:shadow-2xl hover:scale-105 transition-all duration-300">
+            <ShieldCheck className="text-6xl text-indigo-600 p-1 bg-gray-200 mb-4" />
+            <h4 className="font-semibold text-lg">Data Encryption</h4>
+            <p className="text-sm text-gray-600 mt-2">
+              All data is hashed and encrypted with industry-standard protocals.
+            </p>
+          </div>
         </div>
       </section>
 
