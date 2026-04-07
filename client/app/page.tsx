@@ -1,65 +1,152 @@
-import Image from "next/image";
+"use client";
+
+import React from "react";
 
 export default function Home() {
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
+    <main className="bg-gray-50 text-gray-900">
+      {/* Navbar */}
+      <nav className="flex items-center justify-between px-6 py-4 max-w-7xl mx-auto">
+        <h1 className="text-xl font-bold text-indigo-600">AttendX-AI</h1>
+        <div className="hidden md:flex gap-6 text-sm">
+          <a href="#">Home</a>
+          <a href="#">Features</a>
+          <a href="#">Pricing</a>
+          <a href="#">Contact</a>
+        </div>
+        <button className="bg-indigo-600 text-white px-4 py-2 rounded-xl">
+          Get Started
+        </button>
+      </nav>
+
+      {/* Hero Section */}
+      <section className="grid md:grid-cols-2 gap-10 items-center px-6 py-16 max-w-7xl mx-auto">
+        <div>
+          <h2 className="text-4xl md:text-5xl font-bold leading-tight">
+            Smart Attendance Powered by{" "}
+            <span className="text-indigo-600">AI Face Recognition</span>
+          </h2>
+          <p className="mt-4 text-gray-600">
+            Eliminate proxies, reduce administrative overhead, and get accurate
+            attendance data with biometric AI.
           </p>
+          <div className="mt-6 flex gap-4">
+            <button className="bg-indigo-600 text-white px-6 py-3 rounded-xl">
+              Start Free Trial
+            </button>
+            <button className="border px-6 py-3 rounded-xl">Watch Demo</button>
+          </div>
+          <div className="flex gap-6 mt-8 text-sm text-gray-600">
+            <div>
+              <strong>500+</strong>
+              <br />
+              Institutions
+            </div>
+            <div>
+              <strong>1M+</strong>
+              <br />
+              Daily Scans
+            </div>
+            <div>
+              <strong>99.8%</strong>
+              <br />
+              Accuracy
+            </div>
+          </div>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+
+        <div className="bg-white p-6 rounded-2xl shadow-xl">
+          <img
+            src="/visily-desktop-homepage.png"
+            alt="AI Face Recognition"
+            className="rounded-xl w-full"
+          />
         </div>
-      </main>
-    </div>
+      </section>
+
+      {/* Features */}
+      <section className="px-6 py-16 max-w-7xl mx-auto text-center">
+        <h3 className="text-2xl font-semibold">
+          Features Built for High Performance
+        </h3>
+        <div className="grid md:grid-cols-3 gap-8 mt-10">
+          {[
+            "Face Recognition",
+            "Real-Time Tracking",
+            "Cloud Dashboard",
+            "Student Panel",
+            "Leave Management",
+            "Data Encryption",
+          ].map((item) => (
+            <div key={item} className="bg-white p-6 rounded-2xl shadow">
+              <h4 className="font-semibold">{item}</h4>
+              <p className="text-sm text-gray-500 mt-2">
+                High performance and secure system
+              </p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* Steps */}
+      <section className="px-6 py-16 max-w-5xl mx-auto text-center">
+        <h3 className="text-2xl font-semibold">
+          Deployment in Minutes, Not Days
+        </h3>
+        <div className="flex flex-col md:flex-row justify-between mt-10 gap-6">
+          {[
+            "Registration",
+            "Face Enrollment",
+            "Hardware Setup",
+            "Live Insights",
+          ].map((step, i) => (
+            <div key={i} className="flex-1">
+              <div className="bg-indigo-600 text-white w-10 h-10 flex items-center justify-center rounded-full mx-auto">
+                {i + 1}
+              </div>
+              <p className="mt-3">{step}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* Pricing */}
+      <section className="px-6 py-16 max-w-7xl mx-auto text-center">
+        <h3 className="text-2xl font-semibold">Transparent Pricing</h3>
+        <div className="grid md:grid-cols-3 gap-8 mt-10">
+          {["Starter", "Basic", "Enterprise"].map((plan) => (
+            <div key={plan} className="bg-white p-6 rounded-2xl shadow">
+              <h4 className="font-semibold">{plan}</h4>
+              <p className="text-3xl font-bold mt-2">$0</p>
+              <ul className="text-sm text-gray-500 mt-4 space-y-2">
+                <li>Feature 1</li>
+                <li>Feature 2</li>
+                <li>Feature 3</li>
+              </ul>
+              <button className="mt-6 bg-indigo-600 text-white px-4 py-2 rounded-xl">
+                Get Started
+              </button>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* CTA */}
+      <section className="px-6 py-16">
+        <div className="bg-gradient-to-r from-indigo-600 to-blue-500 text-white rounded-2xl p-10 max-w-5xl mx-auto text-center">
+          <h3 className="text-2xl font-semibold">
+            Ready to transform your attendance?
+          </h3>
+          <button className="mt-6 bg-white text-indigo-600 px-6 py-3 rounded-xl">
+            Start Free Pilot
+          </button>
+        </div>
+      </section>
+
+      {/* Footer */}
+      <footer className="bg-gray-100 py-10 px-6 text-center text-sm text-gray-600">
+        <p>© 2026 AttendX-AI. All rights reserved.</p>
+      </footer>
+    </main>
   );
 }
