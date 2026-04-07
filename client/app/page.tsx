@@ -1,27 +1,31 @@
 "use client";
 
 import React from "react";
+import Image from "next/image";
 
 export default function Home() {
+  const buttonStyle =
+    "bg-linear-to-r cursor-pointer from-blue-500 via-purple-500 to-pink-500 text-white font-semibold px-6 py-2 rounded-lg shadow-lg hover:shadow-2xl hover:scale-105 transition-all duration-300";
   return (
     <main className="bg-gray-50 text-gray-900">
       {/* Navbar */}
       <nav className="flex items-center justify-between px-6 py-4 max-w-7xl mx-auto">
-        <h1 className="text-xl font-bold text-indigo-600">AttendX-AI</h1>
+        <Image src="/logo.png" height={150} width={150} alt="logo" />
         <div className="hidden md:flex gap-6 text-sm">
-          <a href="#">Home</a>
+          <a href="#id">Home</a>
           <a href="#">Features</a>
           <a href="#">Pricing</a>
           <a href="#">Contact</a>
         </div>
-        <button className="bg-indigo-600 text-white px-4 py-2 rounded-xl">
-          Get Started
-        </button>
+        <div className="grid grid-cols-2 gap-3">
+          <button className={buttonStyle}>Get Started</button>
+          <button className={buttonStyle}>Login</button>
+        </div>
       </nav>
 
       {/* Hero Section */}
       <section className="grid md:grid-cols-2 gap-10 items-center px-6 py-16 max-w-7xl mx-auto">
-        <div>
+        <div id="home">
           <h2 className="text-4xl md:text-5xl font-bold leading-tight">
             Smart Attendance Powered by{" "}
             <span className="text-indigo-600">AI Face Recognition</span>
