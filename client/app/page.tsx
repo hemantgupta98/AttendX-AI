@@ -5,7 +5,9 @@ import Image from "next/image";
 
 export default function Home() {
   const buttonStyle =
-    "bg-linear-to-r cursor-pointer from-blue-500 via-purple-500 to-pink-500 text-white font-semibold px-6 py-2 rounded-lg shadow-lg hover:shadow-2xl hover:scale-105 transition-all duration-300";
+    " bg-blue-500 cursor-pointer  text-white font-semibold px-6 py-2 rounded-lg shadow-lg hover:shadow-2xl hover:scale-105 transition-all duration-300";
+  const buttonStyle2 =
+    " bg-white cursor-pointer  text-blue-500 font-semibold px-6 py-2 rounded-lg shadow-lg hover:shadow-2xl hover:scale-105 transition-all duration-300";
   return (
     <main className="bg-gray-50 text-gray-900">
       {/* Navbar */}
@@ -36,31 +38,13 @@ export default function Home() {
             <span className="text-indigo-600">AI Face Recognition</span>
           </h2>
           <p className="mt-4 text-gray-600">
-            Eliminate proxies, reduce administrative overhead, and get accurate
-            attendance data with biometric AI.
+            Eliminate proxies, reduce administrative overhead, and get 100%
+            accurate attendance data with our enterprise-grade biometric engine.
+            Designed for schools, universities and corporate offices.
           </p>
           <div className="mt-6 flex gap-4">
-            <button className="bg-indigo-600 text-white px-6 py-3 rounded-xl">
-              Start Free Trial
-            </button>
-            <button className="border px-6 py-3 rounded-xl">Watch Demo</button>
-          </div>
-          <div className="flex gap-6 mt-8 text-sm text-gray-600">
-            <div>
-              <strong>500+</strong>
-              <br />
-              Institutions
-            </div>
-            <div>
-              <strong>1M+</strong>
-              <br />
-              Daily Scans
-            </div>
-            <div>
-              <strong>99.8%</strong>
-              <br />
-              Accuracy
-            </div>
+            <button className={buttonStyle}>Start Free Trial</button>
+            <button className={buttonStyle2}>Watch Demo</button>
           </div>
         </div>
 
@@ -72,6 +56,34 @@ export default function Home() {
             className="object-cover"
             sizes="(min-width: 768px) 50vw, 100vw"
           />
+        </div>
+        <div className="w-full  bg-transparent flex justify-center">
+          <div className="flex flex-col sm:flex-row items-center justify-between w-full max-w-4xl gap-6 sm:gap-0 text-center">
+            <div className="flex flex-col  items-center flex-1">
+              <h2 className="text-md sm:text-xl font-bold text-gray-900">
+                ....+
+              </h2>
+              <p className="text-sm text-gray-500 tracking-wide">
+                INSTITUTIONS
+              </p>
+            </div>
+            <div className="hidden sm:block h-10 w-px bg-gray-300"></div>
+            <div className="flex flex-col items-center flex-1">
+              <h2 className="text-md sm:text-xl font-bold text-gray-900">
+                ....+
+              </h2>
+              <p className="text-sm text-gray-500 tracking-wide">DAILY SCANS</p>
+            </div>
+            <div className="hidden sm:block h-10 w-px bg-gray-300"></div>
+            <div className="flex flex-col items-center flex-1">
+              <h2 className="text-md sm:text-xl  font-bold text-gray-900">
+                99.8%
+              </h2>
+              <p className="text-sm text-gray-500 tracking-wide">
+                ACCURACY RATE
+              </p>
+            </div>
+          </div>
         </div>
       </section>
 
