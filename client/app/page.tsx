@@ -22,10 +22,15 @@ export default function Home() {
           <button className={buttonStyle}>Login</button>
         </div>
       </nav>
+      <div>
+        <p className=" mx-auto text-center text-blue-500 font-bold  rounded-2xl text-xs w-50 shadow-2xl">
+          NEXT-GEN AI ATTENDANCE
+        </p>
+      </div>
 
       {/* Hero Section */}
       <section className="grid md:grid-cols-2 gap-10 items-center px-6 py-16 max-w-7xl mx-auto">
-        <div id="home">
+        <div>
           <h2 className="text-4xl md:text-5xl font-bold leading-tight">
             Smart Attendance Powered by{" "}
             <span className="text-indigo-600">AI Face Recognition</span>
@@ -59,11 +64,13 @@ export default function Home() {
           </div>
         </div>
 
-        <div className="bg-white p-6 rounded-2xl shadow-xl">
-          <img
-            src="/visily-desktop-homepage.png"
-            alt="AI Face Recognition"
-            className="rounded-xl w-full"
+        <div className="relative h-100 w-full overflow-hidden rounded-2xl bg-white shadow-xl">
+          <Image
+            src="/scan.png"
+            alt="pic"
+            fill
+            className="object-cover"
+            sizes="(min-width: 768px) 50vw, 100vw"
           />
         </div>
       </section>
