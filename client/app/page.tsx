@@ -217,7 +217,7 @@ export default function Home() {
 
           {/* Steps */}
           <div className="grid grid-cols-4 gap-6 relative z-10">
-            <div className="text-center hover:shadow-2xl hover:scale-105 transition-all duration-300 rounded-xl">
+            <div className="text-center cursor-pointer hover:shadow-2xl hover:scale-105 transition-all duration-300 rounded-xl">
               <div className="bg-indigo-600 text-white w-10 h-10 flex items-center justify-center rounded-full mx-auto ">
                 01
               </div>
@@ -227,7 +227,7 @@ export default function Home() {
               </p>
             </div>
 
-            <div className="text-center hover:shadow-2xl hover:scale-105 transition-all duration-300 rounded-xl">
+            <div className="text-center cursor-pointer  hover:shadow-2xl hover:scale-105 transition-all duration-300 rounded-xl">
               <div className="bg-indigo-600 text-white w-10 h-10 flex items-center justify-center rounded-full mx-auto">
                 02
               </div>
@@ -237,7 +237,7 @@ export default function Home() {
               </p>
             </div>
 
-            <div className="text-center hover:shadow-2xl hover:scale-105 transition-all duration-300 rounded-xl">
+            <div className="text-center cursor-pointer  hover:shadow-2xl hover:scale-105 transition-all duration-300 rounded-xl">
               <div className="bg-indigo-600 text-white w-10 h-10 flex items-center justify-center rounded-full mx-auto">
                 03
               </div>
@@ -247,7 +247,7 @@ export default function Home() {
               </p>
             </div>
 
-            <div className="text-center hover:shadow-2xl hover:scale-105 transition-all duration-300 rounded-xl">
+            <div className="text-center cursor-pointer  hover:shadow-2xl hover:scale-105 transition-all duration-300 rounded-xl">
               <div className="bg-indigo-600 text-white w-10 h-10 flex items-center justify-center rounded-full mx-auto">
                 04
               </div>
@@ -259,6 +259,8 @@ export default function Home() {
           </div>
         </div>
       </section>
+      {/**Graph */}
+      <section className="px-6 py-16 max-w-7xl mx-auto text-center"></section>
 
       {/* Pricing */}
       <section className="px-6 py-16 max-w-7xl mx-auto text-center">
