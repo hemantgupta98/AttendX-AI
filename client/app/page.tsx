@@ -2,6 +2,7 @@
 
 import React from "react";
 import Image from "next/image";
+import HomeGraph from "@/components/ui/homegraph";
 import {
   ScanEye,
   Clock,
@@ -260,7 +261,9 @@ export default function Home() {
         </div>
       </section>
       {/**Graph */}
-      <section className="px-6 py-16 max-w-7xl mx-auto text-center"></section>
+      <section className="px-6 py-16 max-w-7xl mx-auto text-center">
+        <HomeGraph />
+      </section>
 
       {/* Pricing */}
       <section className="px-6 py-16 max-w-7xl mx-auto text-center">
