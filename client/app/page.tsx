@@ -42,9 +42,9 @@ export default function Home() {
         <Image
           src="/logo.png"
           height={100}
-          width={100}
+          width={200}
           alt="logo"
-          className="w-24 h-24 sm:w-[150px] sm:h-[150px] cursor-pointer hover:scale-105 transition-all"
+          className="w-24 h-24 sm:w-[250px] sm:h-[150px] cursor-pointer hover:scale-105 transition-all"
           onClick={() => scrollToSection(heroRef)}
         />
         <div className="hidden md:flex gap-6 text-lg items-center ">
