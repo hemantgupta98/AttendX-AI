@@ -158,6 +158,11 @@ export default function Home() {
               </button>
             )}
           </div>
+
+          <p className=" text-gray-400 text-sm text-center">
+            Already have an account?{" "}
+            <span className=" text-blue-400 cursor-pointer"> Log In</span>
+          </p>
         </div>
 
         <style jsx>{`
