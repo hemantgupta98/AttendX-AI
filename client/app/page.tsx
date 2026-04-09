@@ -3,6 +3,7 @@
 import React from "react";
 import Image from "next/image";
 import HomeGraph from "@/components/ui/homegraph";
+import Footer from "@/components/ui/footer";
 import {
   ScanEye,
   Clock,
@@ -404,11 +405,11 @@ export default function Home() {
 
       {/* CTA */}
       <section className="px-6 py-16">
-        <div className="bg-gradient-to-r from-indigo-600 to-blue-500 text-white rounded-2xl p-10 max-w-5xl mx-auto text-center">
+        <div className="bg-linear-to-r from-indigo-600 to-blue-500 text-white rounded-2xl p-10 max-w-7xl mx-auto text-center space-y-5">
           <h3 className="text-3xl font-semibold ">
             Ready to transform your <br /> instituition&apos;s attendance?
           </h3>
-          <p className=" text-xs text-gray-100 mt-5">
+          <p className=" text-sm text-gray-100 mt-5">
             Join ....+ schools and offices already saving time and improving{" "}
             <br />
             security with AttendX-AI. Get started today with a free pilot
@@ -421,9 +422,9 @@ export default function Home() {
       </section>
 
       {/* Footer */}
-      <footer className="bg-gray-100 py-10 px-6 text-center text-sm text-gray-600">
-        <p>© 2026 AttendX-AI. All rights reserved.</p>
-      </footer>
+      <div>
+        <Footer />
+      </div>
     </main>
   );
 }
