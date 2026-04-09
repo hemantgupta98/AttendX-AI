@@ -14,6 +14,7 @@ import {
   ShieldCheck,
   CircleCheck,
 } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 export default function Home() {
   // Refs for smooth scroll navigation
@@ -21,6 +22,8 @@ export default function Home() {
   const featuresRef = useRef<HTMLDivElement>(null);
   const pricingRef = useRef<HTMLDivElement>(null);
   const footerRef = useRef<HTMLDivElement>(null);
+
+  const router = useRouter();
 
   // Smooth scroll function with Framer Motion
   const scrollToSection = (ref: React.RefObject<HTMLDivElement | null>) => {
@@ -82,8 +85,18 @@ export default function Home() {
           </motion.button>
         </div>
         <div className="flex gap-2 sm:gap-3">
-          <button className={btnPrimary}>Get Started</button>
-          <button className={btnPrimary}>Login</button>
+          <button
+            onClick={() => router.push("/src/SignupOption")}
+            className={btnPrimary}
+          >
+            Get Started
+          </button>
+          <button
+            onClick={() => router.push("/src/LoginOption")}
+            className={btnPrimary}
+          >
+            Login
+          </button>
         </div>
       </nav>
       <div className=" flex items-center">

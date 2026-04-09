@@ -9,7 +9,7 @@ export default function Home() {
   return (
     <div className="min-h-screen grid grid-cols-1 lg:grid-cols-2">
       {/* LEFT SIDE */}
-      <div className="bg-gradient-to-br from-indigo-50 to-gray-100 p-8 lg:p-16 flex flex-col justify-center">
+      <div className="bg-linear-to-br from-indigo-50 to-gray-100 p-8 lg:p-16 flex flex-col justify-center">
         {/* Logo */}
         <div className="flex items-center gap-3 mb-8">
           <div className="w-10 h-10 bg-indigo-600 text-white flex items-center justify-center rounded-lg">
