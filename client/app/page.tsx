@@ -10,6 +10,7 @@ import {
   Users,
   CalendarCheck,
   ShieldCheck,
+  CircleCheck,
 } from "lucide-react";
 
 export default function Home() {
@@ -17,6 +18,10 @@ export default function Home() {
     " bg-blue-500 cursor-pointer  text-white font-semibold px-6 py-2 rounded-lg shadow-lg hover:shadow-2xl hover:scale-105 transition-all duration-300";
   const buttonStyle2 =
     " bg-white cursor-pointer  text-blue-500 font-semibold px-6 py-2 rounded-lg shadow-lg hover:shadow-2xl hover:scale-105 transition-all duration-300";
+
+  const buttonStyle4 =
+    "w-full relative cursor-pointer overflow-hidden bg-gradient-to-r from-blue-500 to-indigo-600 text-white font-semibold px-4 py-3 rounded-xl shadow-lg transition-all duration-300 ease-in-out transform hover:scale-105 hover:shadow-2xl hover:from-blue-600 hover:to-indigo-700 active:scale-95 before:absolute before:top-0 before:left-[-100%] before:w-full before:h-full before:bg-white/20 before:skew-x-[-20deg] hover:before:left-[100%] before:transition-all before:duration-700";
+
   return (
     <main className="bg-gray-50 text-gray-900">
       {/* Navbar */}
@@ -267,22 +272,133 @@ export default function Home() {
 
       {/* Pricing */}
       <section className="px-6 py-16 max-w-7xl mx-auto text-center">
-        <h3 className="text-2xl font-semibold">Transparent Pricing</h3>
-        <div className="grid md:grid-cols-3 gap-8 mt-10">
-          {["Starter", "Basic", "Enterprise"].map((plan) => (
-            <div key={plan} className="bg-white p-6 rounded-2xl shadow">
-              <h4 className="font-semibold">{plan}</h4>
-              <p className="text-3xl font-bold mt-2">$0</p>
-              <ul className="text-sm text-gray-500 mt-4 space-y-2">
-                <li>Feature 1</li>
-                <li>Feature 2</li>
-                <li>Feature 3</li>
-              </ul>
-              <button className="mt-6 bg-indigo-600 text-white px-4 py-2 rounded-xl">
-                Get Started
-              </button>
+        <h3 className="text-2xl font-semibold">
+          Transparent Pricing for Every Scale
+        </h3>
+        <p className="text-sm text-gray-600 mt-2">
+          Choose the plan that fits your institution. NO hidden fees, no setup
+          costs.
+        </p>
+        <div className=" grid grid-cols-3   mt-5 gap-6  ">
+          <div className=" bg-gray-50 rounded-2xl shadow-2xl mt-5 hover:scale-105 transition-all duration-75">
+            <h1 className=" text-center text-xl font-semibold mt-5">Starter</h1>
+            <p className=" text-sm text-gray-600  text-center">
+              Perfect for testing{" "}
+            </p>
+            <h1 className="text-4xl font-bold mt-8">
+              ₹0<span className=" text-sm text-gray-600">/mo</span>
+            </h1>
+            <div className="text-left space-y-3 ml-8 mt-10">
+              <p className="flex items-center gap-2">
+                <CircleCheck className="text-blue-400" size={20} />
+                <span className="text-md text-gray-600">Up to 50 users</span>
+              </p>
+
+              <p className="flex items-center gap-2">
+                <CircleCheck className="text-blue-400" size={20} />
+                <span className="text-md text-gray-600">Basic Reporting</span>
+              </p>
+
+              <p className="flex items-center gap-2">
+                <CircleCheck className="text-blue-400" size={20} />
+                <span className="text-md text-gray-600">Email Support</span>
+              </p>
+
+              <p className="flex items-center gap-2">
+                <CircleCheck className="text-blue-400" size={20} />
+                <span className="text-md text-gray-600">1 Admin Seat</span>
+              </p>
             </div>
-          ))}
+            <div className=" rounded-md shadow-4xl p-5 mt-15">
+              <button className={buttonStyle4}>Get Started</button>
+            </div>
+          </div>
+          <div className=" bg-gray-50 rounded-2xl shadow-2xl  hover:scale-105 transition-all duration-75">
+            <h1 className=" text-center text-2xl font-semibold mt-5">
+              Popular
+            </h1>
+            <p className=" text-sm text-gray-600  text-center">
+              Most popular for small instituions.
+            </p>
+            <h1 className="text-4xl font-bold mt-8">
+              ₹400<span className=" text-sm text-gray-600">/mo</span>
+            </h1>
+            <div className="text-left space-y-3 ml-8 mt-10">
+              <p className="flex items-center gap-2">
+                <CircleCheck className="text-blue-400" size={20} />
+                <span className="text-md text-gray-600">Up to 300 users</span>
+              </p>
+
+              <p className="flex items-center gap-2">
+                <CircleCheck className="text-blue-400" size={20} />
+                <span className="text-md text-gray-600">
+                  Real-time Dashboard
+                </span>
+              </p>
+
+              <p className="flex items-center gap-2">
+                <CircleCheck className="text-blue-400" size={20} />
+                <span className="text-md text-gray-600">
+                  Community and Email Support
+                </span>
+              </p>
+
+              <p className="flex items-center gap-2">
+                <CircleCheck className="text-blue-400" size={20} />
+                <span className="text-md text-gray-600">10 Admin Seat</span>
+              </p>
+              <p className="flex items-center gap-2">
+                <CircleCheck className="text-blue-400" size={20} />
+                <span className="text-md text-gray-600">Basic Analytics </span>
+              </p>
+            </div>
+            <div className=" rounded-md shadow-4xl p-5 mt-15">
+              <button className={buttonStyle4}>Get Started</button>
+            </div>
+          </div>
+          <div className=" bg-gray-50 rounded-2xl shadow-2xl mt-5  hover:scale-105 transition-all duration-75">
+            <h1 className=" text-center text-xl font-semibold mt-5">
+              Enterprise
+            </h1>
+            <p className=" text-sm text-gray-600  text-center">
+              Full-scale soltution for large groups
+            </p>
+            <h1 className="text-3xl font-bold mt-8">
+              Custom<span className=" text-sm text-gray-600">/mo</span>
+            </h1>
+            <div className="text-left space-y-3 ml-8 mt-10">
+              <p className="flex items-center gap-2">
+                <CircleCheck className="text-blue-400" size={20} />
+                <span className="text-md text-gray-600">Unlimited users</span>
+              </p>
+
+              <p className="flex items-center gap-2">
+                <CircleCheck className="text-blue-400" size={20} />
+                <span className="text-md text-gray-600">
+                  24/7 Priority Support
+                </span>
+              </p>
+
+              <p className="flex items-center gap-2">
+                <CircleCheck className="text-blue-400" size={20} />
+                <span className="text-md text-gray-600">Custom Branding</span>
+              </p>
+
+              <p className="flex items-center gap-2">
+                <CircleCheck className="text-blue-400" size={20} />
+                <span className="text-md text-gray-600">Advance Scaning</span>
+              </p>
+              <p className="flex items-center gap-2">
+                <CircleCheck className="text-blue-400" size={20} />
+                <span className="text-md text-gray-600">
+                  Free server Handling{" "}
+                </span>
+              </p>
+            </div>
+            <div className=" rounded-md shadow-4xl p-5 mt-15">
+              <button className={buttonStyle4}>Get Started</button>
+            </div>
+          </div>
         </div>
       </section>
 
