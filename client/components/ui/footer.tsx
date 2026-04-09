@@ -22,6 +22,7 @@ export default function CallToActionPage() {
               Empowering teams to achieve more through intelligent task
               management and effortless collaboration.
             </p>
+            <div></div>
           </div>
 
           {/* Product */}
