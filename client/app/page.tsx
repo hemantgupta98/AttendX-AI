@@ -396,7 +396,7 @@ export default function Home() {
               </p>
             </div>
             <div className=" rounded-md shadow-4xl p-5 mt-15">
-              <button className={buttonStyle4}>Get Started</button>
+              <button className={buttonStyle4}>Contact Admin</button>
             </div>
           </div>
         </div>
@@ -405,12 +405,18 @@ export default function Home() {
       {/* CTA */}
       <section className="px-6 py-16">
         <div className="bg-gradient-to-r from-indigo-600 to-blue-500 text-white rounded-2xl p-10 max-w-5xl mx-auto text-center">
-          <h3 className="text-2xl font-semibold">
-            Ready to transform your attendance?
+          <h3 className="text-3xl font-semibold ">
+            Ready to transform your <br /> instituition&apos;s attendance?
           </h3>
-          <button className="mt-6 bg-white text-indigo-600 px-6 py-3 rounded-xl">
-            Start Free Pilot
-          </button>
+          <p className=" text-xs text-gray-100 mt-5">
+            Join ....+ schools and offices already saving time and improving{" "}
+            <br />
+            security with AttendX-AI. Get started today with a free pilot
+          </p>
+          <div className=" grid grid-cols-2 gap-5 mt-15">
+            <button className={buttonStyle2}>Free Pilot</button>
+            <button className={buttonStyle2}>Start with plan</button>
+          </div>
         </div>
       </section>
 
