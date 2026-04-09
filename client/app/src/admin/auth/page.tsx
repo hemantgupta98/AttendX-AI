@@ -1,10 +1,13 @@
 "use client";
 
 import { useState } from "react";
-import { Eye, EyeOff, Mail, Lock, ScanFace } from "lucide-react";
+
 import { Input } from "@/components/ui/input";
 export default function Home() {
-  const [showPassword, setShowPassword] = useState(false);
+  const [step, setStep] = useState(1);
+
+  const next = () => setStep((prev) => Math.min(prev + 1, 6));
+  const prev = () => setStep((prev) => Math.max(prev - 1, 1));
 
   return (
     <div className="min-h-screen grid grid-cols-1 lg:grid-cols-2">
@@ -57,82 +60,119 @@ export default function Home() {
       </div>
 
       {/* RIGHT SIDE */}
-      <div className="flex items-center justify-center p-6 bg-white">
-        <div className="w-full max-w-md">
-          <h2 className="text-2xl font-bold text-gray-800">Welcome back</h2>
-          <p className="text-gray-500 mb-6">
-            Please enter your credentials or use face authentication.
-          </p>
+      <div className="min-h-screen flex items-center justify-center bg-gray-100 p-4">
+        <div className="bg-white w-full max-w-xl rounded-2xl shadow-xl p-8">
+          <p className="text-sm text-gray-500 mb-2">Step {step} of 6</p>
+          <div className="w-full bg-gray-200 h-2 rounded-full mb-6">
+            <div
+              className="bg-blue-600 h-2 rounded-full transition-all"
+              style={{ width: `${(step / 6) * 100}%` }}
+            />
+          </div>
 
-          {/* Email */}
-          <div className="mb-4">
-            <label className="text-sm text-gray-600">Email or Username</label>
-            <div className="flex items-center border rounded-lg px-3 py-2 mt-1">
-              <Mail size={18} className="text-gray-400 mr-2" />
+          {/* STEP CONTENT */}
+          {step === 1 && (
+            <div className="space-y-4">
+              <h2 className="text-xl font-semibold">Institution Details</h2>
+              <Input className="input" placeholder="Institution Name" />
+              <input className="input" placeholder="Institution Type" />
+              <input className="input" placeholder="Established Year" />
+              <input className="input" placeholder="Affiliation / Board" />
+            </div>
+          )}
+
+          {step === 2 && (
+            <div className="space-y-4">
+              <h2 className="text-xl font-semibold">Location</h2>
+              <input className="input" placeholder="Address" />
+              <input className="input" placeholder="City" />
+              <input className="input" placeholder="State" />
+              <input className="input" placeholder="Pincode" />
+            </div>
+          )}
+
+          {step === 3 && (
+            <div className="space-y-4">
+              <h2 className="text-xl font-semibold">Admin Info</h2>
+              <input className="input" placeholder="Full Name" />
+              <input className="input" placeholder="Designation" />
+              <input className="input" placeholder="Email" />
+              <input className="input" placeholder="Phone Number" />
+            </div>
+          )}
+
+          {step === 4 && (
+            <div className="space-y-4">
+              <h2 className="text-xl font-semibold">Academic</h2>
+              <input className="input" placeholder="Departments" />
+              <input className="input" placeholder="Courses" />
+              <input className="input" placeholder="Total Students" />
+              <input className="input" placeholder="Total Staff" />
+            </div>
+          )}
+
+          {step === 5 && (
+            <div className="space-y-4">
+              <h2 className="text-xl font-semibold">Preferences</h2>
+              <input className="input" placeholder="Attendance Type" />
+              <input className="input" placeholder="Working Days" />
+              <input className="input" placeholder="Minimum Attendance %" />
+              <input className="input" placeholder="Class Timing" />
+            </div>
+          )}
+
+          {step === 6 && (
+            <div className="space-y-4">
+              <h2 className="text-xl font-semibold">Security</h2>
+              <input className="input" placeholder="Email" />
+              <input className="input" type="password" placeholder="Password" />
               <input
-                type="text"
-                placeholder="admin@attendx.ai"
-                className="w-full outline-none"
+                className="input"
+                type="password"
+                placeholder="Confirm Password"
               />
             </div>
-          </div>
+          )}
 
-          {/* Password */}
-          <div className="mb-2">
-            <div className="flex justify-between text-sm text-gray-600">
-              <label>Password</label>
-              <span className="text-indigo-600 cursor-pointer">
-                Forgot Password?
-              </span>
-            </div>
-
-            <div className="flex items-center border rounded-lg px-3 py-2 mt-1">
-              <Lock size={18} className="text-gray-400 mr-2" />
-              <Input
-                type={showPassword ? "text" : "password"}
-                className="w-full outline-none"
-              />
-              <button onClick={() => setShowPassword(!showPassword)}>
-                {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+          {/* BUTTONS */}
+          <div className="flex justify-between mt-6">
+            {step > 1 && (
+              <button
+                onClick={prev}
+                className="px-4 py-2 bg-gray-200 rounded-lg"
+              >
+                Back
               </button>
-            </div>
-          </div>
+            )}
 
-          {/* Checkbox */}
-          <div className="flex items-center gap-2 text-sm text-gray-600 my-4">
-            <Input type="checkbox" />
-            <span>Remember this device for 30 days</span>
-          </div>
-
-          {/* Login Button */}
-          <button className="w-full bg-indigo-600 text-white py-3 rounded-lg font-semibold shadow-lg hover:shadow-xl hover:scale-105 transition">
-            Sign In to Dashboard →
-          </button>
-
-          {/* Divider */}
-          <div className="flex items-center my-6">
-            <div className="flex-1 h-px bg-gray-300" />
-            <span className="px-3 text-sm text-gray-400">
-              OR USE BIOMETRICS
-            </span>
-            <div className="flex-1 h-px bg-gray-300" />
-          </div>
-
-          {/* Face Login */}
-          <button className="w-full border py-3 rounded-lg flex items-center justify-center gap-2 hover:bg-gray-100 transition">
-            <ScanFace size={20} />
-            Fast Face Login
-          </button>
-
-          {/* Footer */}
-          <div className="text-center text-xs text-gray-400 mt-8 space-x-4">
-            <span>Help Center</span>
-            <span>•</span>
-            <span>Privacy Policy</span>
-            <span>•</span>
-            <span>Contact Support</span>
+            {step < 6 ? (
+              <button
+                onClick={next}
+                className="ml-auto px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+              >
+                Next
+              </button>
+            ) : (
+              <button className="ml-auto px-6 py-2 bg-green-600 text-white rounded-lg">
+                Submit
+              </button>
+            )}
           </div>
         </div>
+
+        <style jsx>{`
+          .input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            outline: none;
+          }
+          .input:focus {
+            border-color: #2563eb;
+            box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.2);
+          }
+        `}</style>
       </div>
     </div>
   );

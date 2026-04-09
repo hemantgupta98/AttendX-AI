@@ -12,9 +12,11 @@ const RoleSelection = () => {
       <div className="bg-white shadow-2xl rounded-2xl p-8 w-full max-w-lg text-center">
         {/* Heading */}
         <h1 className="text-2xl font-bold text-gray-800 mb-2">
-          Welcome to AttendX-AI <br /> Choose your role to proceed
+          Welcome to AttendX-AI <br /> Smart Attendance starts here
         </h1>
-        <p className="text-gray-500 mb-6">Choose how you want to continue</p>
+        <p className="text-gray-500 mb-6">
+          Continue as Admin, Teacher, or Student
+        </p>
 
         {/* Buttons */}
         <div className="flex flex-col gap-4">
