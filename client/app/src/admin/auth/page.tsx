@@ -4,12 +4,50 @@ import { useState } from "react";
 import Image from "next/image";
 import { Input } from "@/components/ui/input";
 import ChatBotPanel from "../agent/chatbot-panel";
+import { useForm, SubmitHandler } from "react-hook-form";
+
+type Onboarding = {
+  name: string;
+  type: string;
+  year: number;
+  board: string;
+  address: string;
+  city: string;
+  state: string;
+  pincode: number;
+  adminName: string;
+  designation: string;
+  adminEmail: string;
+  adminNumber: number;
+  department?: string;
+  course?: string;
+  student: number;
+  staff: number;
+  attendenceType?: string;
+  workingDays: number;
+  attendance?: number;
+  classTiming?: number;
+  email: string;
+  password: string;
+  confirmPassword: string;
+};
+
 export default function Home() {
   const [step, setStep] = useState(1);
   const [isChatOpen, setIsChatOpen] = useState(false);
-
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm<Onboarding>();
   const next = () => setStep((prev) => Math.min(prev + 1, 6));
   const prev = () => setStep((prev) => Math.max(prev - 1, 1));
+
+  const onSubmit: SubmitHandler<Onboarding> = async (data) => {
+    console.log(data);
+    alert("Form submited");
+  };
 
   return (
     <div className="min-h-screen grid grid-cols-1 lg:grid-cols-2">
@@ -84,14 +122,47 @@ export default function Home() {
 
           {/* STEP CONTENT */}
           {step === 1 && (
-            <div className="space-y-4 ">
+            <div className="space-y-3 ">
               <h2 className="text-xl font-semibold ">
                 Institution Details<span className="text-red-500 mb-5">*</span>
               </h2>
-              <Input className="input" placeholder="Institution Name" />
-              <Input className="input" placeholder="Institution Type" />
-              <input className="input" placeholder="Established Year" />
-              <input className="input" placeholder="Affiliation / Board" />
+              <div className=" space-y-1">
+                <p className=" text-md font-light text-gray-700">
+                  Institution Name<span className="text-red-500 mb-5">*</span>
+                </p>
+                <Input
+                  {...register("name", {
+                    required: true,
+                    pattern: {
+                      value: /^.+$/,
+                      message: "Enter your institution name",
+                    },
+                  })}
+                  placeholder="Eg:- Name of Institution"
+                />
+                {errors.name && (
+                  <p className=" m-3 text-red-500">{errors.name.message}</p>
+                )}
+              </div>
+              <div className=" space-y-1">
+                <p className=" text-md font-light text-gray-700">
+                  Institution Type<span className="text-red-500 mb-5">*</span>
+                </p>
+                <Input placeholder="Eg:- Public/Private or others" />
+              </div>
+              <div className=" space-y-1">
+                <p className=" text-md font-light text-gray-700">
+                  Established Year<span className="text-red-500 mb-5">*</span>
+                </p>
+                <Input placeholder="Eg:- 2000" />
+              </div>
+              <div className=" space-y-1">
+                <p className=" text-md font-light text-gray-700">
+                  Affiliation / Board
+                  <span className="text-red-500 mb-5">*</span>
+                </p>
+                <Input placeholder="Eg:- State/Central or others" />
+              </div>
             </div>
           )}
 
@@ -100,10 +171,10 @@ export default function Home() {
               <h2 className="text-xl font-semibold">
                 Location<span className="text-red-500 mb-5">*</span>
               </h2>
-              <input className="input" placeholder="Address" />
-              <input className="input" placeholder="City" />
-              <input className="input" placeholder="State" />
-              <input className="input" placeholder="Pincode" />
+              <Input className="input" placeholder="Address" />
+              <Input className="input" placeholder="City" />
+              <Input className="input" placeholder="State" />
+              <Input className="input" placeholder="Pincode" />
             </div>
           )}
 
@@ -112,10 +183,10 @@ export default function Home() {
               <h2 className="text-xl font-semibold">
                 Admin Info<span className="text-red-500 mb-5">*</span>
               </h2>
-              <input className="input" placeholder="Full Name" />
-              <input className="input" placeholder="Designation" />
-              <input className="input" placeholder="Email" />
-              <input className="input" placeholder="Phone Number" />
+              <Input className="input" placeholder="Full Name" />
+              <Input className="input" placeholder="Designation" />
+              <Input className="input" placeholder="Email" />
+              <Input className="input" placeholder="Phone Number" />
             </div>
           )}
 
@@ -124,10 +195,10 @@ export default function Home() {
               <h2 className="text-xl font-semibold">
                 Academic<span className="text-red-500 mb-5">*</span>
               </h2>
-              <input className="input" placeholder="Departments" />
-              <input className="input" placeholder="Courses" />
-              <input className="input" placeholder="Total Students" />
-              <input className="input" placeholder="Total Staff" />
+              <Input className="input" placeholder="Departments" />
+              <Input className="input" placeholder="Courses" />
+              <Input className="input" placeholder="Total Students" />
+              <Input className="input" placeholder="Total Staff" />
             </div>
           )}
 
@@ -136,10 +207,10 @@ export default function Home() {
               <h2 className="text-xl font-semibold">
                 Preferences<span className="text-red-500 mb-5">*</span>
               </h2>
-              <input className="input" placeholder="Attendance Type" />
-              <input className="input" placeholder="Working Days" />
-              <input className="input" placeholder="Minimum Attendance %" />
-              <input className="input" placeholder="Class Timing" />
+              <Input className="input" placeholder="Attendance Type" />
+              <Input className="input" placeholder="Working Days" />
+              <Input className="input" placeholder="Minimum Attendance %" />
+              <Input className="input" placeholder="Class Timing" />
             </div>
           )}
 
@@ -152,9 +223,9 @@ export default function Home() {
               <h2 className="text-xl font-semibold">
                 Security<span className="text-red-500 mb-5">*</span>
               </h2>
-              <input className="input" placeholder="Email" />
-              <input className="input" type="password" placeholder="Password" />
-              <input
+              <Input className="input" placeholder="Email" />
+              <Input className="input" type="password" placeholder="Password" />
+              <Input
                 className="input"
                 type="password"
                 placeholder="Confirm Password"
