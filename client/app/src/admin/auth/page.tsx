@@ -59,9 +59,9 @@ export default function Home() {
       </div>
 
       {/* RIGHT SIDE */}
-      <div className="relative flex min-h-screen items-center justify-center overflow-hidden bg-gray-100 p-4 transition-all duration-300 ease-out lg:items-center">
+      <div className="relative flex min-h-screen items-start justify-center overflow-hidden bg-gray-100 px-4 pb-6 pt-6 transition-all duration-300 ease-out sm:px-6 lg:px-10 lg:pt-10">
         <div
-          className={`w-full max-w-xl rounded-2xl bg-white p-8 shadow-xl transition-transform duration-300 ease-out ${
+          className={`mt-0 w-full max-w-xl rounded-2xl bg-white p-4 shadow-xl transition-transform duration-300 ease-out ${
             isChatOpen ? "-translate-y-20 lg:-translate-y-24" : "translate-y-0"
           }`}
         >
@@ -71,11 +71,16 @@ export default function Home() {
               className="bg-blue-600 h-2 rounded-full transition-all"
               style={{ width: `${(step / 6) * 100}%` }}
             />
+            <p className=" ">
+              Please complete the onboarding form to set up your institution.
+              Fields marked with (*) are mandatory and must be filled to
+              proceed.
+            </p>
           </div>
 
           {/* STEP CONTENT */}
           {step === 1 && (
-            <div className="space-y-4">
+            <div className="space-y-4 mt-5">
               <h2 className="text-xl font-semibold">Institution Details</h2>
               <Input className="input" placeholder="Institution Name" />
               <Input className="input" placeholder="Institution Type" />
