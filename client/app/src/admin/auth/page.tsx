@@ -35,18 +35,73 @@ type Onboarding = {
 export default function Home() {
   const [step, setStep] = useState(1);
   const [isChatOpen, setIsChatOpen] = useState(false);
+  const [savedSteps, setSavedSteps] = useState<
+    Partial<Record<number, Partial<Onboarding>>>
+  >({});
   const {
     register,
     handleSubmit,
+    trigger,
+    getValues,
     reset,
     formState: { errors },
-  } = useForm<Onboarding>();
-  const next = () => setStep((prev) => Math.min(prev + 1, 6));
+  } = useForm<Onboarding>({
+    mode: "onTouched",
+  });
+
+  const stepFields: Record<number, (keyof Onboarding)[]> = {
+    1: ["name", "type", "year", "board"],
+    2: ["address", "city", "state", "pincode"],
+    3: ["adminName", "designation", "adminEmail", "adminNumber"],
+    4: ["department", "course", "student", "staff"],
+    5: ["attendenceType", "workingDays", "attendance", "classTiming"],
+    6: ["email", "password", "confirmPassword"],
+  };
+
+  const saveStepData = (currentStep: number) => {
+    const allValues = getValues();
+    const fields = stepFields[currentStep];
+    const currentStepData: Record<string, string | number | undefined> = {};
+
+    fields.forEach((field) => {
+      currentStepData[field] = allValues[field];
+    });
+
+    setSavedSteps((prev) => ({
+      ...prev,
+      [currentStep]: currentStepData as Partial<Onboarding>,
+    }));
+  };
+
+  const next = async () => {
+    const currentStepFields = stepFields[step];
+    const isCurrentStepValid = await trigger(currentStepFields);
+
+    if (!isCurrentStepValid) return;
+
+    saveStepData(step);
+    setStep((prev) => Math.min(prev + 1, 6));
+  };
   const prev = () => setStep((prev) => Math.max(prev - 1, 1));
 
   const onSubmit: SubmitHandler<Onboarding> = async (data) => {
+    const finalStepData: Record<string, string | number | undefined> = {};
+    stepFields[6].forEach((field) => {
+      finalStepData[field] = data[field];
+    });
+
+    const updatedSavedSteps = {
+      ...savedSteps,
+      6: finalStepData as Partial<Onboarding>,
+    };
+
+    setSavedSteps(updatedSavedSteps);
     console.log(data);
+    console.log("Saved step-wise data:", updatedSavedSteps);
     alert("Form submited");
+    reset();
+    setSavedSteps({});
+    setStep(1);
   };
 
   return (
@@ -132,7 +187,7 @@ export default function Home() {
                 </p>
                 <Input
                   {...register("name", {
-                    required: true,
+                    required: "Enter your institution name",
                     pattern: {
                       value: /^.+$/,
                       message: "Enter your institution name",
@@ -141,27 +196,62 @@ export default function Home() {
                   placeholder="Eg:- Name of Institution"
                 />
                 {errors.name && (
-                  <p className=" m-3 text-red-500">{errors.name.message}</p>
+                  <p className="  text-red-500">{errors.name.message}</p>
                 )}
               </div>
               <div className=" space-y-1">
                 <p className=" text-md font-light text-gray-700">
                   Institution Type<span className="text-red-500 mb-5">*</span>
                 </p>
-                <Input placeholder="Eg:- Public/Private or others" />
+                <Input
+                  {...register("type", {
+                    required: "Enter your institution type",
+                    pattern: {
+                      value: /^.+$/,
+                      message: "Enter your institution type",
+                    },
+                  })}
+                  placeholder="Eg:- Public/Private or others"
+                />
+                {errors.type && (
+                  <p className="  text-red-500">{errors.type.message}</p>
+                )}
               </div>
               <div className=" space-y-1">
                 <p className=" text-md font-light text-gray-700">
                   Established Year<span className="text-red-500 mb-5">*</span>
                 </p>
-                <Input placeholder="Eg:- 2000" />
+                <Input
+                  type="number"
+                  {...register("year", {
+                    required: "Enter your institution year",
+                    valueAsNumber: true,
+                    min: { value: 1800, message: "Enter a valid year" },
+                  })}
+                  placeholder="Eg:- 2000"
+                />
+                {errors.year && (
+                  <p className="  text-red-500">{errors.year.message}</p>
+                )}
               </div>
               <div className=" space-y-1">
                 <p className=" text-md font-light text-gray-700">
                   Affiliation / Board
                   <span className="text-red-500 mb-5">*</span>
                 </p>
-                <Input placeholder="Eg:- State/Central or others" />
+                <Input
+                  {...register("board", {
+                    required: "Enter your institution board",
+                    pattern: {
+                      value: /^.+$/,
+                      message: "Enter your institution board",
+                    },
+                  })}
+                  placeholder="Eg:- State/Central or others"
+                />
+                {errors.board && (
+                  <p className="  text-red-500">{errors.board.message}</p>
+                )}
               </div>
             </div>
           )}
@@ -171,10 +261,66 @@ export default function Home() {
               <h2 className="text-xl font-semibold">
                 Location<span className="text-red-500 mb-5">*</span>
               </h2>
-              <Input className="input" placeholder="Address" />
-              <Input className="input" placeholder="City" />
-              <Input className="input" placeholder="State" />
-              <Input className="input" placeholder="Pincode" />
+              <div>
+                <Input
+                  className="input"
+                  placeholder="Address"
+                  {...register("address", {
+                    required: "Address is required",
+                  })}
+                />
+                {errors.address && (
+                  <p className="m-2 text-sm text-red-500">
+                    {errors.address.message}
+                  </p>
+                )}
+              </div>
+              <div>
+                <Input
+                  className="input"
+                  placeholder="City"
+                  {...register("city", {
+                    required: "City is required",
+                  })}
+                />
+                {errors.city && (
+                  <p className="m-2 text-sm text-red-500">
+                    {errors.city.message}
+                  </p>
+                )}
+              </div>
+              <div>
+                <Input
+                  className="input"
+                  placeholder="State"
+                  {...register("state", {
+                    required: "State is required",
+                  })}
+                />
+                {errors.state && (
+                  <p className="m-2 text-sm text-red-500">
+                    {errors.state.message}
+                  </p>
+                )}
+              </div>
+              <div>
+                <Input
+                  type="number"
+                  className="input"
+                  placeholder="Pincode"
+                  {...register("pincode", {
+                    required: "Pincode is required",
+                    valueAsNumber: true,
+                    min: { value: 100000, message: "Enter a valid pincode" },
+                    max: { value: 999999, message: "Enter a valid pincode" },
+                  })}
+                />
+                {errors.pincode && (
+                  <p className="m-2 text-sm text-red-500">
+                    {errors.pincode.message}
+                  </p>
+                )}
+              </div>
             </div>
           )}
 
@@ -183,10 +329,77 @@ export default function Home() {
               <h2 className="text-xl font-semibold">
                 Admin Info<span className="text-red-500 mb-5">*</span>
               </h2>
-              <Input className="input" placeholder="Full Name" />
-              <Input className="input" placeholder="Designation" />
-              <Input className="input" placeholder="Email" />
-              <Input className="input" placeholder="Phone Number" />
+              <div>
+                <Input
+                  className="input"
+                  placeholder="Full Name"
+                  {...register("adminName", {
+                    required: "Full name is required",
+                  })}
+                />
+                {errors.adminName && (
+                  <p className="m-2 text-sm text-red-500">
+                    {errors.adminName.message}
+                  </p>
+                )}
+              </div>
+              <div>
+                <Input
+                  className="input"
+                  placeholder="Designation"
+                  {...register("designation", {
+                    required: "Designation is required",
+                  })}
+                />
+                {errors.designation && (
+                  <p className="m-2 text-sm text-red-500">
+                    {errors.designation.message}
+                  </p>
+                )}
+              </div>
+              <div>
+                <Input
+                  type="email"
+                  className="input"
+                  placeholder="Email"
+                  {...register("adminEmail", {
+                    required: "Admin email is required",
+                    pattern: {
+                      value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+                      message: "Enter a valid email",
+                    },
+                  })}
+                />
+                {errors.adminEmail && (
+                  <p className="m-2 text-sm text-red-500">
+                    {errors.adminEmail.message}
+                  </p>
+                )}
+              </div>
+              <div>
+                <Input
+                  type="tel"
+                  className="input"
+                  placeholder="Phone Number"
+                  {...register("adminNumber", {
+                    required: "Phone number is required",
+                    valueAsNumber: true,
+                    min: {
+                      value: 1000000000,
+                      message: "Enter a valid phone number",
+                    },
+                    max: {
+                      value: 999999999999,
+                      message: "Enter a valid phone number",
+                    },
+                  })}
+                />
+                {errors.adminNumber && (
+                  <p className="m-2 text-sm text-red-500">
+                    {errors.adminNumber.message}
+                  </p>
+                )}
+              </div>
             </div>
           )}
 
@@ -195,10 +408,58 @@ export default function Home() {
               <h2 className="text-xl font-semibold">
                 Academic<span className="text-red-500 mb-5">*</span>
               </h2>
-              <Input className="input" placeholder="Departments" />
-              <Input className="input" placeholder="Courses" />
-              <Input className="input" placeholder="Total Students" />
-              <Input className="input" placeholder="Total Staff" />
+              <div>
+                <Input
+                  className="input"
+                  placeholder="Departments"
+                  {...register("department", {
+                    required: false,
+                  })}
+                />
+              </div>
+              <div>
+                <Input
+                  className="input"
+                  placeholder="Courses"
+                  {...register("course", {
+                    required: false,
+                  })}
+                />
+              </div>
+              <div>
+                <Input
+                  type="number"
+                  className="input"
+                  placeholder="Total Students"
+                  {...register("student", {
+                    required: "Total students is required",
+                    valueAsNumber: true,
+                    min: { value: 1, message: "Students must be at least 1" },
+                  })}
+                />
+                {errors.student && (
+                  <p className="m-2 text-sm text-red-500">
+                    {errors.student.message}
+                  </p>
+                )}
+              </div>
+              <div>
+                <Input
+                  type="number"
+                  className="input"
+                  placeholder="Total Staff"
+                  {...register("staff", {
+                    required: "Total staff is required",
+                    valueAsNumber: true,
+                    min: { value: 1, message: "Staff must be at least 1" },
+                  })}
+                />
+                {errors.staff && (
+                  <p className="m-2 text-sm text-red-500">
+                    {errors.staff.message}
+                  </p>
+                )}
+              </div>
             </div>
           )}
 
@@ -207,10 +468,55 @@ export default function Home() {
               <h2 className="text-xl font-semibold">
                 Preferences<span className="text-red-500 mb-5">*</span>
               </h2>
-              <Input className="input" placeholder="Attendance Type" />
-              <Input className="input" placeholder="Working Days" />
-              <Input className="input" placeholder="Minimum Attendance %" />
-              <Input className="input" placeholder="Class Timing" />
+              <div>
+                <Input
+                  className="input"
+                  placeholder="Attendance Type"
+                  {...register("attendenceType", {
+                    required: false,
+                  })}
+                />
+              </div>
+              <div>
+                <Input
+                  type="number"
+                  className="input"
+                  placeholder="Working Days"
+                  {...register("workingDays", {
+                    required: "Working days is required",
+                    valueAsNumber: true,
+                    min: {
+                      value: 1,
+                      message: "Working days must be at least 1",
+                    },
+                  })}
+                />
+                {errors.workingDays && (
+                  <p className="m-2 text-sm text-red-500">
+                    {errors.workingDays.message}
+                  </p>
+                )}
+              </div>
+              <div>
+                <Input
+                  type="number"
+                  className="input"
+                  placeholder="Minimum Attendance %"
+                  {...register("attendance", {
+                    required: false,
+                  })}
+                />
+              </div>
+              <div>
+                <Input
+                  type="number"
+                  className="input"
+                  placeholder="Class Timing"
+                  {...register("classTiming", {
+                    required: false,
+                  })}
+                />
+              </div>
             </div>
           )}
 
@@ -223,13 +529,62 @@ export default function Home() {
               <h2 className="text-xl font-semibold">
                 Security<span className="text-red-500 mb-5">*</span>
               </h2>
-              <Input className="input" placeholder="Email" />
-              <Input className="input" type="password" placeholder="Password" />
-              <Input
-                className="input"
-                type="password"
-                placeholder="Confirm Password"
-              />
+              <div>
+                <Input
+                  type="email"
+                  className="input"
+                  placeholder="Email"
+                  {...register("email", {
+                    required: "Email is required",
+                    pattern: {
+                      value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+                      message: "Enter a valid email",
+                    },
+                  })}
+                />
+                {errors.email && (
+                  <p className="m-2 text-sm text-red-500">
+                    {errors.email.message}
+                  </p>
+                )}
+              </div>
+              <div>
+                <Input
+                  className="input"
+                  type="password"
+                  placeholder="Password"
+                  {...register("password", {
+                    required: "Password is required",
+                    minLength: {
+                      value: 6,
+                      message: "Password must be at least 6 characters",
+                    },
+                  })}
+                />
+                {errors.password && (
+                  <p className="m-2 text-sm text-red-500">
+                    {errors.password.message}
+                  </p>
+                )}
+              </div>
+              <div>
+                <Input
+                  className="input"
+                  type="password"
+                  placeholder="Confirm Password"
+                  {...register("confirmPassword", {
+                    required: "Please confirm your password",
+                    validate: (value) =>
+                      value === getValues("password") ||
+                      "Passwords do not match",
+                  })}
+                />
+                {errors.confirmPassword && (
+                  <p className="m-2 text-sm text-red-500">
+                    {errors.confirmPassword.message}
+                  </p>
+                )}
+              </div>
             </div>
           )}
 
@@ -246,13 +601,18 @@ export default function Home() {
 
             {step < 6 ? (
               <button
+                type="button"
                 onClick={next}
                 className="ml-auto px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
               >
                 Next
               </button>
             ) : (
-              <button className="ml-auto px-6 py-2 bg-green-600 text-white rounded-lg">
+              <button
+                type="button"
+                onClick={handleSubmit(onSubmit)}
+                className="ml-auto px-6 py-2 bg-green-600 text-white rounded-lg"
+              >
                 Submit
               </button>
             )}
