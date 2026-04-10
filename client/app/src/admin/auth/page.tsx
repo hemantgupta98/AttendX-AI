@@ -257,14 +257,17 @@ export default function Home() {
           )}
 
           {step === 2 && (
-            <div className="space-y-4">
+            <div className="space-y-3">
               <h2 className="text-xl font-semibold">
                 Location<span className="text-red-500 mb-5">*</span>
               </h2>
               <div>
+                <p className=" text-md font-light text-gray-700">
+                  Address<span className="text-red-500 mb-5">*</span>
+                </p>
                 <Input
                   className="input"
-                  placeholder="Address"
+                  placeholder="Eg:- vill, post, dis, state"
                   {...register("address", {
                     required: "Address is required",
                   })}
@@ -276,9 +279,12 @@ export default function Home() {
                 )}
               </div>
               <div>
+                <p className=" text-md font-light text-gray-700">
+                  City<span className="text-red-500 mb-5">*</span>
+                </p>
                 <Input
                   className="input"
-                  placeholder="City"
+                  placeholder="Eg:- Ranchi, Hazaribag etc"
                   {...register("city", {
                     required: "City is required",
                   })}
@@ -290,9 +296,12 @@ export default function Home() {
                 )}
               </div>
               <div>
+                <p className=" text-md font-light text-gray-700">
+                  State<span className="text-red-500 mb-5">*</span>
+                </p>
                 <Input
                   className="input"
-                  placeholder="State"
+                  placeholder="Eg:- Jharkhand, Bihar etc"
                   {...register("state", {
                     required: "State is required",
                   })}
@@ -304,10 +313,13 @@ export default function Home() {
                 )}
               </div>
               <div>
+                <p className=" text-md font-light text-gray-700">
+                  Pincode<span className="text-red-500 mb-5">*</span>
+                </p>
                 <Input
                   type="number"
                   className="input"
-                  placeholder="Pincode"
+                  placeholder="Eg:- 825313"
                   {...register("pincode", {
                     required: "Pincode is required",
                     valueAsNumber: true,
@@ -325,14 +337,17 @@ export default function Home() {
           )}
 
           {step === 3 && (
-            <div className="space-y-4">
+            <div className="space-y-3">
               <h2 className="text-xl font-semibold">
                 Admin Info<span className="text-red-500 mb-5">*</span>
               </h2>
               <div>
+                <p className=" text-md font-light text-gray-700">
+                  Full Name<span className="text-red-500 mb-5">*</span>
+                </p>
                 <Input
                   className="input"
-                  placeholder="Full Name"
+                  placeholder="Eg:- Hemant Gupta etc."
                   {...register("adminName", {
                     required: "Full name is required",
                   })}
@@ -344,13 +359,16 @@ export default function Home() {
                 )}
               </div>
               <div>
+                <p className=" text-md font-light text-gray-700">
+                  Desgination<span className="text-red-500 mb-5">*</span>
+                </p>
                 <Input
-                  className="input"
-                  placeholder="Designation"
+                  placeholder="Eg:- Your Role like Principle etc."
                   {...register("designation", {
                     required: "Designation is required",
                   })}
                 />
+
                 {errors.designation && (
                   <p className="m-2 text-sm text-red-500">
                     {errors.designation.message}
@@ -358,10 +376,12 @@ export default function Home() {
                 )}
               </div>
               <div>
+                <p className=" text-md font-light text-gray-700">
+                  Email<span className="text-red-500 mb-5">*</span>
+                </p>
                 <Input
                   type="email"
-                  className="input"
-                  placeholder="Email"
+                  placeholder="Eg:- example@gmail.com"
                   {...register("adminEmail", {
                     required: "Admin email is required",
                     pattern: {
@@ -377,10 +397,13 @@ export default function Home() {
                 )}
               </div>
               <div>
+                <p className=" text-md font-light text-gray-700">
+                  Phone Number<span className="text-red-500 mb-5">*</span>
+                </p>
                 <Input
                   type="tel"
                   className="input"
-                  placeholder="Phone Number"
+                  placeholder="Eg:- +91 9867742834"
                   {...register("adminNumber", {
                     required: "Phone number is required",
                     valueAsNumber: true,
@@ -404,33 +427,37 @@ export default function Home() {
           )}
 
           {step === 4 && (
-            <div className="space-y-4">
+            <div className="space-y-3">
               <h2 className="text-xl font-semibold">
                 Academic<span className="text-red-500 mb-5">*</span>
               </h2>
               <div>
+                <p className=" text-md font-light text-gray-700">Department</p>
                 <Input
                   className="input"
-                  placeholder="Departments"
+                  placeholder="Eg:- Sci/arts ."
                   {...register("department", {
                     required: false,
                   })}
                 />
               </div>
               <div>
+                <p className=" text-md font-light text-gray-700">Course</p>
                 <Input
-                  className="input"
-                  placeholder="Courses"
+                  placeholder="Eg:- class 11/12 ."
                   {...register("course", {
                     required: false,
                   })}
                 />
               </div>
               <div>
+                <p className=" text-md font-light text-gray-700">
+                  Total students(approx)
+                  <span className="text-red-500 mb-5">*</span>
+                </p>
                 <Input
                   type="number"
-                  className="input"
-                  placeholder="Total Students"
+                  placeholder="Eg:- 1-10000"
                   {...register("student", {
                     required: "Total students is required",
                     valueAsNumber: true,
@@ -444,10 +471,14 @@ export default function Home() {
                 )}
               </div>
               <div>
+                <p className=" text-md font-light text-gray-700">
+                  Total Staff(approx)
+                  <span className="text-red-500 mb-5">*</span>
+                </p>
                 <Input
                   type="number"
                   className="input"
-                  placeholder="Total Staff"
+                  placeholder="Eg:- 1-1000 ."
                   {...register("staff", {
                     required: "Total staff is required",
                     valueAsNumber: true,
@@ -464,24 +495,30 @@ export default function Home() {
           )}
 
           {step === 5 && (
-            <div className="space-y-4">
+            <div className="space-y-3">
               <h2 className="text-xl font-semibold">
                 Preferences<span className="text-red-500 mb-5">*</span>
               </h2>
               <div>
+                <p className=" text-md font-light text-gray-700">
+                  Attendance Type
+                </p>
                 <Input
                   className="input"
-                  placeholder="Attendance Type"
+                  placeholder="Eg:- Online/Offine ."
                   {...register("attendenceType", {
                     required: false,
                   })}
                 />
               </div>
               <div>
+                <p className=" text-md font-light text-gray-700">
+                  Working Days<span className="text-red-500 mb-5">*</span>
+                </p>
                 <Input
                   type="number"
                   className="input"
-                  placeholder="Working Days"
+                  placeholder="Eg:- 1-7."
                   {...register("workingDays", {
                     required: "Working days is required",
                     valueAsNumber: true,
@@ -498,20 +535,24 @@ export default function Home() {
                 )}
               </div>
               <div>
+                <p className=" text-md font-light text-gray-700">Attendance</p>
                 <Input
                   type="number"
                   className="input"
-                  placeholder="Minimum Attendance %"
+                  placeholder="Eg:- 1-100%."
                   {...register("attendance", {
                     required: false,
                   })}
                 />
               </div>
               <div>
+                <p className=" text-md font-light text-gray-700">
+                  Class Timing
+                </p>
                 <Input
                   type="number"
                   className="input"
-                  placeholder="Class Timing"
+                  placeholder="Eg:- 9:00 AM to 3:00 PM."
                   {...register("classTiming", {
                     required: false,
                   })}
@@ -521,7 +562,7 @@ export default function Home() {
           )}
 
           {step === 6 && (
-            <div className="space-y-4">
+            <div className="space-y-3">
               <p className=" text-red-500 text-md font-light">
                 Ensure all details are correct before submitting. You can edit
                 this information later if needed.
@@ -530,10 +571,13 @@ export default function Home() {
                 Security<span className="text-red-500 mb-5">*</span>
               </h2>
               <div>
+                <p className=" text-md font-light text-gray-700">
+                  Email<span className="text-red-500 mb-5">*</span>
+                </p>
                 <Input
                   type="email"
                   className="input"
-                  placeholder="Email"
+                  placeholder="Eg:- example@gmail.com."
                   {...register("email", {
                     required: "Email is required",
                     pattern: {
@@ -549,10 +593,13 @@ export default function Home() {
                 )}
               </div>
               <div>
+                <p className=" text-md font-light text-gray-700">
+                  Password<span className="text-red-500 mb-5">*</span>
+                </p>
                 <Input
                   className="input"
                   type="password"
-                  placeholder="Password"
+                  placeholder="Eg:- abcd3456."
                   {...register("password", {
                     required: "Password is required",
                     minLength: {
@@ -568,10 +615,13 @@ export default function Home() {
                 )}
               </div>
               <div>
+                <p className=" text-md font-light text-gray-700">
+                  Confirm Password<span className="text-red-500 mb-5">*</span>
+                </p>
                 <Input
                   className="input"
                   type="password"
-                  placeholder="Confirm Password"
+                  placeholder="Eg:- abcd3456."
                   {...register("confirmPassword", {
                     required: "Please confirm your password",
                     validate: (value) =>
