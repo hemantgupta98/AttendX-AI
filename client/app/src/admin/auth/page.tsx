@@ -5,6 +5,8 @@ import Image from "next/image";
 import { Input } from "@/components/ui/input";
 import ChatBotPanel from "../agent/chatbot-panel";
 import { useForm, SubmitHandler } from "react-hook-form";
+import { ChevronsLeft } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 type Onboarding = {
   name: string;
@@ -49,6 +51,7 @@ export default function Home() {
     mode: "onTouched",
   });
 
+  const router = useRouter();
   const stepFields: Record<number, (keyof Onboarding)[]> = {
     1: ["name", "type", "year", "board"],
     2: ["address", "city", "state", "pincode"],
@@ -671,6 +674,13 @@ export default function Home() {
           <p className=" text-gray-400 text-sm text-center">
             Already have an account?{" "}
             <span className=" text-blue-400 cursor-pointer"> Log In</span>
+          </p>
+          <p
+            onClick={() => router.push("/")}
+            className="flex justify-center items-center mt-5 text-center gap-2 cursor-pointer"
+          >
+            <ChevronsLeft className=" shrink-0" size={20} />
+            <span className="text-gray-600 text-sm text-center">Go back</span>
           </p>
         </div>
 
