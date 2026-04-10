@@ -1,10 +1,12 @@
 "use client";
 
 import { useState } from "react";
-
+import Image from "next/image";
 import { Input } from "@/components/ui/input";
+import ChatBotPanel from "../agent/chatbot-panel";
 export default function Home() {
   const [step, setStep] = useState(1);
+  const [isChatOpen, setIsChatOpen] = useState(false);
 
   const next = () => setStep((prev) => Math.min(prev + 1, 6));
   const prev = () => setStep((prev) => Math.max(prev - 1, 1));
@@ -14,11 +16,8 @@ export default function Home() {
       {/* LEFT SIDE */}
       <div className="bg-linear-to-br from-indigo-50 to-gray-100 p-8 lg:p-16 flex flex-col justify-center">
         {/* Logo */}
-        <div className="flex items-center gap-3 mb-8">
-          <div className="w-10 h-10 bg-indigo-600 text-white flex items-center justify-center rounded-lg">
-            ⚡
-          </div>
-          <h1 className="text-2xl font-bold text-indigo-600">AttendX-AI</h1>
+        <div className="flex items-center mb-8">
+          <Image src="/logo.png" height={150} width={150} alt="logo" />
         </div>
 
         {/* Badge */}
@@ -60,8 +59,12 @@ export default function Home() {
       </div>
 
       {/* RIGHT SIDE */}
-      <div className="min-h-screen flex items-center justify-center bg-gray-100 p-4">
-        <div className="bg-white w-full max-w-xl rounded-2xl shadow-xl p-8">
+      <div className="relative flex min-h-screen items-center justify-center overflow-hidden bg-gray-100 p-4 transition-all duration-300 ease-out lg:items-center">
+        <div
+          className={`w-full max-w-xl rounded-2xl bg-white p-8 shadow-xl transition-transform duration-300 ease-out ${
+            isChatOpen ? "-translate-y-20 lg:-translate-y-24" : "translate-y-0"
+          }`}
+        >
           <p className="text-sm text-gray-500 mb-2">Step {step} of 6</p>
           <div className="w-full bg-gray-200 h-2 rounded-full mb-6">
             <div
@@ -75,7 +78,7 @@ export default function Home() {
             <div className="space-y-4">
               <h2 className="text-xl font-semibold">Institution Details</h2>
               <Input className="input" placeholder="Institution Name" />
-              <input className="input" placeholder="Institution Type" />
+              <Input className="input" placeholder="Institution Type" />
               <input className="input" placeholder="Established Year" />
               <input className="input" placeholder="Affiliation / Board" />
             </div>
@@ -178,6 +181,25 @@ export default function Home() {
             box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.2);
           }
         `}</style>
+
+        <button
+          type="button"
+          onClick={() => setIsChatOpen(true)}
+          className="absolute bottom-5 right-5 rounded-full border border-gray-200 bg-white p-2 shadow-lg transition hover:-translate-y-0.5 hover:shadow-xl"
+          aria-label="Open chatbot"
+        >
+          <Image src="/ai.png" height={56} width={56} alt="chatbot" />
+        </button>
+
+        {isChatOpen && (
+          <div className="fixed inset-0 z-50 bg-black/20 p-4 md:p-6">
+            <div className="flex h-full items-end justify-end">
+              <div className="w-full max-w-md pb-4 transition-transform duration-300 ease-out md:pb-0">
+                <ChatBotPanel onClose={() => setIsChatOpen(false)} />
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
