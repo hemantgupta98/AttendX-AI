@@ -65,23 +65,29 @@ export default function Home() {
             isChatOpen ? "-translate-y-20 lg:-translate-y-24" : "translate-y-0"
           }`}
         >
+          <h1 className=" text-gray-700 mt-5 text-center text-xl font-semibold mb-2">
+            Welcome! <br /> Let’s set up your institution in just a few steps 🚀
+          </h1>
           <p className="text-sm text-gray-500 mb-2">Step {step} of 6</p>
           <div className="w-full bg-gray-200 h-2 rounded-full mb-6">
             <div
               className="bg-blue-600 h-2 rounded-full transition-all"
               style={{ width: `${(step / 6) * 100}%` }}
             />
-            <p className=" ">
-              Please complete the onboarding form to set up your institution.
-              Fields marked with (*) are mandatory and must be filled to
-              proceed.
-            </p>
           </div>
+
+          <p className="mb-6 text-md leading-6 text-gray-700">
+            Please complete the onboarding form to set up your institution.
+            Fields marked with <span className="text-red-500">*</span> are
+            mandatory and must be filled to proceed.
+          </p>
 
           {/* STEP CONTENT */}
           {step === 1 && (
-            <div className="space-y-4 mt-5">
-              <h2 className="text-xl font-semibold">Institution Details</h2>
+            <div className="space-y-4 ">
+              <h2 className="text-xl font-semibold ">
+                Institution Details<span className="text-red-500 mb-5">*</span>
+              </h2>
               <Input className="input" placeholder="Institution Name" />
               <Input className="input" placeholder="Institution Type" />
               <input className="input" placeholder="Established Year" />
@@ -91,7 +97,9 @@ export default function Home() {
 
           {step === 2 && (
             <div className="space-y-4">
-              <h2 className="text-xl font-semibold">Location</h2>
+              <h2 className="text-xl font-semibold">
+                Location<span className="text-red-500 mb-5">*</span>
+              </h2>
               <input className="input" placeholder="Address" />
               <input className="input" placeholder="City" />
               <input className="input" placeholder="State" />
@@ -101,7 +109,9 @@ export default function Home() {
 
           {step === 3 && (
             <div className="space-y-4">
-              <h2 className="text-xl font-semibold">Admin Info</h2>
+              <h2 className="text-xl font-semibold">
+                Admin Info<span className="text-red-500 mb-5">*</span>
+              </h2>
               <input className="input" placeholder="Full Name" />
               <input className="input" placeholder="Designation" />
               <input className="input" placeholder="Email" />
@@ -111,7 +121,9 @@ export default function Home() {
 
           {step === 4 && (
             <div className="space-y-4">
-              <h2 className="text-xl font-semibold">Academic</h2>
+              <h2 className="text-xl font-semibold">
+                Academic<span className="text-red-500 mb-5">*</span>
+              </h2>
               <input className="input" placeholder="Departments" />
               <input className="input" placeholder="Courses" />
               <input className="input" placeholder="Total Students" />
@@ -121,7 +133,9 @@ export default function Home() {
 
           {step === 5 && (
             <div className="space-y-4">
-              <h2 className="text-xl font-semibold">Preferences</h2>
+              <h2 className="text-xl font-semibold">
+                Preferences<span className="text-red-500 mb-5">*</span>
+              </h2>
               <input className="input" placeholder="Attendance Type" />
               <input className="input" placeholder="Working Days" />
               <input className="input" placeholder="Minimum Attendance %" />
@@ -131,7 +145,13 @@ export default function Home() {
 
           {step === 6 && (
             <div className="space-y-4">
-              <h2 className="text-xl font-semibold">Security</h2>
+              <p className=" text-red-500 text-md font-light">
+                Ensure all details are correct before submitting. You can edit
+                this information later if needed.
+              </p>
+              <h2 className="text-xl font-semibold">
+                Security<span className="text-red-500 mb-5">*</span>
+              </h2>
               <input className="input" placeholder="Email" />
               <input className="input" type="password" placeholder="Password" />
               <input
