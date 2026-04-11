@@ -111,6 +111,16 @@ export default function Home() {
           >
             Submit
           </button>
+          <p className=" text-gray-400 text-sm text-center">
+            Create a new Account?{" "}
+            <span
+              onClick={() => router.push("/src/admin/auth")}
+              className=" text-blue-400 cursor-pointer"
+            >
+              {" "}
+              Sign In
+            </span>
+          </p>
           <p
             onClick={() => router.push("/")}
             className="flex justify-center items-center mt-5 text-center gap-2 cursor-pointer"

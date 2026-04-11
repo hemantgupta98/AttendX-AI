@@ -632,7 +632,7 @@ export default function Home() {
           <p className=" text-gray-400 text-sm text-center">
             Already have an account?{" "}
             <span
-              onClick={() => router.push("/src/admin/login")}
+              onClick={() => router.push("/src/student/auth/login")}
               className=" text-blue-400 cursor-pointer"
             >
               {" "}
