@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Image from "next/image";
 import { Input } from "@/components/ui/input";
-import ChatBotPanel from "../agent/chatbot-panel";
+
 import { useForm, SubmitHandler } from "react-hook-form";
 import { ChevronsLeft } from "lucide-react";
 import { useRouter } from "next/navigation";
@@ -142,7 +142,8 @@ export default function Home() {
           <Image src="/ai.png" height={56} width={56} alt="chatbot" />
         </button>
 
-        {isChatOpen && (
+        {/**
+ {isChatOpen && (
           <div className="fixed inset-0 z-50 bg-black/20 p-4 md:p-6">
             <div className="flex h-full items-end justify-end">
               <div className="w-full max-w-md pb-4 transition-transform duration-300 ease-out md:pb-0">
@@ -151,6 +152,7 @@ export default function Home() {
             </div>
           </div>
         )}
+ */}
       </div>
     </div>
   );
