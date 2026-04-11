@@ -10,8 +10,6 @@ import { useRouter } from "next/navigation";
 import AuthLeft from "@/components/ui/authLeft";
 import { format } from "date-fns";
 import { Calendar as CalendarIcon } from "lucide-react";
-
-import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import {
@@ -133,7 +131,8 @@ export default function Home() {
           }`}
         >
           <h1 className=" text-gray-700 mt-5 text-center text-xl font-semibold mb-2">
-            Welcome! <br /> Register for AI Attendance System
+            Welcome! Student
+            <br /> Register for AI Attendance System
           </h1>
           <p className="text-sm text-gray-500 mb-2">Step {step} of 5</p>
           <div className="w-full bg-gray-200 h-2 rounded-full mb-6">
