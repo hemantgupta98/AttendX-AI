@@ -7,6 +7,7 @@ import ChatBotPanel from "../agent/chatbot-panel";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { ChevronsLeft } from "lucide-react";
 import { useRouter } from "next/navigation";
+import AuthLeft from "@/components/ui/authLeft";
 
 type Onboarding = {
   name: string;
@@ -110,49 +111,7 @@ export default function Home() {
   return (
     <div className="min-h-screen grid grid-cols-1 lg:grid-cols-2">
       {/* LEFT SIDE */}
-      <div className="bg-linear-to-br from-indigo-50 to-gray-100 p-8 lg:p-16 flex flex-col justify-center">
-        {/* Logo */}
-        <div className="flex items-center mb-8">
-          <Image src="/logo.png" height={150} width={150} alt="logo" />
-        </div>
-
-        {/* Badge */}
-        <div className="mb-4">
-          <span className="text-xs bg-indigo-100 text-indigo-600 px-3 py-1 rounded-full">
-            ENTERPRISE READY V2.4
-          </span>
-        </div>
-
-        {/* Heading */}
-        <h1 className="text-3xl lg:text-5xl font-bold leading-tight text-gray-900">
-          Next-Generation <br />
-          <span className="text-indigo-600 italic">Face Recognition</span>{" "}
-          <br />
-          Attendance Ecosystem
-        </h1>
-
-        {/* Description */}
-        <p className="text-gray-600 mt-6 max-w-lg">
-          Harness the power of high-precision AI to automate tracking, enhance
-          security, and generate real-time insights for your institution.
-        </p>
-
-        {/* Features */}
-        <div className="mt-10 space-y-6">
-          <Feature
-            title="99.9% Recognition Accuracy"
-            desc="Our proprietary neural engine identifies faces in milliseconds, even in varied lighting conditions."
-          />
-          <Feature
-            title="Privacy First Architecture"
-            desc="End-to-end encryption and decentralized data storage ensure privacy."
-          />
-          <Feature
-            title="Real-time Synchronization"
-            desc="Instant updates across all campus devices and central dashboard."
-          />
-        </div>
-      </div>
+      <AuthLeft />
 
       {/* RIGHT SIDE */}
       <div className="relative flex min-h-screen items-start justify-center overflow-hidden bg-gray-100 px-4 pb-6 pt-6 transition-all duration-300 ease-out sm:px-6 lg:px-10 lg:pt-10">
@@ -673,7 +632,13 @@ export default function Home() {
 
           <p className=" text-gray-400 text-sm text-center">
             Already have an account?{" "}
-            <span className=" text-blue-400 cursor-pointer"> Log In</span>
+            <span
+              onClick={() => router.push("/src/admin/login")}
+              className=" text-blue-400 cursor-pointer"
+            >
+              {" "}
+              Log In
+            </span>
           </p>
           <p
             onClick={() => router.push("/")}

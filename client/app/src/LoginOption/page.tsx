@@ -20,7 +20,10 @@ const RoleSelection = () => {
 
         {/* Buttons */}
         <div className="flex flex-col gap-4">
-          <button className="bg-blue-600 cursor-pointer hover:bg-blue-700 text-white font-semibold py-3 rounded-lg shadow-md hover:shadow-xl transition-all duration-300 transform hover:scale-105">
+          <button
+            onClick={() => router.push("/src/admin/login")}
+            className="bg-blue-600 cursor-pointer hover:bg-blue-700 text-white font-semibold py-3 rounded-lg shadow-md hover:shadow-xl transition-all duration-300 transform hover:scale-105"
+          >
             As Admin
           </button>
 
