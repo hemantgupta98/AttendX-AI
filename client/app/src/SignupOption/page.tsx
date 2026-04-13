@@ -27,7 +27,10 @@ const RoleSelection = () => {
             As Admin
           </button>
 
-          <button className="bg-blue-600 cursor-pointer hover:bg-blue-700 text-white font-semibold py-3 rounded-lg shadow-md hover:shadow-xl transition-all duration-300 transform hover:scale-105">
+          <button
+            onClick={() => router.push("/src/teacher/auth/signup")}
+            className="bg-blue-600 cursor-pointer hover:bg-blue-700 text-white font-semibold py-3 rounded-lg shadow-md hover:shadow-xl transition-all duration-300 transform hover:scale-105"
+          >
             As Teacher
           </button>
 
