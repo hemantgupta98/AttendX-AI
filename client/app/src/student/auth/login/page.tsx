@@ -56,7 +56,8 @@ export default function Home() {
           </h1>
           <p className="mt-5 text-sm font-light text-gray-400">
             {" "}
-            Log in to securely access your dashboard and manage your activities.
+            Student Login to securely access your dashboard and manage your
+            activities.
           </p>
           <div className=" space-y-4">
             <div className=" mt-5">

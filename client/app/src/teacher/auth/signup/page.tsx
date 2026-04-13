@@ -18,23 +18,23 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 
-type Student = {
+type Teacher = {
   name: string;
   gender: string;
   dob: string;
   photo: File;
-  studentNumber: number;
+  teacherNumber: number;
   parentNumber: number;
   address: string;
   city: string;
   state: string;
   pincode: number;
   institutionName: string;
-  studentID: string;
+  employeeID: string;
   class: string;
-  stream: string;
-  section: number;
-  admissionYear: number;
+  subject: string;
+
+  joiningYear: number;
   email: string;
   faceScan: File;
   password: string;
@@ -46,7 +46,7 @@ export default function Home() {
   const [isChatOpen, setIsChatOpen] = useState(false);
   const [date, setDate] = useState<Date>();
   const [savedSteps, setSavedSteps] = useState<
-    Partial<Record<number, Partial<Student>>>
+    Partial<Record<number, Partial<Teacher>>>
   >({});
   const {
     register,
@@ -57,16 +57,16 @@ export default function Home() {
     setValue,
     watch,
     formState: { errors },
-  } = useForm<Student>({
+  } = useForm<Teacher>({
     mode: "onTouched",
   });
 
   const router = useRouter();
-  const stepFields: Record<number, (keyof Student)[]> = {
+  const stepFields: Record<number, (keyof Teacher)[]> = {
     1: ["name", "gender", "dob", "photo"],
     2: ["address", "city", "state", "pincode"],
-    3: ["institutionName", "stream", "section", "studentID", "admissionYear"],
-    4: ["parentNumber", "studentNumber"],
+    3: ["institutionName", "subject", "employeeID", "joiningYear"],
+    4: ["parentNumber", "teacherNumber"],
     5: ["email", "faceScan", "password", "confirmPassword"],
   };
 
@@ -82,7 +82,7 @@ export default function Home() {
 
     setSavedSteps((prev) => ({
       ...prev,
-      [currentStep]: currentStepData as Partial<Student>,
+      [currentStep]: currentStepData as Partial<Teacher>,
     }));
   };
 
@@ -97,7 +97,7 @@ export default function Home() {
   };
   const prev = () => setStep((prev) => Math.max(prev - 1, 1));
 
-  const onSubmit: SubmitHandler<Student> = async (data) => {
+  const onSubmit: SubmitHandler<Teacher> = async (data) => {
     const finalStepData: Record<string, string | number | File | undefined> =
       {};
     stepFields[5].forEach((field) => {
@@ -106,7 +106,7 @@ export default function Home() {
 
     const updatedSavedSteps = {
       ...savedSteps,
-      5: finalStepData as Partial<Student>,
+      5: finalStepData as Partial<Teacher>,
     };
 
     setSavedSteps(updatedSavedSteps);
@@ -131,8 +131,9 @@ export default function Home() {
           }`}
         >
           <h1 className=" text-gray-700 mt-5 text-center text-xl font-semibold mb-2">
-            Welcome! Student
-            <br /> Register for AI Attendance System
+            Welcome! Our faculty
+            <br />
+            Let’s Set Up Your Teaching Profile
           </h1>
           <p className="text-sm text-gray-500 mb-2">Step {step} of 5</p>
           <div className="w-full bg-gray-200 h-2 rounded-full mb-6">
@@ -143,7 +144,7 @@ export default function Home() {
           </div>
 
           <p className="mb-6 text-md leading-6 text-gray-700">
-            Please complete the onboarding form to set up your student ID.
+            Please complete the onboarding form to set up your Emplyee ID.
             Fields marked with <span className="text-red-500">*</span> are
             mandatory and must be filled to proceed.
           </p>
@@ -152,7 +153,7 @@ export default function Home() {
           {step === 1 && (
             <div className="space-y-3 ">
               <h2 className="text-xl font-semibold ">
-                Student Details<span className="text-red-500 mb-5">*</span>
+                Personal Details<span className="text-red-500 mb-5">*</span>
               </h2>
               <div className=" space-y-1">
                 <p className=" text-md font-light text-gray-700">
@@ -174,7 +175,7 @@ export default function Home() {
               </div>
               <div className=" space-y-1">
                 <p className=" text-md font-light text-gray-700">
-                  Student Gender<span className="text-red-500 mb-5">*</span>
+                  Gender<span className="text-red-500 mb-5">*</span>
                 </p>
                 <Input
                   {...register("gender", {
@@ -337,7 +338,8 @@ export default function Home() {
           {step === 3 && (
             <div className="space-y-3">
               <h2 className="text-xl font-semibold">
-                Institution Details<span className="text-red-500 mb-5">*</span>
+                Your teaching profile
+                <span className="text-red-500 mb-5">*</span>
               </h2>
               <div>
                 <p className=" text-md font-light text-gray-700">
@@ -358,29 +360,29 @@ export default function Home() {
               </div>
               <div>
                 <p className=" text-md font-light text-gray-700">
-                  StudentID<span className="text-red-500 mb-5">*</span>
+                  Employee ID<span className="text-red-500 mb-5">*</span>
                 </p>
                 <Input
                   placeholder="Eg:- ABC8167."
-                  {...register("studentID", {
+                  {...register("employeeID", {
                     required: "Enter your studdentID",
                   })}
                 />
 
-                {errors.studentID && (
+                {errors.employeeID && (
                   <p className="m-2 text-sm text-red-500">
-                    {errors.studentID.message}
+                    {errors.employeeID.message}
                   </p>
                 )}
               </div>
               <div>
                 <p className=" text-md font-light text-gray-700">
-                  Class<span className="text-red-500 mb-5">*</span>
+                  Subject<span className="text-red-500 mb-5">*</span>
                 </p>
                 <Input
                   type="email"
                   placeholder="Eg:- 9, 10, graduation or orthers "
-                  {...register("class", {
+                  {...register("subject", {
                     required: "Class is required",
                   })}
                 />
@@ -392,50 +394,37 @@ export default function Home() {
               </div>
               <div>
                 <p className=" text-md font-light text-gray-700">
-                  Stream<span className="text-red-500 mb-5">*</span>
+                  Class<span className="text-red-500 mb-5">*</span>
                 </p>
                 <Input
                   placeholder="Eg:- Arts,Sci or 9,10 etc."
-                  {...register("stream", {
+                  {...register("class", {
                     required: "Stream is required",
                   })}
                 />
-                {errors.stream && (
+                {errors.class && (
                   <p className="m-2 text-sm text-red-500">
-                    {errors.stream.message}
+                    {errors.class.message}
                   </p>
                 )}
               </div>
-              <div>
-                <p className=" text-md font-light text-gray-700">Section</p>
-                <Input
-                  placeholder="Eg:- A,B,C etc."
-                  {...register("class", {
-                    required: false,
-                  })}
-                />
-                {errors.section && (
-                  <p className="m-2 text-sm text-red-500">
-                    {errors.section.message}
-                  </p>
-                )}
-              </div>
+
               <div>
                 <p className=" text-md font-light text-gray-700">
-                  Admission Year<span className="text-red-500 mb-5">*</span>
+                  Joining Year<span className="text-red-500 mb-5">*</span>
                 </p>
                 <Input
                   type="number"
-                  {...register("admissionYear", {
+                  {...register("joiningYear", {
                     required: true,
                     valueAsNumber: true,
                     min: { value: 1800, message: "Enter a valid year" },
                   })}
                   placeholder="Eg:- 2000"
                 />
-                {errors.admissionYear && (
+                {errors.joiningYear && (
                   <p className="m-2 text-sm text-red-500">
-                    {errors.admissionYear.message}
+                    {errors.joiningYear.message}
                   </p>
                 )}
               </div>
@@ -455,7 +444,7 @@ export default function Home() {
                   type="tel"
                   className="input"
                   placeholder="Eg:- +91 9867742834"
-                  {...register("stream", {
+                  {...register("teacherNumber", {
                     required: "Phone number is required",
                     valueAsNumber: true,
                     min: {
@@ -468,21 +457,22 @@ export default function Home() {
                     },
                   })}
                 />
-                {errors.stream && (
+                {errors.teacherNumber && (
                   <p className="m-2 text-sm text-red-500">
-                    {errors.stream.message}
+                    {errors.teacherNumber.message}
                   </p>
                 )}
               </div>
               <div>
                 <p className=" text-md font-light text-gray-700">
-                  Phone Number<span className="text-red-500 mb-5">*</span>
+                  Parent Phone Number
+                  <span className="text-red-500 mb-5">*</span>
                 </p>
                 <Input
                   type="tel"
                   className="input"
                   placeholder="Eg:- +91 9867742834"
-                  {...register("stream", {
+                  {...register("parentNumber", {
                     required: "Phone number is required",
                     valueAsNumber: true,
                     min: {
@@ -495,9 +485,9 @@ export default function Home() {
                     },
                   })}
                 />
-                {errors.stream && (
+                {errors.parentNumber && (
                   <p className="m-2 text-sm text-red-500">
-                    {errors.stream.message}
+                    {errors.parentNumber.message}
                   </p>
                 )}
               </div>
