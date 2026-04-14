@@ -1,61 +1,10 @@
 "use client";
 
-import {
-  LayoutDashboard,
-  Users,
-  UserCheck,
-  Video,
-  FileText,
-  Settings,
-  Bell,
-  Search,
-} from "lucide-react";
-
 export default function Dashboard() {
   return (
     <div className="min-h-screen flex bg-gray-100">
-      {/* SIDEBAR */}
-      <aside className="w-64 hidden lg:flex flex-col bg-white border-r p-5">
-        <h1 className="text-xl font-bold text-indigo-600 mb-8">AttendX-AI</h1>
-
-        <nav className="space-y-3">
-          <SidebarItem
-            icon={<LayoutDashboard size={18} />}
-            label="Dashboard"
-            active
-          />
-          <SidebarItem icon={<Video size={18} />} label="Live Attendance" />
-          <SidebarItem icon={<Users size={18} />} label="Students" />
-          <SidebarItem icon={<UserCheck size={18} />} label="Teachers" />
-          <SidebarItem icon={<FileText size={18} />} label="Reports" />
-          <SidebarItem icon={<Settings size={18} />} label="Settings" />
-        </nav>
-
-        <div className="mt-auto text-sm text-gray-400">Sign Out</div>
-      </aside>
-
       {/* MAIN */}
       <main className="flex-1 p-4 lg:p-6">
-        {/* TOPBAR */}
-        <div className="flex flex-col lg:flex-row justify-between gap-4 mb-6">
-          <div className="flex items-center gap-3 bg-white px-4 py-2 rounded-lg shadow w-full lg:w-1/2">
-            <Search size={18} />
-            <input
-              placeholder="Search students, teachers, reports..."
-              className="w-full outline-none"
-            />
-          </div>
-
-          <div className="flex items-center gap-4 justify-end">
-            <Bell />
-            <div className="text-right">
-              <p className="text-sm font-semibold">Admin User</p>
-              <p className="text-xs text-gray-400">Super Administrator</p>
-            </div>
-            <div className="w-10 h-10 bg-gray-300 rounded-full" />
-          </div>
-        </div>
-
         {/* HEADER */}
         <div className="mb-6">
           <h2 className="text-2xl font-bold">Admin Dashboard</h2>

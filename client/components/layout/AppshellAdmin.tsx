@@ -1,7 +1,7 @@
 "use client";
 
 import type { ReactNode } from "react";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { Bell, Menu, PanelLeftClose, User, X } from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";
 
@@ -13,12 +13,12 @@ type AppShellRiderProps = Readonly<{
 
 function formatRouteLabel(pathname: string) {
   const segments = pathname.split("/").filter(Boolean);
-  const riderIndex = segments.indexOf("rider");
+  const adminIndex = segments.indexOf("admin");
   const pageSegment =
-    riderIndex >= 0 ? segments[riderIndex + 1] : segments.at(-1);
+    adminIndex >= 0 ? segments[adminIndex + 1] : segments.at(-1);
 
   if (!pageSegment) {
-    return "Rider Dashboard";
+    return "Admin Dashboard";
   }
 
   return pageSegment
@@ -56,16 +56,16 @@ export default function AppShellRider({ children }: AppShellRiderProps) {
           <div className="flex items-center justify-between border-b border-slate-200 px-4 py-3">
             <div>
               <p className="text-sm font-medium uppercase tracking-[0.24em] text-slate-500">
-                SwiftRide
+                AttendX-AI
               </p>
               <h2 className="text-lg font-semibold text-slate-950">
-                Rider Panel
+                Admin Panel
               </h2>
             </div>
 
             <button
               type="button"
-              aria-label="Close rider sidebar"
+              aria-label="Close admin sidebar"
               onClick={() => setIsSidebarOpen(false)}
               className="rounded-full p-2 text-slate-600 transition hover:bg-slate-100 hover:text-slate-950"
             >
@@ -102,7 +102,7 @@ export default function AppShellRider({ children }: AppShellRiderProps) {
 
             <div className="min-w-0 flex-1">
               <p className="text-xs font-medium uppercase tracking-[0.28em] text-slate-500">
-                Rider Workspace
+                Admin Workspace
               </p>
               <h1 className="truncate text-lg font-semibold text-slate-950">
                 {pageTitle}

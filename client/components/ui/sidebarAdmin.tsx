@@ -14,7 +14,7 @@ import {
   Navigation,
 } from "lucide-react";
 const links = [
-  { name: "Dashboard", href: "/rider/home", icon: LayoutDashboard },
+  { name: "Dashboard", href: "/src/admin/dashboard", icon: LayoutDashboard },
   { name: "Rides", href: "/rider/rides", icon: BikeIcon },
   { name: "Navigation", href: "/rider/navigation", icon: Navigation },
   { name: "Ride History", href: "/rider/history", icon: History },
@@ -38,7 +38,7 @@ export default function Sidebar({ className, onNavigate }: SidebarProps) {
         className,
       )}
     >
-      <div className="p-6 text-2xl font-bold text-white">SwiftRide</div>
+      <div className="p-6 text-2xl font-bold text-white">AttendX-AI</div>
       <nav className="flex-1 space-y-1 px-3">
         {links.map((item) => (
           <Link
