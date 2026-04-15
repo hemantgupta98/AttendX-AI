@@ -4,25 +4,25 @@ import { cn } from "@/lib/utils";
 
 import {
   LayoutDashboard,
-  BikeIcon,
-  History,
+  ShieldUserIcon,
   Settings,
   HelpCircle,
   LogOut,
-  Currency,
-  User2Icon,
-  Navigation,
+  Focus,
+  UserCheck2,
+  User,
+  CircleUserIcon,
 } from "lucide-react";
 const links = [
   { name: "Dashboard", href: "/src/admin/dashboard", icon: LayoutDashboard },
-  { name: "Live Attendance", href: "/src/admin/dashboard", icon: BikeIcon },
-  { name: "Teacher", href: "/src/admin/dashboard", icon: Navigation },
-  { name: "Student", href: "/src/admin/dashboard", icon: History },
-  { name: "Staff", href: "/src/admin/dashboard", icon: Currency },
-  { name: "Profile", href: "/rider/profile", icon: User2Icon },
-  { name: "Setting", href: "/rider/setting", icon: Settings },
-  { name: "Help", href: "/rider/help", icon: HelpCircle },
-  { name: "Logout", href: "/rider/logout", icon: LogOut },
+  { name: "Live Attendance", href: "/src/admin/dashboard", icon: Focus },
+  { name: "Teacher", href: "/src/admin/dashboard", icon: ShieldUserIcon },
+  { name: "Student", href: "/src/admin/dashboard", icon: UserCheck2 },
+  { name: "Staff", href: "/src/admin/dashboard", icon: User },
+  { name: "Profile", href: "/src/admin/profile", icon: CircleUserIcon },
+  { name: "Setting", href: "/src/admin/setting", icon: Settings },
+  { name: "Help", href: "/src/admin/Help", icon: HelpCircle },
+  { name: "Logout", href: "/src/admin/logout", icon: LogOut },
 ];
 
 type SidebarProps = {
@@ -34,7 +34,7 @@ export default function Sidebar({ className, onNavigate }: SidebarProps) {
   return (
     <aside
       className={cn(
-        "w-64 max-w-full shrink-0 overflow-y-auto bg-sky-900 border-r flex flex-col cursor-pointer text-gray-100",
+        "w-64 max-w-full shrink-0 overflow-y-auto bg-gray-700 text-[#E5E7EB] shadow-xl border-r flex flex-col cursor-pointer ",
         className,
       )}
     >
