@@ -15,10 +15,10 @@ import {
 } from "lucide-react";
 const links = [
   { name: "Dashboard", href: "/src/admin/dashboard", icon: LayoutDashboard },
-  { name: "Rides", href: "/rider/rides", icon: BikeIcon },
-  { name: "Navigation", href: "/rider/navigation", icon: Navigation },
-  { name: "Ride History", href: "/rider/history", icon: History },
-  { name: "Earning", href: "/rider/earning", icon: Currency },
+  { name: "Live Attendance", href: "/src/admin/dashboard", icon: BikeIcon },
+  { name: "Teacher", href: "/src/admin/dashboard", icon: Navigation },
+  { name: "Student", href: "/src/admin/dashboard", icon: History },
+  { name: "Staff", href: "/src/admin/dashboard", icon: Currency },
   { name: "Profile", href: "/rider/profile", icon: User2Icon },
   { name: "Setting", href: "/rider/setting", icon: Settings },
   { name: "Help", href: "/rider/help", icon: HelpCircle },
