@@ -1,5 +1,14 @@
 "use client";
 
+import { AdminDashboard } from "@/components/graph/admiDasboard";
+import {
+  ShieldUserIcon,
+  Focus,
+  UserCheck2,
+  User,
+  UserStar,
+} from "lucide-react";
+
 export default function Dashboard() {
   return (
     <div className="min-h-screen flex bg-gray-100">
@@ -16,11 +25,11 @@ export default function Dashboard() {
 
         {/* STATS */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 mb-6">
-          <Card title="Total Students" value="1,284" />
-          <Card title="Total Teachers" value="96" />
-          <Card title="Total Staff" value="42" />
-          <Card title="Attendance %" value="94.2%" />
-          <Card title="Active Cameras" value="14/16" />
+          <Card icon={UserCheck2} title="Total Students" value="1,284" />
+          <Card icon={ShieldUserIcon} title="Total Teachers" value="96" />
+          <Card icon={User} title="Total Staff" value="42" />
+          <Card icon={UserStar} title="Attendance %" value="94.2%" />
+          <Card icon={Focus} title="Active Cameras" value="14/16" />
         </div>
 
         {/* MIDDLE */}
@@ -32,10 +41,9 @@ export default function Dashboard() {
               Real-time attendance vs target threshold
             </p>
 
-            {/* Fake Chart */}
-            <div className="h-56 bg-gradient-to-t from-indigo-200 to-transparent rounded-lg flex items-end p-4">
-              <div className="w-full h-2/3 bg-indigo-400 rounded-lg" />
-            </div>
+            {/*  Chart */}
+
+            <AdminDashboard />
           </div>
 
           {/* RIGHT PANEL */}
@@ -106,30 +114,18 @@ export default function Dashboard() {
 
 /* COMPONENTS */
 
-function SidebarItem({
-  icon,
-  label,
-  active,
+function Card({
+  title,
+  value,
+  icon: Icon,
 }: {
-  icon: React.ReactNode;
-  label: string;
-  active?: boolean;
+  title: string;
+  value: string;
+  icon?: React.ComponentType<{ className?: string }>;
 }) {
   return (
-    <div
-      className={`flex items-center gap-3 px-3 py-2 rounded-lg cursor-pointer ${
-        active ? "bg-indigo-100 text-indigo-600" : "hover:bg-gray-100"
-      }`}
-    >
-      {icon}
-      <span>{label}</span>
-    </div>
-  );
-}
-
-function Card({ title, value }: { title: string; value: string }) {
-  return (
     <div className="bg-white p-4 rounded-xl shadow">
+      {Icon && <Icon className="w-6 h-6 mb-2" />}
       <p className="text-sm text-gray-400">{title}</p>
       <h3 className="text-xl font-bold">{value}</h3>
     </div>

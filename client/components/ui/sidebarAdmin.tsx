@@ -12,6 +12,7 @@ import {
   UserCheck2,
   User,
   CircleUserIcon,
+  ChartColumn,
 } from "lucide-react";
 const links = [
   { name: "Dashboard", href: "/src/admin/dashboard", icon: LayoutDashboard },
@@ -19,6 +20,7 @@ const links = [
   { name: "Teacher", href: "/src/admin/dashboard", icon: ShieldUserIcon },
   { name: "Student", href: "/src/admin/dashboard", icon: UserCheck2 },
   { name: "Staff", href: "/src/admin/dashboard", icon: User },
+  { name: "Reports", href: "/src/admin/reports", icon: ChartColumn },
   { name: "Profile", href: "/src/admin/profile", icon: CircleUserIcon },
   { name: "Setting", href: "/src/admin/setting", icon: Settings },
   { name: "Help", href: "/src/admin/Help", icon: HelpCircle },

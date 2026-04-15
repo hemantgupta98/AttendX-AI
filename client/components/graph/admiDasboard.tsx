@@ -36,13 +36,13 @@ const chartConfig = {
   },
 } satisfies ChartConfig;
 
-export function ChartAreaDefault() {
+export function AdminDashboard() {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Area Chart</CardTitle>
+        <CardTitle>Attendance Analysis Chart</CardTitle>
         <CardDescription>
-          Showing total visitors for the last 6 months
+          Showing total average attendance for the last 6 months
         </CardDescription>
       </CardHeader>
       <CardContent>
@@ -70,9 +70,9 @@ export function ChartAreaDefault() {
             <Area
               dataKey="desktop"
               type="natural"
-              fill="var(--color-desktop)"
+              fill="#60a5fa"
               fillOpacity={0.4}
-              stroke="var(--color-desktop)"
+              stroke="#60a5fa"
             />
           </AreaChart>
         </ChartContainer>
