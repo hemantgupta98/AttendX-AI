@@ -1,9 +1,0 @@
-<svg width="33" height="33" viewBox="0 0 33 33" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <mask id="CurvedConnector_svg__a" style="mask-type:alpha" maskUnits="userSpaceOnUse" x="0" y="0" width="33" height="33">
-    <rect x="0.485352" y="0.5" width="32" height="32" fill="white"/>
-  </mask>
-  <g mask="url(#CurvedConnector_svg__a)">
-    <path d="M21.726 10.13L20.6639 5.5L29.4854 8.72L22.9853 15.62L21.726 10.13Z" fill="#686583"/>
-    <path d="M3.48535 28.5C5.90396 19.7154 13.8854 9.81808 29.4854 8.72M29.4854 8.72L22.9853 15.62L20.6639 5.5L29.4854 8.72Z" stroke="#686583" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-  </g>
-</svg>

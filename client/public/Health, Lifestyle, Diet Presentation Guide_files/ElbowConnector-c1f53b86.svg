@@ -1,9 +1,0 @@
-<svg width="33" height="33" viewBox="0 0 33 33" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <mask id="ElbowConnector_svg__a" style="mask-type:alpha" maskUnits="userSpaceOnUse" x="0" y="0" width="33" height="33">
-    <rect x="0.485352" y="0.5" width="32" height="32" fill="white"/>
-  </mask>
-  <g mask="url(#ElbowConnector_svg__a)">
-    <path d="M22.4854 4.50012L30.4854 9.75986L22.4854 15.0001V4.50012Z" fill="#686583"/>
-    <path d="M2.48535 28.5001L10.3604 28.4996C12.2933 28.4996 13.8604 26.7804 13.8604 24.6597L13.8604 13.5997C13.8604 11.479 15.4274 9.75986 17.3604 9.75986L30.4854 9.75986M30.4854 9.75986L22.4854 4.50012V15.0001L30.4854 9.75986Z" stroke="#686583" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-  </g>
-</svg>

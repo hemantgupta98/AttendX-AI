@@ -1,6 +1,7 @@
 "use client";
 
 import { AdminDashboard } from "@/components/graph/admiDasboard";
+import { AdminBarChart } from "@/components/graph/adminBarChart";
 import {
   ShieldUserIcon,
   Focus,
@@ -47,26 +48,27 @@ export default function Dashboard() {
           </div>
 
           {/* RIGHT PANEL */}
-          <div className="bg-white p-5 rounded-xl shadow">
-            <h3 className="font-semibold mb-4">Department Sync</h3>
+          <div className="flex flex-col gap-6 lg:self-start h-fit">
+            <div className="bg-white p-5 rounded-xl shadow">
+              <h3 className="font-semibold mb-4">Department Sync</h3>
+              <AdminBarChart />
+            </div>
 
-            {["Engineering", "Medical", "Arts", "Business", "Law"].map(
-              (d, i) => (
-                <div key={i} className="mb-3">
-                  <p className="text-sm">{d}</p>
-                  <div className="h-2 bg-gray-200 rounded">
-                    <div className="h-2 bg-indigo-500 rounded w-[70%]" />
-                  </div>
-                </div>
-              ),
-            )}
+            <div className="bg-white p-5 rounded-xl shadow">
+              <h3 className="font-semibold mb-4">Quick Hub</h3>
+
+              <QuickBtn label="Start Live Attendance" primary />
+              <QuickBtn label="New Student" />
+              <QuickBtn label="Manage Teachers" />
+              <QuickBtn label="Generate Reports" />
+            </div>
           </div>
         </div>
 
         {/* BOTTOM */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-6">
+        <div className="mt-6">
           {/* ACTIVITY */}
-          <div className="lg:col-span-2 bg-white p-5 rounded-xl shadow">
+          <div className="bg-white p-5 rounded-xl shadow">
             <h3 className="font-semibold mb-4">Live Activity Feed</h3>
 
             {[
@@ -84,16 +86,6 @@ export default function Dashboard() {
                 <span className="text-gray-400">2 min ago</span>
               </div>
             ))}
-          </div>
-
-          {/* QUICK HUB */}
-          <div className="bg-white p-5 rounded-xl shadow">
-            <h3 className="font-semibold mb-4">Quick Hub</h3>
-
-            <QuickBtn label="Start Live Attendance" primary />
-            <QuickBtn label="New Student" />
-            <QuickBtn label="Manage Teachers" />
-            <QuickBtn label="Generate Reports" />
           </div>
         </div>
 
