@@ -15,13 +15,13 @@ import {
 } from "lucide-react";
 const links = [
   { name: "Dashboard", href: "/src/admin/dashboard", icon: LayoutDashboard },
-  { name: "Live Attendance", href: "/src/admin/dashboard", icon: Focus },
+  { name: "Live Attendance", href: "/src/admin/liveattendance", icon: Focus },
   { name: "Teacher", href: "/src/admin/teacher", icon: ShieldUserIcon },
   { name: "Student", href: "/src/admin/student", icon: UserCheck2 },
   { name: "Reports", href: "/src/admin/reports", icon: ChartColumn },
   { name: "Profile", href: "/src/admin/profile", icon: CircleUserIcon },
   { name: "Setting", href: "/src/admin/setting", icon: Settings },
-  { name: "Help", href: "/src/admin/Help", icon: HelpCircle },
+  { name: "Help", href: "/src/admin/help", icon: HelpCircle },
   { name: "Logout", href: "/src/admin/logout", icon: LogOut },
 ];
 
