@@ -14,6 +14,8 @@ import {
   GraduationCap,
 } from "lucide-react";
 
+//import { api } from "@/lib/api";
+
 export default function AdminProfile() {
   const [profile, setProfile] = useState<any>({});
   const [error, setError] = useState("");
@@ -23,7 +25,7 @@ export default function AdminProfile() {
 
     const fetchProfile = async () => {
       try {
-        const res = await api.get("/auth/me");
+        const res = await api.get;
         const data = res?.data?.data;
 
         if (!mounted) return;
@@ -48,12 +50,12 @@ export default function AdminProfile() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-[#0b2e4d] p-6 text-white">
+    <div className="min-h-screen bg-[#f2f2f2] p-6 text-gray-700">
       <div className="max-w-7xl mx-auto space-y-6">
         {/* Header */}
         <div>
           <h1 className="text-3xl font-bold">Admin Profile</h1>
-          <p className="text-gray-300 text-sm">
+          <p className="text-gray-600 text-sm">
             Manage institution and system configuration
           </p>
         </div>
