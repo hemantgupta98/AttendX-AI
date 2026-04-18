@@ -14,15 +14,15 @@ import {
   ChartColumn,
 } from "lucide-react";
 const links = [
-  { name: "Dashboard", href: "/src/admin/dashboard", icon: LayoutDashboard },
-  { name: "Live Attendance", href: "/src/admin/liveattendance", icon: Focus },
-  { name: "Teacher", href: "/src/admin/teacher", icon: ShieldUserIcon },
-  { name: "Student", href: "/src/admin/student", icon: UserCheck2 },
-  { name: "Reports", href: "/src/admin/reports", icon: ChartColumn },
-  { name: "Profile", href: "/src/admin/profile", icon: CircleUserIcon },
-  { name: "Setting", href: "/src/admin/setting", icon: Settings },
-  { name: "Help", href: "/src/admin/help", icon: HelpCircle },
-  { name: "Logout", href: "/src/admin/logout", icon: LogOut },
+  { name: "Dashboard", href: "/src/student/dashboard", icon: LayoutDashboard },
+  { name: "Live Attendance", href: "/src/student/liveattendance", icon: Focus },
+  { name: "Attendance", href: "/src/student/attendance", icon: ShieldUserIcon },
+  { name: "Subject", href: "/src/student/subject", icon: UserCheck2 },
+  { name: "Leave", href: "/src/student/leave", icon: ChartColumn },
+  { name: "Profile", href: "/src/student/profile", icon: CircleUserIcon },
+  { name: "Setting", href: "/src/student/setting", icon: Settings },
+  { name: "Help", href: "/src/student/help", icon: HelpCircle },
+  { name: "Logout", href: "/src/student/logout", icon: LogOut },
 ];
 
 type SidebarProps = {
