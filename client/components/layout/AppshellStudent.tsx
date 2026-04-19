@@ -5,7 +5,7 @@ import { useMemo, useState } from "react";
 import { Bell, Menu, PanelLeftClose, User, X } from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";
 
-import Sidebar from "../ui/sidebarAdmin";
+import Sidebar from "../ui/sidebarStudent";
 
 type AppShellRiderProps = Readonly<{
   children: ReactNode;
@@ -13,12 +13,12 @@ type AppShellRiderProps = Readonly<{
 
 function formatRouteLabel(pathname: string) {
   const segments = pathname.split("/").filter(Boolean);
-  const adminIndex = segments.indexOf("admin");
+  const adminIndex = segments.indexOf("student");
   const pageSegment =
     adminIndex >= 0 ? segments[adminIndex + 1] : segments.at(-1);
 
   if (!pageSegment) {
-    return "Admin Dashboard";
+    return "Student Dashboard";
   }
 
   return pageSegment
