@@ -34,7 +34,7 @@ export default function AppShellRider({ children }: AppShellRiderProps) {
   const pageTitle = useMemo(() => formatRouteLabel(pathname), [pathname]);
 
   return (
-    <div className="h-dvh overflow-hidden bg-slate-100 text-slate-950">
+    <div className="h-dvh overflow-hidden bg-slate-100 text-slate-700">
       {isSidebarOpen && (
         <div className="fixed inset-0 z-40 bg-slate-950/45 md:hidden">
           <button
@@ -59,7 +59,7 @@ export default function AppShellRider({ children }: AppShellRiderProps) {
                 AttendX-AI
               </p>
               <h2 className="text-lg font-semibold text-slate-950">
-                Admin Panel
+                Student Panel
               </h2>
             </div>
 
@@ -102,7 +102,7 @@ export default function AppShellRider({ children }: AppShellRiderProps) {
 
             <div className="min-w-0 flex-1">
               <p className="text-xs font-medium uppercase tracking-[0.28em] text-slate-500">
-                Admin Workspace
+                Student Workspace
               </p>
               <h1 className="truncate text-lg font-semibold text-slate-950">
                 {pageTitle}
