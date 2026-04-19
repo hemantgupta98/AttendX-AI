@@ -1,7 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import { Bell, Calendar, CheckCircle, Clock, AlertCircle } from "lucide-react";
+import { Calendar } from "lucide-react";
+import { StudentReport } from "@/components/graph/studentReport";
+import { StudentDashboard } from "@/components/graph/studentDashboard";
 
 export default function DashboardPage() {
   const [selectedDate, setSelectedDate] = useState(24);
@@ -9,7 +11,7 @@ export default function DashboardPage() {
   const days = Array.from({ length: 31 }, (_, i) => i + 1);
 
   return (
-    <div className="min-h-screen bg-gray-100 p-6 text-gray-800">
+    <div className="min-h-screen bg-gray-100 p-2 text-gray-800">
       <div className="max-w-7xl mx-auto space-y-6">
         {/* Header */}
         <div className="flex justify-between items-center">
@@ -79,29 +81,16 @@ export default function DashboardPage() {
                 Scan Face Now
               </button>
             </div>
-
-            {/* Notifications */}
-          </div>
-        </div>
-
-        {/* Chart (Simple Placeholder) */}
-        <div className="bg-white p-5 rounded-xl shadow-sm">
-          <h3 className="font-semibold mb-4">Attendance Trends</h3>
-
-          <div className="h-40 flex items-end gap-2">
-            {[78, 82, 80, 85, 84, 84, 84].map((v, i) => (
-              <div
-                key={i}
-                className="flex-1 bg-indigo-400 rounded-t-md"
-                style={{ height: `${v}%` }}
-              />
-            ))}
           </div>
 
-          <div className="flex justify-between text-xs mt-2 text-gray-500">
-            {["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"].map((d) => (
-              <span key={d}>{d}</span>
-            ))}
+          {/* Chart (Simple Placeholder) */}
+          <div className="lg:col-span-3 bg-white p-5 rounded-xl grid grid-cols-1 md:grid-cols-2 gap-5 shadow-sm">
+            <div>
+              <StudentReport />
+            </div>
+            <div>
+              <StudentDashboard />
+            </div>
           </div>
         </div>
       </div>
@@ -126,26 +115,6 @@ function Card({
       <div>
         <p className="text-sm text-gray-500">{title}</p>
         <h2 className="text-lg font-semibold">{value}</h2>
-      </div>
-    </div>
-  );
-}
-
-function Notification({
-  icon,
-  text,
-  sub,
-}: {
-  icon: React.ReactNode;
-  text: string;
-  sub: string;
-}) {
-  return (
-    <div className="flex gap-3 items-start">
-      <div className="text-gray-500 mt-1">{icon}</div>
-      <div>
-        <p className="font-medium">{text}</p>
-        <p className="text-xs text-gray-500">{sub}</p>
       </div>
     </div>
   );
