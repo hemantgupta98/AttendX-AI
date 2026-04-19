@@ -8,30 +8,30 @@ export default function LeavePage() {
   const [file, setFile] = useState<File | null>(null);
 
   return (
-    <div className="min-h-screen bg-[#0f0f14] text-white p-6">
+    <div className="min-h-screen bg-white text-gray-900 p-6">
       {/* Heading */}
       <div className="mb-6">
         <h1 className="text-3xl font-bold">Leave Management</h1>
-        <p className="text-gray-400 text-sm">
+        <p className="text-gray-600 text-sm">
           Submit and track your academic leave requests.
         </p>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* LEFT - FORM */}
-        <div className="lg:col-span-2 bg-[#1a1a22] rounded-2xl p-6 shadow-lg">
+        <div className="lg:col-span-2 bg-gray-50 rounded-2xl p-6 shadow-sm border border-gray-200">
           <h2 className="text-xl font-semibold mb-1">Apply for Leave</h2>
-          <p className="text-gray-400 text-sm mb-6">
+          <p className="text-gray-600 text-sm mb-6">
             Please provide accurate details for official records.
           </p>
 
           {/* Leave Type */}
           <div className="mb-4">
-            <label className="text-sm text-gray-400">Leave Type</label>
+            <label className="text-sm text-gray-600">Leave Type</label>
             <select
               value={leaveType}
               onChange={(e) => setLeaveType(e.target.value)}
-              className="w-full mt-1 p-3 rounded-lg bg-[#0f0f14] border border-gray-700 focus:outline-none"
+              className="w-full mt-1 p-3 rounded-lg bg-white text-gray-900 border border-gray-300 focus:outline-none"
             >
               <option>Sick Leave</option>
               <option>Casual Leave</option>
@@ -42,30 +42,30 @@ export default function LeavePage() {
           {/* Duration */}
           <div className="grid grid-cols-2 gap-4 mb-4">
             <div>
-              <label className="text-sm text-gray-400">Start Date</label>
+              <label className="text-sm text-gray-600">Start Date</label>
               <input
                 type="date"
-                className="w-full mt-1 p-3 rounded-lg bg-[#0f0f14] border border-gray-700"
+                className="w-full mt-1 p-3 rounded-lg bg-white text-gray-900 border border-gray-300"
               />
             </div>
             <div>
-              <label className="text-sm text-gray-400">End Date</label>
+              <label className="text-sm text-gray-600">End Date</label>
               <input
                 type="date"
-                className="w-full mt-1 p-3 rounded-lg bg-[#0f0f14] border border-gray-700"
+                className="w-full mt-1 p-3 rounded-lg bg-white text-gray-900 border border-gray-300"
               />
             </div>
           </div>
 
           {/* Reason */}
           <div className="mb-4">
-            <label className="text-sm text-gray-400">Reason for Leave</label>
+            <label className="text-sm text-gray-600">Reason for Leave</label>
             <textarea
               rows={4}
               value={reason}
               onChange={(e) => setReason(e.target.value)}
               placeholder="Write your reason..."
-              className="w-full mt-1 p-3 rounded-lg bg-[#0f0f14] border border-gray-700 resize-none"
+              className="w-full mt-1 p-3 rounded-lg bg-white text-gray-900 border border-gray-300 resize-none"
             />
             <p className="text-xs text-gray-500 text-right mt-1">
               {reason.length}/500
@@ -74,11 +74,11 @@ export default function LeavePage() {
 
           {/* File Upload */}
           <div className="mb-6">
-            <label className="text-sm text-gray-400">
+            <label className="text-sm text-gray-600">
               Supporting Documents (Optional)
             </label>
 
-            <div className="mt-2 border-2 border-dashed border-gray-600 rounded-xl p-6 text-center cursor-pointer hover:border-purple-500 transition">
+            <div className="mt-2 border-2 border-dashed border-gray-300 rounded-xl p-6 text-center cursor-pointer hover:border-gray-500 transition">
               <input
                 type="file"
                 className="hidden"
@@ -88,7 +88,7 @@ export default function LeavePage() {
                 }
               />
               <label htmlFor="fileUpload" className="cursor-pointer">
-                <p className="text-gray-400">
+                <p className="text-gray-600">
                   Click to upload or drag and drop
                 </p>
                 <p className="text-xs text-gray-500">
@@ -97,7 +97,7 @@ export default function LeavePage() {
               </label>
 
               {file && (
-                <div className="mt-4 text-sm bg-[#0f0f14] p-2 rounded-lg inline-block">
+                <div className="mt-4 text-sm bg-gray-100 p-2 rounded-lg inline-block text-gray-800">
                   {file.name}
                 </div>
               )}
@@ -106,15 +106,15 @@ export default function LeavePage() {
 
           {/* Buttons */}
           <div className="flex justify-between items-center">
-            <button className="text-gray-400 hover:text-white text-sm">
+            <button className="text-gray-600 hover:text-black text-sm">
               ← Back to Dashboard
             </button>
 
             <div className="flex gap-3">
-              <button className="px-4 py-2 rounded-lg border border-gray-600 hover:bg-gray-700 text-sm">
+              <button className="px-4 py-2 rounded-lg border border-gray-300 hover:bg-gray-100 text-sm text-gray-800">
                 Save Draft
               </button>
-              <button className="px-5 py-2 rounded-lg bg-purple-600 hover:bg-purple-700 text-sm font-medium">
+              <button className="px-5 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium">
                 Submit Application →
               </button>
             </div>
@@ -124,13 +124,13 @@ export default function LeavePage() {
         {/* RIGHT SIDE */}
         <div className="space-y-6">
           {/* Attendance Card */}
-          <div className="bg-[#1a1a22] p-5 rounded-2xl shadow-lg">
-            <p className="text-sm text-gray-400">Current Standing</p>
+          <div className="bg-gray-50 p-5 rounded-2xl shadow-sm border border-gray-200">
+            <p className="text-sm text-gray-600">Current Standing</p>
             <h2 className="text-3xl font-bold mt-1">84.2%</h2>
-            <p className="text-green-400 text-sm mt-1">Safe Zone</p>
+            <p className="text-green-600 text-sm mt-1">Safe Zone</p>
 
-            <div className="w-full h-2 bg-gray-700 rounded-full mt-3">
-              <div className="w-[84%] h-full bg-purple-500 rounded-full"></div>
+            <div className="w-full h-2 bg-gray-200 rounded-full mt-3">
+              <div className="w-[84%] h-full bg-gray-800 rounded-full"></div>
             </div>
 
             <p className="text-xs text-gray-500 mt-2">
@@ -139,9 +139,9 @@ export default function LeavePage() {
           </div>
 
           {/* Policy */}
-          <div className="bg-[#1a1a22] p-5 rounded-2xl border border-purple-500">
+          <div className="bg-gray-50 p-5 rounded-2xl border border-gray-300">
             <h3 className="font-semibold mb-3">Leave Policy</h3>
-            <ul className="text-sm text-gray-400 space-y-2">
+            <ul className="text-sm text-gray-700 space-y-2">
               <li>• Submit requests at least 48 hours in advance</li>
               <li>• Medical proof required for 2+ sick days</li>
               <li>• Maintain 75% attendance</li>
@@ -149,12 +149,12 @@ export default function LeavePage() {
           </div>
 
           {/* Help */}
-          <div className="bg-[#1a1a22] p-5 rounded-2xl">
+          <div className="bg-gray-50 p-5 rounded-2xl border border-gray-200">
             <h3 className="font-semibold mb-2">Need Help?</h3>
-            <p className="text-sm text-gray-400 mb-3">
+            <p className="text-sm text-gray-600 mb-3">
               Unsure about leave type? Contact academic office.
             </p>
-            <button className="text-purple-400 text-sm hover:underline">
+            <button className="text-gray-800 text-sm hover:underline">
               View Academic Handbook
             </button>
           </div>
