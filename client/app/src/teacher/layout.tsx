@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 
-import AppShellRider from "@/components/layout/AppshellStudent";
+import AppShellRider from "@/components/layout/AppshellTeacher";
 
 type RiderLayoutProps = Readonly<{
   children: ReactNode;

@@ -5,7 +5,7 @@ import { useMemo, useState } from "react";
 import { Bell, Menu, PanelLeftClose, User, X } from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";
 
-import Sidebar from "../ui/sidebarStudent";
+import Sidebar from "../ui/sidebarTeacher";
 
 type AppShellRiderProps = Readonly<{
   children: ReactNode;
@@ -59,7 +59,7 @@ export default function AppShellRider({ children }: AppShellRiderProps) {
                 AttendX-AI
               </p>
               <h2 className="text-lg font-semibold text-slate-950">
-                Student Panel
+                Employee Panel
               </h2>
             </div>
 
@@ -102,7 +102,7 @@ export default function AppShellRider({ children }: AppShellRiderProps) {
 
             <div className="min-w-0 flex-1">
               <p className="text-xs font-medium uppercase tracking-[0.28em] text-slate-500">
-                Student Workspace
+                Employee Workspace
               </p>
               <h1 className="truncate text-lg font-semibold text-slate-950">
                 {pageTitle}
