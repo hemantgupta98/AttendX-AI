@@ -18,10 +18,10 @@ export default function SupportPage() {
           </p>
 
           <div className="max-w-2xl mx-auto relative">
-            <Search className="absolute left-4 top-3 text-gray-100" size={20} />
+            <Search className="absolute left-4 top-3 text-white" size={20} />
             <input
               placeholder="Search issues like face detection, attendance errors, reports..."
-              className="w-full bg-[#0b3d6e] border border-blue-500 rounded-lg pl-10 pr-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-400"
+              className="w-full bg-gray-700 text-white border border-blue-500 rounded-lg pl-10 pr-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-400"
             />
           </div>
         </div>
