@@ -22,7 +22,7 @@ const links = [
     href: "/src/teacher/subject",
     icon: ShieldUserIcon,
   },
-  { name: "Report", href: "/src/teacher/reports", icon: ChartColumn },
+  { name: "Report", href: "/src/teacher/report", icon: ChartColumn },
   { name: "Leave", href: "/src/teacher/leave", icon: ChartColumn },
   { name: "Salary", href: "/src/teacher/salary", icon: ShieldUserIcon },
   { name: "Profile", href: "/src/teacher/profile", icon: CircleUserIcon },
