@@ -4,7 +4,7 @@ import React, { useRef } from "react";
 import Image from "next/image";
 import HomeGraph from "@/components/ui/homegraph";
 import Footer from "@/components/ui/footer";
-import { motion } from "motion/react";
+import { motion } from "framer-motion";
 import {
   ScanEye,
   Clock,

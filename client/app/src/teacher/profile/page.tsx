@@ -18,10 +18,11 @@ export default function ProfilePage() {
             {/* Left */}
             <div className="flex items-center gap-4">
               <div className="relative">
-                <img
+                {/**<
                   src="https://i.pravatar.cc/100"
                   className="w-20 h-20 rounded-full border-4 border-white -mt-12"
-                />
+                /> */}
+
                 <span className="absolute bottom-1 right-1 w-4 h-4 bg-green-500 border-2 border-white rounded-full" />
               </div>
 

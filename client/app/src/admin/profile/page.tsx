@@ -4,17 +4,7 @@
 import { useEffect, useState, type ReactNode } from "react";
 import Image from "next/image";
 
-import {
-  User,
-  Mail,
-  Phone,
-  MapPin,
-  ShieldCheck,
-  Building2,
-  GraduationCap,
-} from "lucide-react";
-
-//import { api } from "@/lib/api";
+import { User, ShieldCheck, Building2, GraduationCap } from "lucide-react";
 
 export default function AdminProfile() {
   const [profile, setProfile] = useState<any>({});
@@ -25,8 +15,17 @@ export default function AdminProfile() {
 
     const fetchProfile = async () => {
       try {
-        const res = await api.get;
-        const data = res?.data?.data;
+        const res = await fetch("/api/admin/profile", {
+          method: "GET",
+          cache: "no-store",
+        });
+
+        if (!res.ok) {
+          throw new Error("Request failed");
+        }
+
+        const payload = await res.json();
+        const data = payload?.data ?? payload;
 
         if (!mounted) return;
 

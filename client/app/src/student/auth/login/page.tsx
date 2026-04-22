@@ -31,8 +31,8 @@ export default function Home() {
 
   const onSubmit: SubmitHandler<StudentLogin> = async (data) => {
     console.log(data);
+    alert("Form submitted");
     reset();
-    alert("Login submitted");
   };
 
   return (

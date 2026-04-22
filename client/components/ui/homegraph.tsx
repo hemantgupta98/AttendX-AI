@@ -1,10 +1,16 @@
-import { Card, CardBody, CardHeader } from "@material-tailwind/react";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import Chart from "react-apexcharts";
 import Image from "next/image";
+import type { ApexAxisChartSeries, ApexOptions } from "apexcharts";
 
 // If you're using Next.js please use the dynamic import for react-apexcharts and remove the import from the top for the react-apexcharts
 
-const chartConfig = {
+const chartConfig: {
+  type: "line";
+  height: number;
+  series: ApexAxisChartSeries;
+  options: ApexOptions;
+} = {
   type: "line",
   height: 240,
   series: [
@@ -18,9 +24,6 @@ const chartConfig = {
       toolbar: {
         show: false,
       },
-    },
-    title: {
-      show: "",
     },
     dataLabels: {
       enabled: false,
@@ -96,12 +99,7 @@ const chartConfig = {
 export default function Example() {
   return (
     <Card>
-      <CardHeader
-        floated={false}
-        shadow={false}
-        color="transparent"
-        className="flex flex-col gap-4 rounded-none md:flex-row md:items-center"
-      >
+      <CardHeader className="flex flex-col gap-4 rounded-none md:flex-row md:items-center">
         <Image src="/logo.png" height={150} width={150} alt="logo" />
 
         <div>
@@ -114,9 +112,9 @@ export default function Example() {
           </p>
         </div>
       </CardHeader>
-      <CardBody className="px-2 pb-0">
+      <CardContent className="px-2 pb-0">
         <Chart {...chartConfig} />
-      </CardBody>
+      </CardContent>
     </Card>
   );
 }
