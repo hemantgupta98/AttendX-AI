@@ -16,6 +16,7 @@
     "@material-tailwind/react": "^2.1.10",
     "@n8n/chat": "^1.14.0",
     "@supabase/ssr": "^0.10.2",
+    "@supabase/supabase-js": "^2.104.0",
     "apexcharts": "^5.10.5",
     "axios": "^1.15.0",
     "class-variance-authority": "^0.7.1",

@@ -8,6 +8,7 @@ import { useForm, SubmitHandler } from "react-hook-form";
 import { ChevronsLeft } from "lucide-react";
 import { useRouter } from "next/navigation";
 import AuthLeft from "@/components/ui/authLeft";
+import { supabase } from "@/lib/supabase/client";
 import { format } from "date-fns";
 import { Calendar as CalendarIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -45,6 +46,8 @@ export default function Home() {
   const [step, setStep] = useState(1);
   const [isChatOpen, setIsChatOpen] = useState(false);
   const [date, setDate] = useState<Date>();
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [signupError, setSignupError] = useState("");
   const [savedSteps, setSavedSteps] = useState<
     Partial<Record<number, Partial<Teacher>>>
   >({});
@@ -98,6 +101,9 @@ export default function Home() {
   const prev = () => setStep((prev) => Math.max(prev - 1, 1));
 
   const onSubmit: SubmitHandler<Teacher> = async (data) => {
+    setSignupError("");
+    setIsSubmitting(true);
+
     const finalStepData: Record<string, string | number | File | undefined> =
       {};
     stepFields[5].forEach((field) => {
@@ -110,9 +116,35 @@ export default function Home() {
     };
 
     setSavedSteps(updatedSavedSteps);
-    console.log(data);
-    console.log("Saved step-wise data:", updatedSavedSteps);
-    alert("Form submited");
+
+    const { data: authData, error } = await supabase.auth.signUp({
+      email: data.email.trim().toLowerCase(),
+      password: data.password,
+      options: {
+        data: {
+          role: "teacher",
+          name: data.name,
+          employeeID: data.employeeID,
+          institutionName: data.institutionName,
+        },
+      },
+    });
+
+    setIsSubmitting(false);
+
+    if (error) {
+      setSignupError(error.message);
+      return;
+    }
+
+    if (!authData.session) {
+      alert(
+        "Signup successful. Please check your email to confirm your account before login.",
+      );
+    } else {
+      alert("Signup successful. You can now log in.");
+    }
+
     reset();
     setSavedSteps({});
     setStep(1);
@@ -612,12 +644,17 @@ export default function Home() {
               <button
                 type="button"
                 onClick={handleSubmit(onSubmit)}
+                disabled={isSubmitting}
                 className="ml-auto px-6 py-2 bg-green-600 text-white rounded-lg"
               >
-                Submit
+                {isSubmitting ? "Submitting..." : "Submit"}
               </button>
             )}
           </div>
+
+          {signupError ? (
+            <p className="mt-3 text-sm text-red-500">{signupError}</p>
+          ) : null}
 
           <p className=" text-gray-400 text-sm text-center">
             Already have an account?{" "}
