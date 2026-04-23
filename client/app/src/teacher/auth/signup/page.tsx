@@ -8,7 +8,6 @@ import { useForm, SubmitHandler } from "react-hook-form";
 import { ChevronsLeft } from "lucide-react";
 import { useRouter } from "next/navigation";
 import AuthLeft from "@/components/ui/authLeft";
-import { supabase } from "@/lib/supabase/client";
 import { format } from "date-fns";
 import { Calendar as CalendarIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -18,6 +17,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import { supabase } from "@/lib/supabase/client";
 
 type Teacher = {
   name: string;
@@ -34,7 +34,6 @@ type Teacher = {
   employeeID: string;
   class: string;
   subject: string;
-
   joiningYear: number;
   email: string;
   faceScan: File;
@@ -126,6 +125,7 @@ export default function Home() {
           name: data.name,
           employeeID: data.employeeID,
           institutionName: data.institutionName,
+          teacherNumber: data.teacherNumber,
         },
       },
     });
