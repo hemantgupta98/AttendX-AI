@@ -33,6 +33,7 @@ export default function Home() {
     console.log(data);
     reset();
     alert("Login submitted");
+    router.push("/src/admin/dashboard");
   };
 
   return (

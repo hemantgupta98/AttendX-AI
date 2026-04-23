@@ -7,7 +7,7 @@ import { usePathname, useRouter } from "next/navigation";
 
 import Sidebar from "../ui/sidebarTeacher";
 
-type AppShellRiderProps = Readonly<{
+type AppShellTeacherProps = Readonly<{
   children: ReactNode;
 }>;
 
@@ -26,12 +26,17 @@ function formatRouteLabel(pathname: string) {
     .replace(/\b\w/g, (match) => match.toUpperCase());
 }
 
-export default function AppShellRider({ children }: AppShellRiderProps) {
+export default function AppShellRider({ children }: AppShellTeacherProps) {
   const pathname = usePathname();
   const router = useRouter();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const publicRoutes = ["/src/teacher/auth/signup", "/src/teacher/auth/login"];
+  const isPublicRoute = publicRoutes.includes(pathname);
 
   const pageTitle = useMemo(() => formatRouteLabel(pathname), [pathname]);
+  if (isPublicRoute) {
+    return <>{children}</>;
+  }
 
   return (
     <div className="h-dvh overflow-hidden bg-slate-100 text-slate-700">

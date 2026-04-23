@@ -7,7 +7,7 @@ import { usePathname, useRouter } from "next/navigation";
 
 import Sidebar from "../ui/sidebarAdmin";
 
-type AppShellRiderProps = Readonly<{
+type AppShellAdminProps = Readonly<{
   children: ReactNode;
 }>;
 
@@ -26,118 +26,126 @@ function formatRouteLabel(pathname: string) {
     .replace(/\b\w/g, (match) => match.toUpperCase());
 }
 
-export default function AppShellRider({ children }: AppShellRiderProps) {
+export default function AppShellAdmin({ children }: AppShellAdminProps) {
   const pathname = usePathname();
   const router = useRouter();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const publicRoutes = ["/src/admin/login", "/src/admin/auth"];
+  const isPublicRoute = publicRoutes.includes(pathname);
 
   const pageTitle = useMemo(() => formatRouteLabel(pathname), [pathname]);
 
+  if (isPublicRoute) {
+    return <>{children}</>;
+  }
+
   return (
-    <div className="h-dvh overflow-hidden bg-slate-100 text-slate-950">
-      {isSidebarOpen && (
-        <div className="fixed inset-0 z-40 bg-slate-950/45 md:hidden">
-          <button
-            type="button"
-            aria-label="Close rider navigation overlay"
-            className="h-full w-full cursor-default"
-            onClick={() => setIsSidebarOpen(false)}
-          />
-        </div>
-      )}
-
-      <div
-        className={[
-          "fixed inset-y-0 left-0 z-50 w-72 max-w-[85vw] transition-transform duration-300 ease-out md:hidden",
-          isSidebarOpen ? "translate-x-0" : "-translate-x-full",
-        ].join(" ")}
-      >
-        <div className="flex h-full flex-col border-r border-slate-200 bg-white shadow-2xl">
-          <div className="flex items-center justify-between border-b border-slate-200 px-4 py-3">
-            <div>
-              <p className="text-sm font-medium uppercase tracking-[0.24em] text-slate-500">
-                AttendX-AI
-              </p>
-              <h2 className="text-lg font-semibold text-slate-950">
-                Admin Panel
-              </h2>
-            </div>
-
+    <>
+      <div className="h-dvh overflow-hidden bg-slate-100 text-slate-950">
+        {isSidebarOpen && (
+          <div className="fixed inset-0 z-40 bg-slate-950/45 md:hidden">
             <button
               type="button"
-              aria-label="Close admin sidebar"
+              aria-label="Close rider navigation overlay"
+              className="h-full w-full cursor-default"
               onClick={() => setIsSidebarOpen(false)}
-              className="rounded-full p-2 text-slate-600 transition hover:bg-slate-100 hover:text-slate-950"
-            >
-              <X className="size-5" />
-            </button>
+            />
           </div>
+        )}
 
-          <Sidebar
-            className="h-full border-r-0"
-            onNavigate={() => setIsSidebarOpen(false)}
-          />
+        <div
+          className={[
+            "fixed inset-y-0 left-0 z-50 w-72 max-w-[85vw] transition-transform duration-300 ease-out md:hidden",
+            isSidebarOpen ? "translate-x-0" : "-translate-x-full",
+          ].join(" ")}
+        >
+          <div className="flex h-full flex-col border-r border-slate-200 bg-white shadow-2xl">
+            <div className="flex items-center justify-between border-b border-slate-200 px-4 py-3">
+              <div>
+                <p className="text-sm font-medium uppercase tracking-[0.24em] text-slate-500">
+                  AttendX-AI
+                </p>
+                <h2 className="text-lg font-semibold text-slate-950">
+                  Admin Panel
+                </h2>
+              </div>
+
+              <button
+                type="button"
+                aria-label="Close admin sidebar"
+                onClick={() => setIsSidebarOpen(false)}
+                className="rounded-full p-2 text-slate-600 transition hover:bg-slate-100 hover:text-slate-950"
+              >
+                <X className="size-5" />
+              </button>
+            </div>
+
+            <Sidebar
+              className="h-full border-r-0"
+              onNavigate={() => setIsSidebarOpen(false)}
+            />
+          </div>
+        </div>
+
+        <div className="hidden md:fixed md:inset-y-0 md:left-0 md:z-30 md:block md:w-64">
+          <Sidebar className="h-full" />
+        </div>
+
+        <div className="flex h-full flex-col md:pl-64">
+          <header className="sticky top-0 z-20 border-b border-slate-200 bg-white/90 backdrop-blur">
+            <div className="flex h-16 items-center gap-3 px-4 sm:px-6">
+              <button
+                type="button"
+                aria-label="Open rider sidebar"
+                onClick={() => setIsSidebarOpen(true)}
+                className="rounded-full p-2 text-slate-700 transition hover:bg-slate-100 hover:text-slate-950 md:hidden"
+              >
+                <Menu className="size-5" />
+              </button>
+
+              <div className="hidden rounded-full border border-slate-200 bg-slate-50 p-2 text-slate-500 md:inline-flex">
+                <PanelLeftClose className="size-4" />
+              </div>
+
+              <div className="min-w-0 flex-1">
+                <p className="text-xs font-medium uppercase tracking-[0.28em] text-slate-500">
+                  Admin Workspace
+                </p>
+                <h1 className="truncate text-lg font-semibold text-slate-950">
+                  {pageTitle}
+                </h1>
+              </div>
+
+              <div className="flex items-center gap-2">
+                <button
+                  type="button"
+                  aria-label="Open rider notifications"
+                  onClick={() => router.push("/rider/notification")}
+                  className="rounded-full border border-slate-200 bg-white p-2 text-slate-700 transition hover:bg-slate-100 hover:text-slate-950"
+                >
+                  <Bell className="size-5" />
+                </button>
+
+                <button
+                  type="button"
+                  aria-label="Open rider profile"
+                  onClick={() => router.push("/rider/profile")}
+                  className="flex items-center gap-2 rounded-full border border-slate-200 bg-white px-3 py-2 text-sm font-medium text-slate-700 transition hover:bg-slate-100 hover:text-slate-950"
+                >
+                  <User className="size-4" />
+                  <span className="hidden sm:inline">Profile</span>
+                </button>
+              </div>
+            </div>
+          </header>
+
+          <main className="flex-1 overflow-y-auto">
+            <div className="mx-auto flex min-h-[calc(100dvh-4rem)] w-full max-w-7xl flex-col px-4 py-4 sm:px-6 sm:py-6">
+              {children}
+            </div>
+          </main>
         </div>
       </div>
-
-      <div className="hidden md:fixed md:inset-y-0 md:left-0 md:z-30 md:block md:w-64">
-        <Sidebar className="h-full" />
-      </div>
-
-      <div className="flex h-full flex-col md:pl-64">
-        <header className="sticky top-0 z-20 border-b border-slate-200 bg-white/90 backdrop-blur">
-          <div className="flex h-16 items-center gap-3 px-4 sm:px-6">
-            <button
-              type="button"
-              aria-label="Open rider sidebar"
-              onClick={() => setIsSidebarOpen(true)}
-              className="rounded-full p-2 text-slate-700 transition hover:bg-slate-100 hover:text-slate-950 md:hidden"
-            >
-              <Menu className="size-5" />
-            </button>
-
-            <div className="hidden rounded-full border border-slate-200 bg-slate-50 p-2 text-slate-500 md:inline-flex">
-              <PanelLeftClose className="size-4" />
-            </div>
-
-            <div className="min-w-0 flex-1">
-              <p className="text-xs font-medium uppercase tracking-[0.28em] text-slate-500">
-                Admin Workspace
-              </p>
-              <h1 className="truncate text-lg font-semibold text-slate-950">
-                {pageTitle}
-              </h1>
-            </div>
-
-            <div className="flex items-center gap-2">
-              <button
-                type="button"
-                aria-label="Open rider notifications"
-                onClick={() => router.push("/rider/notification")}
-                className="rounded-full border border-slate-200 bg-white p-2 text-slate-700 transition hover:bg-slate-100 hover:text-slate-950"
-              >
-                <Bell className="size-5" />
-              </button>
-
-              <button
-                type="button"
-                aria-label="Open rider profile"
-                onClick={() => router.push("/rider/profile")}
-                className="flex items-center gap-2 rounded-full border border-slate-200 bg-white px-3 py-2 text-sm font-medium text-slate-700 transition hover:bg-slate-100 hover:text-slate-950"
-              >
-                <User className="size-4" />
-                <span className="hidden sm:inline">Profile</span>
-              </button>
-            </div>
-          </div>
-        </header>
-
-        <main className="flex-1 overflow-y-auto">
-          <div className="mx-auto flex min-h-[calc(100dvh-4rem)] w-full max-w-7xl flex-col px-4 py-4 sm:px-6 sm:py-6">
-            {children}
-          </div>
-        </main>
-      </div>
-    </div>
+    </>
   );
 }

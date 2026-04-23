@@ -126,6 +126,7 @@ export default function Home() {
           employeeID: data.employeeID,
           institutionName: data.institutionName,
           teacherNumber: data.teacherNumber,
+          gender: data.gender,
         },
       },
     });
@@ -148,6 +149,7 @@ export default function Home() {
     reset();
     setSavedSteps({});
     setStep(1);
+    router.push("/src/teacher/dashboard");
   };
 
   return (

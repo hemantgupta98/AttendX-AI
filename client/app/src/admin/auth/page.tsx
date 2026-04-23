@@ -106,6 +106,7 @@ export default function Home() {
     reset();
     setSavedSteps({});
     setStep(1);
+    router.push("/src/admin/dashboard");
   };
 
   return (
