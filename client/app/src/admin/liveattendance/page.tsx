@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { Camera, Square, Cpu, Activity } from "lucide-react";
 import { Input } from "@/components/ui/input";
+import Admincamera from "@/components/camera/admin";
 
 export default function LiveAttendancePage() {
   const [sensitivity, setSensitivity] = useState(85);
@@ -121,13 +122,7 @@ export default function LiveAttendancePage() {
 
           {/* Video Area */}
           <div className="flex-1 bg-gray-200 rounded-xl flex items-center justify-center relative">
-            <span className="text-gray-500">Live Camera Feed</span>
-
-            {/* Overlay info */}
-            <div className="absolute bottom-4 left-4 text-xs bg-black text-white px-3 py-2 rounded-lg">
-              LIVE PROCESS: 00:45:21:04 <br />
-              SOURCE: ENTRANCE_N_01
-            </div>
+            <Admincamera />
           </div>
 
           {/* Footer Controls */}
