@@ -94,6 +94,11 @@ export default function Home() {
     setSignupError("");
     setIsSubmitting(true);
 
+    const emailRedirectTo =
+      typeof window !== "undefined"
+        ? `${window.location.origin}/src/admin/login`
+        : undefined;
+
     const finalStepData: Record<string, string | number | undefined> = {};
     stepFields[6].forEach((field) => {
       finalStepData[field] = data[field];
@@ -112,6 +117,7 @@ export default function Home() {
       email: data.email.trim().toLowerCase(),
       password: data.password,
       options: {
+        emailRedirectTo,
         data: {
           role: "admin",
           adminName: data.adminName,
@@ -122,10 +128,18 @@ export default function Home() {
 
     if (error) {
       setIsSubmitting(false);
-      const message = error.message || "Signup failed. Please try again.";
+      const message = error.message
+        ?.toLowerCase()
+        .includes("confirmation email")
+        ? "Unable to send confirmation email. Check Supabase Auth email settings (SMTP sender, templates, and site URL), then try again."
+        : error.message || "Signup failed. Please try again.";
       setSignupError(message);
       alert(message);
-      console.log("Supabase signup error:", error);
+      console.log("Supabase signup error:", {
+        message: error.message,
+        status: error.status,
+        code: error.code,
+      });
       return;
     }
 
