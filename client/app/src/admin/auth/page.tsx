@@ -8,6 +8,7 @@ import { useForm, SubmitHandler } from "react-hook-form";
 import { ChevronsLeft } from "lucide-react";
 import { useRouter } from "next/navigation";
 import AuthLeft from "@/components/ui/authLeft";
+import { supabase } from "@/lib/supabase/client";
 
 type Onboarding = {
   name: string;
@@ -38,6 +39,8 @@ type Onboarding = {
 export default function Home() {
   const [step, setStep] = useState(1);
   const [isChatOpen, setIsChatOpen] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [signupError, setSignupError] = useState("");
   const [savedSteps, setSavedSteps] = useState<
     Partial<Record<number, Partial<Onboarding>>>
   >({});
@@ -46,7 +49,6 @@ export default function Home() {
     handleSubmit,
     trigger,
     getValues,
-    reset,
     formState: { errors },
   } = useForm<Onboarding>({
     mode: "onTouched",
@@ -89,6 +91,9 @@ export default function Home() {
   const prev = () => setStep((prev) => Math.max(prev - 1, 1));
 
   const onSubmit: SubmitHandler<Onboarding> = async (data) => {
+    setSignupError("");
+    setIsSubmitting(true);
+
     const finalStepData: Record<string, string | number | undefined> = {};
     stepFields[6].forEach((field) => {
       finalStepData[field] = data[field];
@@ -102,11 +107,72 @@ export default function Home() {
     setSavedSteps(updatedSavedSteps);
     console.log(data);
     console.log("Saved step-wise data:", updatedSavedSteps);
-    alert("Form submited");
-    reset();
-    setSavedSteps({});
-    setStep(1);
-    router.push("/src/admin/dashboard");
+
+    const { data: authData, error } = await supabase.auth.signUp({
+      email: data.email.trim().toLowerCase(),
+      password: data.password,
+      options: {
+        data: {
+          role: "admin",
+          adminName: data.adminName,
+          institutionName: data.name,
+        },
+      },
+    });
+
+    if (error) {
+      setIsSubmitting(false);
+      const message = error.message || "Signup failed. Please try again.";
+      setSignupError(message);
+      alert(message);
+      console.log("Supabase signup error:", error);
+      return;
+    }
+
+    // 🔥 IMPORTANT: get user id
+    const user = authData.user;
+
+    if (user) {
+      const { error: dbError } = await supabase.from("institutions").insert([
+        {
+          user_id: user.id,
+          name: data.name,
+          type: data.type,
+          year: data.year,
+          board: data.board,
+          address: data.address,
+          city: data.city,
+          state: data.state,
+          pincode: data.pincode,
+          admin_name: data.adminName,
+          designation: data.designation,
+          admin_email: data.adminEmail,
+          admin_number: data.adminNumber,
+          department: data.department,
+          course: data.course,
+          student: data.student,
+          staff: data.staff,
+          attendance_type: data.attendenceType,
+          working_days: data.workingDays,
+          attendance: data.attendance,
+          class_timing: data.classTiming,
+        },
+      ]);
+
+      if (dbError) {
+        setIsSubmitting(false);
+        console.log(dbError.message);
+        alert("Error saving onboarding data");
+        return;
+      }
+    }
+
+    setIsSubmitting(false);
+    alert(
+      authData.session
+        ? "Signup successful."
+        : "Signup successful. Please verify your email before login.",
+    );
   };
 
   return (
@@ -137,6 +203,12 @@ export default function Home() {
             Fields marked with <span className="text-red-500">*</span> are
             mandatory and must be filled to proceed.
           </p>
+
+          {signupError && (
+            <p className="mb-4 rounded-md border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">
+              {signupError}
+            </p>
+          )}
 
           {/* STEP CONTENT */}
           {step === 1 && (
@@ -624,9 +696,10 @@ export default function Home() {
               <button
                 type="button"
                 onClick={handleSubmit(onSubmit)}
+                disabled={isSubmitting}
                 className="ml-auto px-6 py-2 bg-green-600 text-white rounded-lg"
               >
-                Submit
+                {isSubmitting ? "Submitting..." : "Submit"}
               </button>
             )}
           </div>
@@ -682,21 +755,6 @@ export default function Home() {
             </div>
           </div>
         )}
-      </div>
-    </div>
-  );
-}
-
-/* Feature Component */
-function Feature({ title, desc }: { title: string; desc: string }) {
-  return (
-    <div className="flex gap-4">
-      <div className="w-10 h-10 bg-indigo-100 text-indigo-600 flex items-center justify-center rounded-lg">
-        ✓
-      </div>
-      <div>
-        <h4 className="font-semibold text-gray-800">{title}</h4>
-        <p className="text-gray-500 text-sm">{desc}</p>
       </div>
     </div>
   );
