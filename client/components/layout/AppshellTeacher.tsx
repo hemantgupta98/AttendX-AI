@@ -118,7 +118,7 @@ export default function AppShellRider({ children }: AppShellTeacherProps) {
               <button
                 type="button"
                 aria-label="Open rider notifications"
-                onClick={() => router.push("/rider/notification")}
+                onClick={() => router.push("/src/teacher/help")}
                 className="rounded-full border border-slate-200 bg-white p-2 text-slate-700 transition hover:bg-slate-100 hover:text-slate-950"
               >
                 <Bell className="size-5" />
@@ -127,7 +127,7 @@ export default function AppShellRider({ children }: AppShellTeacherProps) {
               <button
                 type="button"
                 aria-label="Open rider profile"
-                onClick={() => router.push("/rider/profile")}
+                onClick={() => router.push("/src/teacher/profile")}
                 className="flex items-center gap-2 rounded-full border border-slate-200 bg-white px-3 py-2 text-sm font-medium text-slate-700 transition hover:bg-slate-100 hover:text-slate-950"
               >
                 <User className="size-4" />
