@@ -61,7 +61,7 @@ export default function Home() {
 
   const handlePayment = async (plan: string, amount: number) => {
     if (amount === 0) {
-      router.push("/src/SignupOption");
+      router.push("/src/signup-option");
       return;
     }
     setLoadingPayment(true);
@@ -86,7 +86,7 @@ export default function Home() {
           body: JSON.stringify({ ...response, orderId: order.id }),
         });
         alert("Payment successful. Thank you!");
-        router.push("/src/SignupOption");
+        router.push("/src/signup-option");
       },
       prefill: { name: "", email: "" },
       theme: { color: "#2563eb" },
@@ -144,13 +144,13 @@ export default function Home() {
         </div>
         <div className="flex gap-2 sm:gap-3">
           <button
-            onClick={() => router.push("/src/SignupOption")}
+            onClick={() => router.push("/src/signup-option")}
             className={btnPrimary}
           >
             Get Started
           </button>
           <button
-            onClick={() => router.push("/src/LoginOption")}
+            onClick={() => router.push("/src/login-option")}
             className={btnPrimary}
           >
             Login
