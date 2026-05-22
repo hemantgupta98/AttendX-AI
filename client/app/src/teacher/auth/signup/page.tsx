@@ -17,7 +17,6 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { supabase } from "@/lib/supabase/client";
 
 type Teacher = {
   name: string;
@@ -115,41 +114,12 @@ export default function Home() {
     };
 
     setSavedSteps(updatedSavedSteps);
+    const message =
+      "Supabase auth has been removed from this build. Teacher signup is disabled.";
 
-    const { data: authData, error } = await supabase.auth.signUp({
-      email: data.email.trim().toLowerCase(),
-      password: data.password,
-      options: {
-        data: {
-          role: "teacher",
-          name: data.name,
-          employeeID: data.employeeID,
-          institutionName: data.institutionName,
-          teacherNumber: data.teacherNumber,
-          gender: data.gender,
-        },
-      },
-    });
-
+    setSignupError(message);
+    alert(message);
     setIsSubmitting(false);
-
-    if (error) {
-      setSignupError(error.message);
-      return;
-    }
-
-    if (!authData.session) {
-      alert(
-        "Signup successful. Please check your email to confirm your account before login.",
-      );
-    } else {
-      alert("Signup successful. You can now log in.");
-    }
-
-    reset();
-    setSavedSteps({});
-    setStep(1);
-    router.push("/src/teacher/dashboard");
   };
 
   return (

@@ -8,7 +8,6 @@ import { useForm, SubmitHandler } from "react-hook-form";
 import { ChevronsLeft } from "lucide-react";
 import { useRouter } from "next/navigation";
 import AuthLeft from "@/components/ui/authLeft";
-import { supabase } from "@/lib/supabase/client";
 
 type StudentLogin = {
   email: string;
@@ -31,11 +30,10 @@ export default function Home() {
   const router = useRouter();
 
   const onSubmit: SubmitHandler<StudentLogin> = async (data) => {
-    const { data: authData, error } = await supabase.auth.signInWithPassword({
-      email: data.email.trim().toLowerCase(),
-      password: data.password,
-    });
-    alert("Login ");
+    const message =
+      "Supabase auth has been removed from this build. Login is disabled.";
+
+    alert(message);
     reset();
   };
 

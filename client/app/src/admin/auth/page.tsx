@@ -8,7 +8,6 @@ import { useForm, SubmitHandler } from "react-hook-form";
 import { ChevronsLeft } from "lucide-react";
 import { useRouter } from "next/navigation";
 import AuthLeft from "@/components/ui/authLeft";
-import { supabase } from "@/lib/supabase/client";
 
 type Onboarding = {
   name: string;
@@ -94,11 +93,6 @@ export default function Home() {
     setSignupError("");
     setIsSubmitting(true);
 
-    const emailRedirectTo =
-      typeof window !== "undefined"
-        ? `${window.location.origin}/src/admin/login`
-        : undefined;
-
     const finalStepData: Record<string, string | number | undefined> = {};
     stepFields[6].forEach((field) => {
       finalStepData[field] = data[field];
@@ -112,81 +106,12 @@ export default function Home() {
     setSavedSteps(updatedSavedSteps);
     console.log(data);
     console.log("Saved step-wise data:", updatedSavedSteps);
+    const message =
+      "Supabase auth has been removed from this build. Admin signup is disabled.";
 
-    const { data: authData, error } = await supabase.auth.signUp({
-      email: data.email.trim().toLowerCase(),
-      password: data.password,
-      options: {
-        emailRedirectTo,
-        data: {
-          role: "admin",
-          adminName: data.adminName,
-          institutionName: data.name,
-        },
-      },
-    });
-
-    if (error) {
-      setIsSubmitting(false);
-      const message = error.message
-        ?.toLowerCase()
-        .includes("confirmation email")
-        ? "Unable to send confirmation email. Check Supabase Auth email settings (SMTP sender, templates, and site URL), then try again."
-        : error.message || "Signup failed. Please try again.";
-      setSignupError(message);
-      alert(message);
-      console.log("Supabase signup error:", {
-        message: error.message,
-        status: error.status,
-        code: error.code,
-      });
-      return;
-    }
-
-    // 🔥 IMPORTANT: get user id
-    const user = authData.user;
-
-    if (user) {
-      const { error: dbError } = await supabase.from("institutions").insert([
-        {
-          user_id: user.id,
-          name: data.name,
-          type: data.type,
-          year: data.year,
-          board: data.board,
-          address: data.address,
-          city: data.city,
-          state: data.state,
-          pincode: data.pincode,
-          admin_name: data.adminName,
-          designation: data.designation,
-          admin_email: data.adminEmail,
-          admin_number: data.adminNumber,
-          department: data.department,
-          course: data.course,
-          student: data.student,
-          staff: data.staff,
-          attendance_type: data.attendenceType,
-          working_days: data.workingDays,
-          attendance: data.attendance,
-          class_timing: data.classTiming,
-        },
-      ]);
-
-      if (dbError) {
-        setIsSubmitting(false);
-        console.log(dbError.message);
-        alert("Error saving onboarding data");
-        return;
-      }
-    }
-
+    setSignupError(message);
+    alert(message);
     setIsSubmitting(false);
-    alert(
-      authData.session
-        ? "Signup successful."
-        : "Signup successful. Please verify your email before login.",
-    );
   };
 
   return (
