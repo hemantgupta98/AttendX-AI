@@ -1,7 +1,7 @@
 import http from "http";
 import express from "express";
 
-const PORT = 5000;
+const PORT = process.env.PORT || 5000;
 
 const server = http.createServer((req, res) => res.end("Hello Attendx-AI"));
 
