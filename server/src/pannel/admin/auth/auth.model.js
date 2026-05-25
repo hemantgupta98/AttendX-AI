@@ -55,7 +55,7 @@ const loginSchema = new mongoose.Schema(
   { timestamps: true },
 );
 
-const signupHistory = mongoose.model("signupHistory", signupSchema);
-const loginHistory = mongoose.model("loginHistory", loginSchema);
+const signupModel = mongoose.model("signupHistory", signupSchema);
+const loginModel = mongoose.model("loginHistory", loginSchema);
 
-export { signupHistory, loginHistory };
+export { signupModel, loginModel };
