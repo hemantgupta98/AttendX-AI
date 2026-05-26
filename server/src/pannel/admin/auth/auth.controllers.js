@@ -96,8 +96,9 @@ export const signup = async (req, res) => {
     });
   } catch (error) {
     console.log("Signup Admin error", error);
-    res
-      .status(500)
-      .json({ message: "Signup error in Admin pannel", success: false });
+    res.status(500).json({
+      message: error?.message || "Signup error in Admin pannel",
+      success: false,
+    });
   }
 };

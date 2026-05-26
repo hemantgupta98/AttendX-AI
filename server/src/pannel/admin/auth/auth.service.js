@@ -1,5 +1,8 @@
 import { signupModel } from "./auth.model.js";
 
+const escapeRegex = (value) =>
+  String(value || "").replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+
 const getEmailFilter = (email) => {
   const normalizedEmail = String(email || "")
     .trim()
