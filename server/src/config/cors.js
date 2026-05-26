@@ -1,3 +1,8 @@
+const normalizeOrigin = (value) =>
+  String(value || "")
+    .trim()
+    .replace(/\/$/, "");
+
 const configuredOrigins = [
   process.env.FRONTEND_URL,
   ...(process.env.FRONTEND_URLS || "")
@@ -6,13 +11,17 @@ const configuredOrigins = [
     .filter(Boolean),
   "http://localhost:3000",
   "https://attendx-ai.vercel.app/",
-].filter(Boolean);
+]
+  .map(normalizeOrigin)
+  .filter(Boolean);
 
 const allowedOrigins = [...new Set(configuredOrigins)];
 
 const corsOption = {
   origin: (origin, callback) => {
-    if (!origin || allowedOrigins.includes(origin)) {
+    const normalizedOrigin = normalizeOrigin(origin);
+
+    if (!normalizedOrigin || allowedOrigins.includes(normalizedOrigin)) {
       return callback(null, true);
     }
 

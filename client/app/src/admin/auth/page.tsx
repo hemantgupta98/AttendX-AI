@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Image from "next/image";
+import axios from "axios";
 import { Input } from "@/components/ui/input";
 import ChatBotPanel from "../agent/chatbot-panel";
 import { useForm, SubmitHandler } from "react-hook-form";
@@ -112,29 +113,12 @@ export default function Home() {
       const normalizedBaseUrl = apiBaseUrl.replace(/\/$/, "");
       const url = `${normalizedBaseUrl}/admin/auth/signup`;
 
-      const res = await fetch(url, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        credentials: "include",
-        body: JSON.stringify(data),
+      const { data: result } = await axios.post(url, data, {
+        withCredentials: true,
+        headers: {
+          "Content-Type": "application/json",
+        },
       });
-
-      let result;
-      const contentType = res.headers.get("content-type");
-
-      if (contentType?.includes("application/json")) {
-        result = await res.json();
-      } else {
-        const text = await res.text();
-        throw new Error(text || "Invalid server response");
-      }
-
-      if (!res.ok) {
-        const errorMessage = result?.message || "Signup failed";
-        setSignupError(errorMessage);
-        toast.error(errorMessage);
-        return;
-      }
 
       if (result?.token) {
         localStorage.setItem("token", result.token);
@@ -144,8 +128,12 @@ export default function Home() {
       router.push("/src/admin/dashboard");
     } catch (error) {
       console.error("AUTH ERROR 👉", error);
-      setSignupError("Server error. Please try again.");
-      toast.error("Server error. Please try again.");
+      const errorMessage =
+        axios.isAxiosError(error) && error.response?.data?.message
+          ? error.response.data.message
+          : "Server error. Please try again.";
+      setSignupError(errorMessage);
+      toast.error(errorMessage);
     } finally {
       setIsSubmitting(false);
     }
@@ -158,6 +146,7 @@ export default function Home() {
 
       {/* RIGHT SIDE */}
       <div className="relative flex min-h-screen items-start justify-center overflow-hidden bg-gray-100 px-4 pb-6 pt-6 transition-all duration-300 ease-out sm:px-6 lg:px-10 lg:pt-10">
+        <Toaster richColors position="top-center" />
         <div
           className={`mt-0 w-full max-w-xl rounded-2xl bg-white p-4 shadow-xl transition-transform duration-300 ease-out ${
             isChatOpen ? "-translate-y-20 lg:-translate-y-24" : "translate-y-0"
