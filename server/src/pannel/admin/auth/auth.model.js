@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import hashPassword from "./auth.hashed.js";
+import { hashPassword } from "./auth.hashed.js";
 
 const signupSchema = new mongoose.Schema(
   {

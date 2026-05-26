@@ -8,6 +8,7 @@ import { useForm, SubmitHandler } from "react-hook-form";
 import { ChevronsLeft } from "lucide-react";
 import { useRouter } from "next/navigation";
 import AuthLeft from "@/components/ui/authLeft";
+import { Toaster, toast } from "sonner";
 
 type Onboarding = {
   name: string;
@@ -36,6 +37,9 @@ type Onboarding = {
 };
 
 export default function Home() {
+  const apiBaseUrl =
+    process.env.NEXT_PUBLIC_API_URL2 ||
+    "https://attendx-ai-n8uq.onrender.com/api";
   const [step, setStep] = useState(1);
   const [isChatOpen, setIsChatOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -104,21 +108,54 @@ export default function Home() {
     };
 
     setSavedSteps(updatedSavedSteps);
-    console.log(data);
-    console.log("Saved step-wise data:", updatedSavedSteps);
-    const message =
-      "Supabase auth has been removed from this build. Admin signup is disabled.";
+    try {
+      const normalizedBaseUrl = apiBaseUrl.replace(/\/$/, "");
+      const url = `${normalizedBaseUrl}/admin/auth/signup`;
 
-    setSignupError(message);
-    alert(message);
-    setIsSubmitting(false);
+      const res = await fetch(url, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify(data),
+      });
+
+      let result;
+      const contentType = res.headers.get("content-type");
+
+      if (contentType?.includes("application/json")) {
+        result = await res.json();
+      } else {
+        const text = await res.text();
+        throw new Error(text || "Invalid server response");
+      }
+
+      if (!res.ok) {
+        const errorMessage = result?.message || "Signup failed";
+        setSignupError(errorMessage);
+        toast.error(errorMessage);
+        return;
+      }
+
+      if (result?.token) {
+        localStorage.setItem("token", result.token);
+      }
+
+      toast.success(result?.message || "Account created successfully");
+      router.push("/src/admin/dashboard");
+    } catch (error) {
+      console.error("AUTH ERROR 👉", error);
+      setSignupError("Server error. Please try again.");
+      toast.error("Server error. Please try again.");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
     <div className="min-h-screen grid grid-cols-1 lg:grid-cols-2">
       {/* LEFT SIDE */}
       <AuthLeft />
-
+      <Toaster richColors position="top-right" />
       {/* RIGHT SIDE */}
       <div className="relative flex min-h-screen items-start justify-center overflow-hidden bg-gray-100 px-4 pb-6 pt-6 transition-all duration-300 ease-out sm:px-6 lg:px-10 lg:pt-10">
         <div
