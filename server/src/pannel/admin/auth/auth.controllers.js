@@ -7,13 +7,13 @@ import {
   findByAdminLoginEmail,
 } from "./auth.service.js";
 
-export const authToken = (res, userId, expriesIn = "24h") => {
+export const authToken = (res, userId, expiresIn = "24h") => {
   const jwtToken = process.env.JWT_WEB_TOKEN;
 
   if (!jwtToken) {
     throw new Error("JWT Token is missing");
   }
-  const token = jwt.sign({ id: userId }, jwtToken, { expriesIn });
+  const token = jwt.sign({ id: userId }, jwtToken, { expiresIn });
   const isProduction = process.env.NODE_ENV === "production";
   res.cookie("auth_token", token, {
     httpOnly: true,
