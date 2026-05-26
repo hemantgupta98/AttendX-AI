@@ -82,6 +82,13 @@ export const signup = async (req, res) => {
       confirmPassword,
     });
 
+    console.log("Admin signup saved", {
+      id: user._id,
+      email: user.email,
+      db: user?.constructor?.db?.name,
+      collection: user?.constructor?.collection?.name,
+    });
+
     const issueSignupToken = process.env.ISSUE_SIGNUP_TOKEN !== "false";
     const token = authToken(res, user._id);
 
