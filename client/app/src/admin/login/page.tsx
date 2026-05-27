@@ -63,7 +63,7 @@ export default function Home() {
     <div className="min-h-screen grid grid-cols-1 lg:grid-cols-2">
       {/* LEFT SIDE */}
       <AuthLeft />
-      <Toaster richColors position="top-center" />
+
       {/* RIGHT SIDE */}
       <div className="relative flex min-h-screen items-start justify-center overflow-hidden bg-gray-100 px-4 pb-6 pt-6 transition-all duration-300 ease-out sm:px-6 lg:px-10 lg:pt-10">
         <div
@@ -71,6 +71,7 @@ export default function Home() {
             isChatOpen ? "-translate-y-20 lg:-translate-y-24" : "translate-y-0"
           }`}
         >
+          <Toaster richColors position="top-center" />
           <div className=" flex justify-center items-center">
             <Image src="/logo.png" height={150} width={150} alt="logo" />
           </div>
