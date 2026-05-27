@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import { useState } from "react";
@@ -7,12 +8,18 @@ import ChatBotPanel from "../agent/chatbot-panel";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { ChevronsLeft } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { Toaster, toast } from "sonner";
 import AuthLeft from "@/components/ui/authLeft";
+import axios from "axios";
 
 type OnboardingLogin = {
   email: string;
   password: string;
 };
+
+const apiBaseUrl =
+  process.env.NEXT_PUBLIC_API_URL2 ||
+  "https://attendx-ai-n8uq.onrender.com/api";
 
 export default function Home() {
   const [isChatOpen, setIsChatOpen] = useState(false);
@@ -30,17 +37,33 @@ export default function Home() {
   const router = useRouter();
 
   const onSubmit: SubmitHandler<OnboardingLogin> = async (data) => {
-    console.log(data);
-    reset();
-    alert("Login submitted");
-    router.push("/src/admin/dashboard");
+    try {
+      const normalizedBaseUrl = apiBaseUrl.replace(/\/$/, "");
+      const url = `${normalizedBaseUrl}/admin/auth/login`;
+
+      const { data: result } = await axios.post(url, data, {
+        withCredentials: true,
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (result?.token) {
+        localStorage.setItem("token", result.token);
+      }
+      toast.success(result?.message || "Login successfully");
+      router.push("/src/admin/dashboard");
+      reset();
+    } catch (error: any) {
+      toast.error(error?.message || "Error in Admin login UI");
+    }
   };
 
   return (
     <div className="min-h-screen grid grid-cols-1 lg:grid-cols-2">
       {/* LEFT SIDE */}
       <AuthLeft />
-
+      <Toaster richColors position="top-center" />
       {/* RIGHT SIDE */}
       <div className="relative flex min-h-screen items-start justify-center overflow-hidden bg-gray-100 px-4 pb-6 pt-6 transition-all duration-300 ease-out sm:px-6 lg:px-10 lg:pt-10">
         <div
