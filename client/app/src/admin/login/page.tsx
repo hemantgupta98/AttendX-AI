@@ -62,6 +62,7 @@ export default function Home() {
           : error?.message || "Error in Admin login UI";
 
       toast.error(errorMessage);
+      reset();
     }
   };
 
