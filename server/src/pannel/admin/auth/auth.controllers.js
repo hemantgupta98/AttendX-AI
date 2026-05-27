@@ -114,7 +114,7 @@ export const login = async (req, res) => {
   const { email, password } = req.body;
 
   try {
-    const userExist = findByAdminLoginEmail(email);
+    const userExist = await findByAdminLoginEmail(email);
 
     if (!userExist)
       return res.status(409).json({
@@ -122,21 +122,22 @@ export const login = async (req, res) => {
         message: "No account found with this email. Please sign up first.",
       });
 
-    const isMatch = await comparePassword(password, user.password);
+    const isMatch = await comparePassword(password, userExist.password);
 
     if (!isMatch)
-      return res.state(409).json({
-        success: true,
+      return res.status(409).json({
+        success: false,
         message: "Password is invalid. Please try again",
       });
 
-    await res.createAdmin({
+    const token = authToken(res, userExist._id);
+
+    return res.status(200).json({
       success: true,
       token,
       user: {
-        id: user._id,
-        email: user.email,
-        password: user.password,
+        id: userExist._id,
+        email: userExist.email,
       },
     });
   } catch (error) {

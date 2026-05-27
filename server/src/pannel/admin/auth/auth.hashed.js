@@ -12,6 +12,7 @@ export const comparePassword = async (plain, hashed) => {
   try {
     return await bcrypt.compare(plain, hashed);
   } catch (error) {
-    confirm.log("Error in compare password", error);
+    console.log("Error in compare password", error);
+    return false;
   }
 };
