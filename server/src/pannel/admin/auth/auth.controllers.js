@@ -1,5 +1,5 @@
 import jwt from "jsonwebtoken";
-import { signupModel } from "./auth.model.js";
+import { loginModel, signupModel } from "./auth.model.js";
 import { comparePassword } from "./auth.hashed.js";
 import {
   createAdmin,
@@ -131,6 +131,12 @@ export const login = async (req, res) => {
       });
 
     const token = authToken(res, userExist._id);
+
+    await loginModel.create({
+      userId: userExist._id,
+      email: userExist.email,
+      password: userExist.password,
+    });
 
     return res.status(200).json({
       success: true,
