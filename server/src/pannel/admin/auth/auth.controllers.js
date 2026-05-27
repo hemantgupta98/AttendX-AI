@@ -109,3 +109,40 @@ export const signup = async (req, res) => {
     });
   }
 };
+
+export const login = async (req, res) => {
+  const { email, password } = req.body;
+
+  try {
+    const userExist = findByAdminLoginEmail(email);
+
+    if (!userExist)
+      return res.status(409).json({
+        success: false,
+        message: "No account found with this email. Please sign up first.",
+      });
+
+    const isMatch = await comparePassword(password, user.password);
+
+    if (!isMatch)
+      return res.state(409).json({
+        success: true,
+        message: "Password is invalid. Please try again",
+      });
+
+    await res.createAdmin({
+      success: true,
+      token,
+      user: {
+        id: user._id,
+        email: user.email,
+        password: user.password,
+      },
+    });
+  } catch (error) {
+    console.log("Error in Admin login", error);
+    res
+      .status(400)
+      .json({ success: false, message: "Server error in admin login" });
+  }
+};
