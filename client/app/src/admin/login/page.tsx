@@ -23,7 +23,7 @@ const apiBaseUrl =
 
 export default function Home() {
   const [isChatOpen, setIsChatOpen] = useState(false);
-
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const {
     register,
     handleSubmit,
@@ -37,6 +37,7 @@ export default function Home() {
   const router = useRouter();
 
   const onSubmit: SubmitHandler<OnboardingLogin> = async (data) => {
+    setIsSubmitting(true);
     try {
       const normalizedBaseUrl = apiBaseUrl.replace(/\/$/, "");
       const url = `${normalizedBaseUrl}/admin/auth/login`;
@@ -132,10 +133,11 @@ export default function Home() {
           </div>
           <button
             type="button"
+            disabled={isSubmitting}
             onClick={handleSubmit(onSubmit)}
             className="ml-auto px-6 py-2 bg-green-600 text-white rounded-lg mt-10 text-left flex justify-end"
           >
-            Submit
+            {isSubmitting ? "Submitting..." : "Submit"}
           </button>
           <p className=" text-gray-400 text-sm text-center">
             Create a new Account?{" "}
