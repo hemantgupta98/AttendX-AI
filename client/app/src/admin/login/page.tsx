@@ -56,7 +56,12 @@ export default function Home() {
       router.push("/src/admin/dashboard");
       reset();
     } catch (error: any) {
-      toast.error(error?.message || "Error in Admin login UI");
+      const errorMessage =
+        axios.isAxiosError(error) && error.response?.data?.message
+          ? error.response.data.message
+          : error?.message || "Error in Admin login UI";
+
+      toast.error(errorMessage);
     }
   };
 
