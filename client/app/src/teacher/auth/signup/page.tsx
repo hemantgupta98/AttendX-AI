@@ -17,6 +17,8 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import axios from "axios";
+import { toast, Toaster } from "sonner";
 
 type Teacher = {
   name: string;
@@ -41,6 +43,9 @@ type Teacher = {
 };
 
 export default function Home() {
+  const apiBaseUrl =
+    process.env.NEXT_PUBLIC_API_URL2 ||
+    "https://attendx-ai-n8uq.onrender.com/api";
   const [step, setStep] = useState(1);
   const [isChatOpen, setIsChatOpen] = useState(false);
   const [date, setDate] = useState<Date>();
@@ -114,12 +119,34 @@ export default function Home() {
     };
 
     setSavedSteps(updatedSavedSteps);
-    const message =
-      "Supabase auth has been removed from this build. Teacher signup is disabled.";
+    try {
+      const normalizedBaseUrl = apiBaseUrl.replace(/\/$/, "");
+      const url = `${normalizedBaseUrl}/employee/auth/signup`;
 
-    setSignupError(message);
-    alert(message);
-    setIsSubmitting(false);
+      const { data: result } = await axios.post(url, data, {
+        withCredentials: true,
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (result?.token) {
+        localStorage.setItem("token", result.token);
+      }
+
+      toast.success(result?.message || "Account created successfully");
+      router.push("/src/teacher/dashboard");
+    } catch (error) {
+      console.error("AUTH ERROR 👉", error);
+      const errorMessage =
+        axios.isAxiosError(error) && error.response?.data?.message
+          ? error.response.data.message
+          : "Server error. Please try again.";
+      setSignupError(errorMessage);
+      toast.error(errorMessage);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -134,6 +161,7 @@ export default function Home() {
             isChatOpen ? "-translate-y-20 lg:-translate-y-24" : "translate-y-0"
           }`}
         >
+          <Toaster position="top-center" richColors />
           <h1 className=" text-gray-700 mt-5 text-center text-xl font-semibold mb-2">
             Welcome! Our faculty
             <br />

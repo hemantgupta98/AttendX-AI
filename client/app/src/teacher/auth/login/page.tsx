@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import { useState } from "react";
@@ -8,6 +9,8 @@ import { useForm, SubmitHandler } from "react-hook-form";
 import { ChevronsLeft } from "lucide-react";
 import { useRouter } from "next/navigation";
 import AuthLeft from "@/components/ui/authLeft";
+import { toast, Toaster } from "sonner";
+import axios from "axios";
 
 type StudentLogin = {
   email: string;
@@ -15,6 +18,9 @@ type StudentLogin = {
 };
 
 export default function Home() {
+  const apiBaseUrl =
+    process.env.NEXT_PUBLIC_API_URL2 ||
+    "https://attendx-ai-n8uq.onrender.com/api";
   const [isChatOpen, setIsChatOpen] = useState(false);
 
   const {
@@ -30,11 +36,32 @@ export default function Home() {
   const router = useRouter();
 
   const onSubmit: SubmitHandler<StudentLogin> = async (data) => {
-    const message =
-      "Supabase auth has been removed from this build. Login is disabled.";
+    try {
+      const normalizedBaseUrl = apiBaseUrl.replace(/\/$/, "");
+      const url = `${normalizedBaseUrl}/employee/auth/login`;
 
-    alert(message);
-    reset();
+      const { data: result } = await axios.post(url, data, {
+        withCredentials: true,
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (result?.token) {
+        localStorage.setItem("token", result.token);
+      }
+      toast.success(result?.message || "Login successfully");
+      router.push("/src/teacher/dashboard");
+      reset();
+    } catch (error: any) {
+      const errorMessage =
+        axios.isAxiosError(error) && error.response?.data?.message
+          ? error.response.data.message
+          : error?.message || "Error in Admin login UI";
+
+      toast.error(errorMessage);
+      reset();
+    }
   };
 
   return (
@@ -49,6 +76,7 @@ export default function Home() {
             isChatOpen ? "-translate-y-20 lg:-translate-y-24" : "translate-y-0"
           }`}
         >
+          <Toaster position="top-center" richColors />
           <div className=" flex justify-center items-center">
             <Image src="/logo.png" height={150} width={150} alt="logo" />
           </div>
