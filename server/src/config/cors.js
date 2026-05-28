@@ -10,7 +10,7 @@ const configuredOrigins = [
     .map((item) => item.trim())
     .filter(Boolean),
   "http://localhost:3000",
-  "https://attendx-ai.vercel.app/",
+  "https://attendx-ai.vercel.app",
 ]
   .map(normalizeOrigin)
   .filter(Boolean);
@@ -28,7 +28,7 @@ const corsOption = {
     return callback(new Error(`CORS blocked for origin: ${origin}`));
   },
   optionsSuccessStatus: 200,
-  methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "HEAD"],
+  methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "HEAD", "OPTIONS"],
   credentials: true,
 };
 
