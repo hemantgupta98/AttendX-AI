@@ -63,7 +63,7 @@ export const signup = async (req, res) => {
     confirmPassword,
   } = req.body;
   try {
-    const userExist = await findByAdminEmail(email);
+    const userExist = await findByEmployeeEmail(email);
     if (userExist)
       return res.status(409).json({ message: "Admin already exist" });
 
