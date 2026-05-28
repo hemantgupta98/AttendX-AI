@@ -24,7 +24,7 @@ type Teacher = {
   name: string;
   gender: string;
   dob: string;
-  photo: File;
+  photo: FileList;
   teacherNumber: number;
   parentNumber: number;
   address: string;
@@ -37,10 +37,18 @@ type Teacher = {
   subject: string;
   joiningYear: number;
   email: string;
-  faceScan: File;
+  faceScan: FileList;
   password: string;
   confirmPassword: string;
 };
+
+const fileToDataUrl = (file: File) =>
+  new Promise<string>((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(String(reader.result ?? ""));
+    reader.onerror = () => reject(new Error("Unable to read image file"));
+    reader.readAsDataURL(file);
+  });
 
 export default function Home() {
   const apiBaseUrl =
@@ -59,9 +67,7 @@ export default function Home() {
     handleSubmit,
     trigger,
     getValues,
-    reset,
     setValue,
-    watch,
     formState: { errors },
   } = useForm<Teacher>({
     mode: "onTouched",
@@ -79,8 +85,10 @@ export default function Home() {
   const saveStepData = (currentStep: number) => {
     const allValues = getValues();
     const fields = stepFields[currentStep];
-    const currentStepData: Record<string, string | number | File | undefined> =
-      {};
+    const currentStepData: Record<
+      string,
+      string | number | File | FileList | undefined
+    > = {};
 
     fields.forEach((field) => {
       currentStepData[field] = allValues[field];
@@ -107,8 +115,10 @@ export default function Home() {
     setSignupError("");
     setIsSubmitting(true);
 
-    const finalStepData: Record<string, string | number | File | undefined> =
-      {};
+    const finalStepData: Record<
+      string,
+      string | number | File | FileList | undefined
+    > = {};
     stepFields[5].forEach((field) => {
       finalStepData[field] = data[field];
     });
@@ -123,7 +133,25 @@ export default function Home() {
       const normalizedBaseUrl = apiBaseUrl.replace(/\/$/, "");
       const url = `${normalizedBaseUrl}/employee/auth/signup`;
 
-      const { data: result } = await axios.post(url, data, {
+      const photoFile = data.photo?.[0];
+      const faceScanFile = data.faceScan?.[0];
+
+      if (!photoFile || !faceScanFile) {
+        throw new Error("Please upload both photo and live image");
+      }
+
+      const [photo, faceScan] = await Promise.all([
+        fileToDataUrl(photoFile),
+        fileToDataUrl(faceScanFile),
+      ]);
+
+      const payload = {
+        ...data,
+        photo,
+        faceScan,
+      };
+
+      const { data: result } = await axios.post(url, payload, {
         withCredentials: true,
         headers: {
           "Content-Type": "application/json",
