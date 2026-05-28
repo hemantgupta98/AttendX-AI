@@ -165,10 +165,23 @@ export default function Home() {
       toast.success(result?.message || "Account created successfully");
       router.push("/src/teacher/dashboard");
     } catch (error) {
-      console.error("AUTH ERROR 👉", error);
-      const errorMessage =
-        axios.isAxiosError(error) && error.response?.data?.message
-          ? error.response.data.message
+      if (axios.isAxiosError(error)) {
+        console.error("AUTH ERROR 👉", {
+          message: error.message,
+          status: error.response?.status,
+          data: error.response?.data,
+        });
+      } else {
+        console.error("AUTH ERROR 👉", error);
+      }
+
+      const errorMessage = axios.isAxiosError(error)
+        ? error.response?.data?.message ||
+          error.response?.data?.error ||
+          error.message ||
+          "Server error. Please try again."
+        : error instanceof Error
+          ? error.message
           : "Server error. Please try again.";
       setSignupError(errorMessage);
       toast.error(errorMessage);
