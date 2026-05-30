@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import { useState } from "react";
@@ -8,6 +9,8 @@ import { useForm, SubmitHandler } from "react-hook-form";
 import { ChevronsLeft } from "lucide-react";
 import { useRouter } from "next/navigation";
 import AuthLeft from "@/components/ui/authLeft";
+import { toast, Toaster } from "sonner";
+import axios from "axios";
 
 type StudentLogin = {
   email: string;
@@ -15,6 +18,9 @@ type StudentLogin = {
 };
 
 export default function Home() {
+  const apiBaseUrl =
+    process.env.NEXT_PUBLIC_API_URL2 ||
+    "https://attendx-ai-n8uq.onrender.com/api";
   const [isChatOpen, setIsChatOpen] = useState(false);
 
   const {
@@ -30,9 +36,32 @@ export default function Home() {
   const router = useRouter();
 
   const onSubmit: SubmitHandler<StudentLogin> = async (data) => {
-    console.log(data);
-    alert("Form submitted");
-    reset();
+    try {
+      const normalizedBaseUrl = apiBaseUrl.replace(/\/$/, "");
+      const url = `${normalizedBaseUrl}/student/auth/login`;
+
+      const { data: result } = await axios.post(url, data, {
+        withCredentials: true,
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (result?.token) {
+        localStorage.setItem("token", result.token);
+      }
+      toast.success(result?.message || "Login successfully");
+      router.push("/src/student/dashboard");
+      reset();
+    } catch (error: any) {
+      const errorMessage =
+        axios.isAxiosError(error) && error.response?.data?.message
+          ? error.response.data.message
+          : error?.message || "Error in Student login UI";
+
+      toast.error(errorMessage);
+      reset();
+    }
   };
 
   return (
@@ -42,6 +71,7 @@ export default function Home() {
 
       {/* RIGHT SIDE */}
       <div className="relative flex min-h-screen items-start justify-center overflow-hidden bg-gray-100 px-4 pb-6 pt-6 transition-all duration-300 ease-out sm:px-6 lg:px-10 lg:pt-10">
+        <Toaster position="top-center" richColors />
         <div
           className={` w-full max-w-xl mt-20 rounded-xl bg-white p-4 shadow-xl transition-transform duration-300 ease-out ${
             isChatOpen ? "-translate-y-20 lg:-translate-y-24" : "translate-y-0"

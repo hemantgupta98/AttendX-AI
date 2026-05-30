@@ -33,6 +33,10 @@ export const signup = async (req, res) => {
     photo,
     teacherNumber,
     parentNumber,
+    address,
+    city,
+    state,
+    pincode,
     institutionName,
     employeeID,
     class: className,
@@ -46,7 +50,7 @@ export const signup = async (req, res) => {
   try {
     const userExist = await findByEmployeeEmail(email);
     if (userExist)
-      return res.status(409).json({ message: "Admin already exist" });
+      return res.status(409).json({ message: "Employee already exist" });
 
     const user = await createEmployee({
       name,
@@ -55,6 +59,10 @@ export const signup = async (req, res) => {
       photo,
       teacherNumber,
       parentNumber,
+      address,
+      city,
+      state,
+      pincode,
       institutionName,
       employeeID,
       class: className,
@@ -66,7 +74,7 @@ export const signup = async (req, res) => {
       confirmPassword,
     });
 
-    console.log("Admin signup saved", {
+    console.log("Employee signup saved", {
       id: user._id,
       email: user.email,
       db: user?.constructor?.db?.name,
@@ -78,7 +86,7 @@ export const signup = async (req, res) => {
 
     res.status(200).json({
       success: true,
-      message: "Admin Created successfully",
+      message: "Employee Created Successfully",
       ...(issueSignupToken ? { token } : {}),
       user: {
         id: user._id,
@@ -86,9 +94,9 @@ export const signup = async (req, res) => {
       },
     });
   } catch (error) {
-    console.log("Signup Admin error", error);
+    console.log("Signup Student error", error);
     res.status(500).json({
-      message: error?.message || "Signup error in Admin pannel",
+      message: error?.message || "Signup error in Student pannel",
       success: false,
     });
   }
@@ -131,9 +139,9 @@ export const login = async (req, res) => {
       },
     });
   } catch (error) {
-    console.log("Error in Admin login", error);
+    console.log("Error in Student login", error);
     res
       .status(400)
-      .json({ success: false, message: "Server error in admin login" });
+      .json({ success: false, message: "Server error in student login" });
   }
 };

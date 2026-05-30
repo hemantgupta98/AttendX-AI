@@ -57,7 +57,7 @@ export default function Home() {
       const errorMessage =
         axios.isAxiosError(error) && error.response?.data?.message
           ? error.response.data.message
-          : error?.message || "Error in Admin login UI";
+          : error?.message || "Error in Employee login UI";
 
       toast.error(errorMessage);
       reset();

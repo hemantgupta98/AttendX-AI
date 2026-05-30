@@ -17,12 +17,14 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import axios from "axios";
+import { toast, Toaster } from "sonner";
 
 type Student = {
   name: string;
   gender: string;
   dob: string;
-  photo: File;
+  photo: FileList;
   studentNumber: number;
   parentNumber: number;
   address: string;
@@ -36,15 +38,28 @@ type Student = {
   section: number;
   admissionYear: number;
   email: string;
-  faceScan: File;
+  faceScan: FileList;
   password: string;
   confirmPassword: string;
 };
 
+const fileToDataUrl = (file: File) =>
+  new Promise<string>((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(String(reader.result ?? ""));
+    reader.onerror = () => reject(new Error("Unable to read image file"));
+    reader.readAsDataURL(file);
+  });
+
 export default function Home() {
+  const apiBaseUrl =
+    process.env.NEXT_PUBLIC_API_URL2 ||
+    "https://attendx-ai-n8uq.onrender.com/api";
   const [step, setStep] = useState(1);
   const [isChatOpen, setIsChatOpen] = useState(false);
   const [date, setDate] = useState<Date>();
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [signupError, setSignupError] = useState("");
   const [savedSteps, setSavedSteps] = useState<
     Partial<Record<number, Partial<Student>>>
   >({});
@@ -53,9 +68,7 @@ export default function Home() {
     handleSubmit,
     trigger,
     getValues,
-    reset,
     setValue,
-    watch,
     formState: { errors },
   } = useForm<Student>({
     mode: "onTouched",
@@ -73,8 +86,10 @@ export default function Home() {
   const saveStepData = (currentStep: number) => {
     const allValues = getValues();
     const fields = stepFields[currentStep];
-    const currentStepData: Record<string, string | number | File | undefined> =
-      {};
+    const currentStepData: Record<
+      string,
+      string | number | File | FileList | undefined
+    > = {};
 
     fields.forEach((field) => {
       currentStepData[field] = allValues[field];
@@ -98,8 +113,13 @@ export default function Home() {
   const prev = () => setStep((prev) => Math.max(prev - 1, 1));
 
   const onSubmit: SubmitHandler<Student> = async (data) => {
-    const finalStepData: Record<string, string | number | File | undefined> =
-      {};
+    setSignupError("");
+    setIsSubmitting(true);
+
+    const finalStepData: Record<
+      string,
+      string | number | File | FileList | undefined
+    > = {};
     stepFields[5].forEach((field) => {
       finalStepData[field] = data[field];
     });
@@ -110,12 +130,65 @@ export default function Home() {
     };
 
     setSavedSteps(updatedSavedSteps);
-    console.log(data);
-    console.log("Saved step-wise data:", updatedSavedSteps);
-    alert("Form submited");
-    reset();
-    setSavedSteps({});
-    setStep(1);
+    try {
+      const normalizedBaseUrl = apiBaseUrl.replace(/\/$/, "");
+      const url = `${normalizedBaseUrl}/student/auth/signup`;
+
+      const photoFile = data.photo?.[0];
+      const faceScanFile = data.faceScan?.[0];
+
+      if (!photoFile || !faceScanFile) {
+        throw new Error("Please upload both photo and live image");
+      }
+
+      const [photo, faceScan] = await Promise.all([
+        fileToDataUrl(photoFile),
+        fileToDataUrl(faceScanFile),
+      ]);
+
+      const payload = {
+        ...data,
+        photo,
+        faceScan,
+      };
+
+      const { data: result } = await axios.post(url, payload, {
+        withCredentials: true,
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (result?.token) {
+        localStorage.setItem("token", result.token);
+      }
+
+      toast.success(result?.message || "Account created successfully");
+      router.push("/src/student/dashboard");
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        console.error("AUTH ERROR 👉", {
+          message: error.message,
+          status: error.response?.status,
+          data: error.response?.data,
+        });
+      } else {
+        console.error("AUTH ERROR 👉", error);
+      }
+
+      const errorMessage = axios.isAxiosError(error)
+        ? error.response?.data?.message ||
+          error.response?.data?.error ||
+          error.message ||
+          "Server error. Please try again."
+        : error instanceof Error
+          ? error.message
+          : "Server error. Please try again.";
+      setSignupError(errorMessage);
+      toast.error(errorMessage);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -130,6 +203,7 @@ export default function Home() {
             isChatOpen ? "-translate-y-20 lg:-translate-y-24" : "translate-y-0"
           }`}
         >
+          <Toaster position="top-center" richColors />
           <h1 className=" text-gray-700 mt-5 text-center text-xl font-semibold mb-2">
             Welcome! Student
             <br /> Register for AI Attendance System
@@ -147,6 +221,12 @@ export default function Home() {
             Fields marked with <span className="text-red-500">*</span> are
             mandatory and must be filled to proceed.
           </p>
+
+          {signupError && (
+            <p className="mb-4 rounded-lg bg-red-50 px-3 py-2 text-sm text-red-600">
+              {signupError}
+            </p>
+          )}
 
           {/* STEP CONTENT */}
           {step === 1 && (
@@ -366,7 +446,6 @@ export default function Home() {
                     required: "Enter your studdentID",
                   })}
                 />
-
                 {errors.studentID && (
                   <p className="m-2 text-sm text-red-500">
                     {errors.studentID.message}
@@ -378,7 +457,7 @@ export default function Home() {
                   Class<span className="text-red-500 mb-5">*</span>
                 </p>
                 <Input
-                  type="email"
+                  type="text"
                   placeholder="Eg:- 9, 10, graduation or orthers "
                   {...register("class", {
                     required: "Class is required",
@@ -407,11 +486,13 @@ export default function Home() {
                 )}
               </div>
               <div>
-                <p className=" text-md font-light text-gray-700">Section</p>
+                <p className=" text-md font-light text-gray-700">
+                  Section<span className="text-red-500 mb-5">*</span>
+                </p>
                 <Input
                   placeholder="Eg:- A,B,C etc."
-                  {...register("class", {
-                    required: false,
+                  {...register("section", {
+                    required: "Section is required",
                   })}
                 />
                 {errors.section && (
@@ -449,14 +530,14 @@ export default function Home() {
               </h2>
               <div>
                 <p className=" text-md font-light text-gray-700">
-                  Phone Number<span className="text-red-500 mb-5">*</span>
+                  Parent Number<span className="text-red-500 mb-5">*</span>
                 </p>
                 <Input
                   type="tel"
                   className="input"
                   placeholder="Eg:- +91 9867742834"
-                  {...register("stream", {
-                    required: "Phone number is required",
+                  {...register("parentNumber", {
+                    required: "Parent number is required",
                     valueAsNumber: true,
                     min: {
                       value: 1000000000,
@@ -468,22 +549,22 @@ export default function Home() {
                     },
                   })}
                 />
-                {errors.stream && (
+                {errors.parentNumber && (
                   <p className="m-2 text-sm text-red-500">
-                    {errors.stream.message}
+                    {errors.parentNumber.message}
                   </p>
                 )}
               </div>
               <div>
                 <p className=" text-md font-light text-gray-700">
-                  Phone Number<span className="text-red-500 mb-5">*</span>
+                  Student Number<span className="text-red-500 mb-5">*</span>
                 </p>
                 <Input
                   type="tel"
                   className="input"
                   placeholder="Eg:- +91 9867742834"
-                  {...register("stream", {
-                    required: "Phone number is required",
+                  {...register("studentNumber", {
+                    required: "Student number is required",
                     valueAsNumber: true,
                     min: {
                       value: 1000000000,
@@ -495,9 +576,9 @@ export default function Home() {
                     },
                   })}
                 />
-                {errors.stream && (
+                {errors.studentNumber && (
                   <p className="m-2 text-sm text-red-500">
-                    {errors.stream.message}
+                    {errors.studentNumber.message}
                   </p>
                 )}
               </div>
@@ -622,9 +703,10 @@ export default function Home() {
               <button
                 type="button"
                 onClick={handleSubmit(onSubmit)}
-                className="ml-auto px-6 py-2 bg-green-600 text-white rounded-lg"
+                disabled={isSubmitting}
+                className="ml-auto px-6 py-2 bg-green-600 text-white rounded-lg disabled:cursor-not-allowed disabled:opacity-60"
               >
-                Submit
+                {isSubmitting ? "Submitting..." : "Submit"}
               </button>
             )}
           </div>
