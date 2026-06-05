@@ -2,7 +2,16 @@ import cloudinary from "../config/cloudinary.js";
 
 export const uploadImage = async (req, res) => {
   try {
-    const result = await cloudinary.uploader.upload(req.file.path);
+    if (!req.file) {
+      return res.status(400).json({
+        success: false,
+        message: "No image uploaded",
+      });
+    }
+
+    const result = await cloudinary.uploader.upload(req.file.path, {
+      folder: "attendance-system",
+    });
 
     res.status(200).json({
       success: true,
