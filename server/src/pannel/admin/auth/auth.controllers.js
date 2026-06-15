@@ -153,3 +153,32 @@ export const login = async (req, res) => {
       .json({ success: false, message: "Server error in admin login" });
   }
 };
+
+export const getProfile = async (req, res) => {
+  try {
+    const userId = req.user.id;
+
+    const user = await signupModel
+      .findByAdminEmail(userId)
+      .select(
+        "name type year board address city state pincode adminName designation adminEmail adminNumber department course student staff attendenceType workingDays attendance classTiming email",
+      );
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "Admin Profile not found",
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      profile: user,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};

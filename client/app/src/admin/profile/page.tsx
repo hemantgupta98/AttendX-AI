@@ -3,49 +3,100 @@
 
 import { useEffect, useState, type ReactNode } from "react";
 import Image from "next/image";
-
+import axios from "axios";
 import { User, ShieldCheck, Building2, GraduationCap } from "lucide-react";
 
+type ProfileForm = {
+  name: string;
+  type: string;
+  year: number;
+  board: string;
+  address: string;
+  city: string;
+  state: string;
+  pincode: number;
+  adminName: string;
+  designation: string;
+  adminEmail: string;
+  adminNumber: number;
+  department?: string;
+  course?: string;
+  student: number;
+  staff: number;
+  attendenceType?: string;
+  workingDays: number;
+  attendance?: number;
+  classTiming?: number;
+  email: string;
+};
+
+const initialProfileState: ProfileForm = {
+  name: "",
+  type: "",
+  year: 0,
+  board: "",
+  address: "",
+  city: "",
+  state: "",
+  pincode: 0,
+  adminName: "",
+  designation: "",
+  adminEmail: "",
+  adminNumber: 0,
+  department: "",
+  course: "",
+  student: 0,
+  staff: 0,
+  attendenceType: "",
+  workingDays: 0,
+  attendance: 0,
+  classTiming: 0,
+  email: "",
+};
+
 export default function AdminProfile() {
-  const [profile, setProfile] = useState<any>({});
+  const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL2;
+  {
+    /**  "https://attendx-ai-n8uq.onrender.com/api";*/
+  }
+  const [profile, setProfile] = useState<ProfileForm>(initialProfileState);
   const [error, setError] = useState("");
 
+  const fetchProfile = async () => {
+    try {
+      const res = await axios.get(`${apiBaseUrl}/auth/admin/getprofile`);
+      const profile = {
+        name: res.data?.data?.name || "",
+        type: res.data?.data?.type || "",
+        year: res.data?.data?.year || "",
+        board: res.data?.data?.board || "",
+        address: res.data?.data?.address || "",
+        city: res.data?.data?.city || "",
+        state: res.data?.data?.state || "",
+        pincode: res.data?.data?.pincode || "",
+        adminName: res.data?.data?.adminName || "",
+        designation: res.data?.data?.designation || "",
+        adminEmail: res.data?.data?.adminEmail || "",
+        adminNumber: res.data?.data?.adminNumber || "",
+        department: res.data?.data?.department || "",
+        course: res.data?.data?.course || "",
+        student: res.data?.data?.student || "",
+        staff: res.data?.data?.staff || "",
+        attendenceType: res.data?.data?.attendenceType || "",
+        workingDays: res.data?.data?.workingDays || "",
+        attendance: res.data?.data?.attendance || "",
+        classTiming: res.data?.data?.classTiming || "",
+        email: res.data?.data?.email || "",
+      };
+      setProfile(profile);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   useEffect(() => {
-    let mounted = true;
-
-    const fetchProfile = async () => {
-      try {
-        const res = await fetch("/api/admin/profile", {
-          method: "GET",
-          cache: "no-store",
-        });
-
-        if (!res.ok) {
-          throw new Error("Request failed");
-        }
-
-        const payload = await res.json();
-        const data = payload?.data ?? payload;
-
-        if (!mounted) return;
-
-        if (!data || data.role !== "admin") {
-          setError("Admin access only.");
-          return;
-        }
-
-        setProfile(data);
-      } catch {
-        if (!mounted) return;
-        setError("Failed to load profile.");
-      }
-    };
-
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     fetchProfile();
-
-    return () => {
-      mounted = false;
-    };
   }, []);
 
   return (
@@ -66,9 +117,7 @@ export default function AdminProfile() {
           </div>
 
           <div className="flex-1">
-            <h2 className="text-xl font-semibold">
-              {profile.adminName || "Admin"}
-            </h2>
+            <h2 className="text-xl font-semibold">{profile.name || "Admin"}</h2>
             <p className="text-sm text-gray-600">
               {profile.designation || "Principal"}
             </p>
