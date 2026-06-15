@@ -314,6 +314,9 @@ export default function Home() {
                   Upload a Photo
                   <span className="text-red-500 mb-5">*</span>
                 </p>
+                <p className="text-red-500 font-bold">
+                  Upload a clear face photo for face recognition.
+                </p>
                 <Input
                   type="file"
                   {...register("photo", {
