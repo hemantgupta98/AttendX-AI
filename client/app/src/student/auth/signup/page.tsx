@@ -38,7 +38,6 @@ type Student = {
   section: number;
   admissionYear: number;
   email: string;
-  faceScan: FileList;
   password: string;
   confirmPassword: string;
 };
@@ -80,7 +79,7 @@ export default function Home() {
     2: ["address", "city", "state", "pincode"],
     3: ["institutionName", "stream", "section", "studentID", "admissionYear"],
     4: ["parentNumber", "studentNumber"],
-    5: ["email", "faceScan", "password", "confirmPassword"],
+    5: ["email", "password", "confirmPassword"],
   };
 
   const saveStepData = (currentStep: number) => {
@@ -135,21 +134,16 @@ export default function Home() {
       const url = `${normalizedBaseUrl}/student/auth/signup`;
 
       const photoFile = data.photo?.[0];
-      const faceScanFile = data.faceScan?.[0];
 
-      if (!photoFile || !faceScanFile) {
+      if (!photoFile) {
         throw new Error("Please upload both photo and live image");
       }
 
-      const [photo, faceScan] = await Promise.all([
-        fileToDataUrl(photoFile),
-        fileToDataUrl(faceScanFile),
-      ]);
+      const [photo] = await Promise.all([fileToDataUrl(photoFile)]);
 
       const payload = {
         ...data,
         photo,
-        faceScan,
       };
 
       const { data: result } = await axios.post(url, payload, {
@@ -616,24 +610,7 @@ export default function Home() {
                   </p>
                 )}
               </div>
-              <div>
-                <p className=" text-md font-light text-gray-700">
-                  Live Image<span className="text-red-500 mb-5">*</span>
-                </p>
-                <Input
-                  type="file"
-                  className="input"
-                  placeholder="Eg:-  abc.png/jpg others."
-                  {...register("faceScan", {
-                    required: "Live Image is required",
-                  })}
-                />
-                {errors.faceScan && (
-                  <p className="m-2 text-sm text-red-500">
-                    {errors.faceScan.message}
-                  </p>
-                )}
-              </div>
+
               <div>
                 <p className=" text-md font-light text-gray-700">
                   Password<span className="text-red-500 mb-5">*</span>
