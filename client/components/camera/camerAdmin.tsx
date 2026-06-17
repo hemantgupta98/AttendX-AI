@@ -98,7 +98,7 @@ export default function Dashboard() {
     setIsUploading(true);
     const formData = new FormData();
     formData.append("image", image, "face.jpg");
-    formData.append("type", "student");
+    formData.append("type", "admin");
 
     try {
       const response = await fetch(
@@ -148,8 +148,8 @@ export default function Dashboard() {
           <div className="rounded-3xl border border-white/70 bg-white/80 p-6 shadow-[0_20px_60px_rgba(15,23,42,0.08)] backdrop-blur xl:p-8">
             <div className="mb-6 space-y-4">
               <div className="flex flex-wrap items-center gap-3 text-xs font-semibold uppercase tracking-[0.28em] text-indigo-600">
-                <span className="rounded-full bg-indigo-50 px-3 py-1 text-indigo-400">
-                  Student Attendance Check-in
+                <span className="rounded-full bg-indigo-50 px-3 py-1 text-indigo-900">
+                  Admin Attendance Check-in
                 </span>
                 <span className="rounded-full bg-slate-100 px-3 py-1 text-slate-600">
                   Location: Attendance Desk / Approved Work Area

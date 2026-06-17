@@ -21,6 +21,10 @@ export const uploadImage = async (req, res) => {
         folder = "attendance-system/student";
         break;
 
+      case "admin":
+        folder = "attendance-system/admin";
+        break;
+
       default:
         res.status(400).json({
           success: false,
