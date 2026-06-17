@@ -3,7 +3,6 @@
 import { useState } from "react";
 import { Camera, Square, Cpu, Activity } from "lucide-react";
 import { Input } from "@/components/ui/input";
-//import Admincamera from "@/components/camera/admin";
 
 export default function LiveAttendancePage() {
   const [sensitivity, setSensitivity] = useState(85);

@@ -3,14 +3,12 @@ import cloudinary from "../config/cloudinary.js";
 export const uploadImage = async (req, res) => {
   try {
     if (!req.file) {
-      return res.status(400).json({
-        success: false,
-        message: "No image uploaded",
-      });
+      return res
+        .status(400)
+        .json({ success: false, message: "No image Upload" });
     }
-
     const result = await cloudinary.uploader.upload(req.file.path, {
-      folder: "attendance-system",
+      folder: "attendance-system/student",
     });
 
     res.status(200).json({
@@ -21,7 +19,7 @@ export const uploadImage = async (req, res) => {
   } catch (error) {
     res.status(500).json({
       success: false,
-      message: error.message,
+      message: "Failed to connect cloudinary" || error.message,
     });
   }
 };

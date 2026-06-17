@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 "use client";
 
 import { useRef, useEffect, useState, useCallback } from "react";
@@ -13,7 +14,10 @@ export default function Dashboard() {
 
   const startCamera = useCallback(async () => {
     try {
-      const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+      const stream = await navigator.mediaDevices.getUserMedia({
+        video: true,
+        audio: false,
+      });
 
       if (videoRef.current) {
         videoRef.current.srcObject = stream;
@@ -80,6 +84,7 @@ export default function Dashboard() {
     setIsUploading(true);
     const formData = new FormData();
     formData.append("image", image, "face.jpg");
+    formData.append("type", "employee");
 
     try {
       const response = await fetch(
@@ -141,7 +146,7 @@ export default function Dashboard() {
               disabled={!image || isUploading}
               className={`px-3 py-1 rounded ${image ? "bg-green-500 text-white" : "bg-gray-200 text-gray-500"}`}
             >
-              {isUploading ? "Uploading..." : "Upload to Cloudinary"}
+              {isUploading ? "Uploading..." : "Upload"}
             </button>
           </div>
 
@@ -152,6 +157,7 @@ export default function Dashboard() {
           {previewUrl && (
             <div className="mt-2">
               <p className="text-sm text-gray-500 mb-1">Captured preview:</p>
+
               <img
                 src={previewUrl}
                 alt="Captured preview"
@@ -161,47 +167,6 @@ export default function Dashboard() {
           )}
         </div>
       </main>
-    </div>
-  );
-}
-
-/* COMPONENTS */
-
-function Card({
-  title,
-  value,
-  icon: Icon,
-}: {
-  title: string;
-  value: string;
-  icon?: React.ComponentType<{ className?: string }>;
-}) {
-  return (
-    <div className="bg-white p-4 rounded-xl shadow">
-      {Icon && <Icon className="w-6 h-6 mb-2" />}
-      <p className="text-sm text-gray-400">{title}</p>
-      <h3 className="text-xl font-bold">{value}</h3>
-    </div>
-  );
-}
-
-function QuickBtn({ label, primary }: { label: string; primary?: boolean }) {
-  return (
-    <button
-      className={`w-full text-left px-4 py-3 rounded-lg mb-3 ${
-        primary ? "bg-indigo-600 text-white" : "bg-gray-100 hover:bg-gray-200"
-      }`}
-    >
-      {label}
-    </button>
-  );
-}
-
-function Health({ label, status }: { label: string; status: string }) {
-  return (
-    <div className="flex justify-between">
-      <span>{label}</span>
-      <span className="font-semibold">{status}</span>
     </div>
   );
 }
