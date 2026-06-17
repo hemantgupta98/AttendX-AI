@@ -9,7 +9,7 @@ import {
   User,
   UserStar,
 } from "lucide-react";
-import AdminCamera from "@/components/camera/camerStudent";
+import Camera from "@/components/camera/camerEmployee";
 
 export default function Dashboard() {
   return (
@@ -24,7 +24,8 @@ export default function Dashboard() {
             attendance metrics.
           </p>
         </div>
-        <AdminCamera />
+        <Camera />
+
         {/* STATS */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 mb-6">
           <Card icon={UserCheck2} title="Total Students" value="1,284" />

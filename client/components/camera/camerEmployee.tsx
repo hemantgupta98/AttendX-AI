@@ -12,6 +12,20 @@ export default function Dashboard() {
   const [isUploading, setIsUploading] = useState(false);
   const [streamActive, setStreamActive] = useState(false);
 
+  const stopCamera = useCallback(() => {
+    const stream = videoRef.current?.srcObject;
+
+    if (stream instanceof MediaStream) {
+      stream.getTracks().forEach((track) => track.stop());
+    }
+
+    if (videoRef.current) {
+      videoRef.current.srcObject = null;
+    }
+
+    setStreamActive(false);
+  }, []);
+
   const startCamera = useCallback(async () => {
     try {
       const stream = await navigator.mediaDevices.getUserMedia({
@@ -64,7 +78,7 @@ export default function Dashboard() {
       }, "image/jpeg");
     } else {
       const data = canvas.toDataURL("image/jpeg");
-      // convert base64 to blob
+
       const byteString = atob(data.split(",")[1]);
       const ab = new ArrayBuffer(byteString.length);
       const ia = new Uint8Array(ab);
@@ -118,6 +132,15 @@ export default function Dashboard() {
     }
   };
 
+  const deleteImage = () => {
+    if (previewUrl) {
+      URL.revokeObjectURL(previewUrl);
+    }
+
+    setImage(null);
+    setPreviewUrl(null);
+  };
+
   return (
     <div className="min-h-screen flex bg-gray-100">
       {/* MAIN */}
@@ -142,11 +165,25 @@ export default function Dashboard() {
               Capture Face
             </button>
             <button
+              onClick={stopCamera}
+              disabled={!streamActive}
+              className={`mr-2 px-3 py-1 rounded ${streamActive ? "bg-gray-700 text-white" : "bg-gray-200 text-gray-500"}`}
+            >
+              Stop Camera
+            </button>
+            <button
               onClick={uploadImage}
               disabled={!image || isUploading}
               className={`px-3 py-1 rounded ${image ? "bg-green-500 text-white" : "bg-gray-200 text-gray-500"}`}
             >
               {isUploading ? "Uploading..." : "Upload"}
+            </button>
+            <button
+              onClick={deleteImage}
+              disabled={!image || isUploading}
+              className={`ml-2 px-3 py-1 rounded ${image ? "bg-red-500 text-white" : "bg-gray-200 text-gray-500"}`}
+            >
+              Delete Capture
             </button>
           </div>
 
