@@ -14,15 +14,15 @@ export const uploadImage = async (req, res) => {
     let folder;
     switch (type) {
       case "employee":
-        folder = "attendance-system/employee";
+        folder = "live-image/employee";
         break;
 
       case "student":
-        folder = "attendance-system/student";
+        folder = "live-image/student";
         break;
 
       case "admin":
-        folder = "attendance-system/admin";
+        folder = "live-image/admin";
         break;
 
       default:
