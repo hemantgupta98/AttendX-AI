@@ -52,14 +52,16 @@ export const signup = async (req, res) => {
     if (userExist)
       return res.status(409).json({ message: "Employee already exist" });
 
-    if (!req.file) {
+    const photoInput = req.file?.path || photo;
+
+    if (!photoInput) {
       return res.status(400).json({
         success: false,
-        message: "Failed to send photo in employee pannel.",
+        message: "Failed to receive employee photo.",
       });
     }
 
-    const Image = await uploadImage(req.file.path, "upload-image/employee");
+    const Image = await uploadImage(photoInput, "upload-image/employee");
 
     const user = await createEmployee({
       name,
