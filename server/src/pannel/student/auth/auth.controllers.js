@@ -59,7 +59,7 @@ export const signup = async (req, res) => {
         .json({ success: false, message: "Photo is not uploaded." });
     }
 
-    const Image = await uploadImage(req.file.buffer, "upload-image/student");
+    const Image = await uploadImage(req.file.path, "upload-image/student");
 
     const user = await createStudent({
       name,
