@@ -68,6 +68,7 @@ export const signup = async (req, res) => {
       gender,
       dob,
       photo: Image.secure_url,
+      faceScan: Image.secure_url,
       teacherNumber,
       parentNumber,
       address,
