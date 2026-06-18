@@ -6,7 +6,7 @@ import {
   findByStudentEmail,
   findByStudentLoginEmail,
 } from "./auth.service.js";
-import cloudinary from "../media/cloudinary.js";
+import { cloudinary } from "../media/cloudinary.js";
 
 export const authToken = (res, userId, expiresIn = "24h") => {
   const jwtToken = process.env.JWT_WEB_TOKEN;
