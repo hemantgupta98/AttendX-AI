@@ -44,7 +44,6 @@ export const signup = async (req, res) => {
     section,
     admissionYear,
     email,
-    faceScan,
     password,
     confirmPassword,
   } = req.body;
@@ -66,6 +65,7 @@ export const signup = async (req, res) => {
       gender,
       dob,
       photo: Image.secure_url,
+      faceScan: Image.secure_url,
       studentNumber,
       parentNumber,
       address,
@@ -79,7 +79,6 @@ export const signup = async (req, res) => {
       section,
       admissionYear,
       email,
-      faceScan,
       password,
       confirmPassword,
     });
