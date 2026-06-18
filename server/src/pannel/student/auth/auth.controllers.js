@@ -6,6 +6,7 @@ import {
   findByStudentEmail,
   findByStudentLoginEmail,
 } from "./auth.service.js";
+import cloudinary from "../media/cloudinary.js";
 
 export const authToken = (res, userId, expiresIn = "24h") => {
   const jwtToken = process.env.JWT_WEB_TOKEN;
@@ -30,7 +31,6 @@ export const signup = async (req, res) => {
     name,
     gender,
     dob,
-    photo,
     studentNumber,
     parentNumber,
     address,
@@ -53,11 +53,22 @@ export const signup = async (req, res) => {
     if (userExist)
       return res.status(409).json({ message: "Student already exist" });
 
+    if (!req.file) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Photo is not uploaded." });
+    }
+
+    const uploadImage = await cloudinary(
+      req.file.buffer,
+      "upload-image/student",
+    );
+
     const user = await createStudent({
       name,
       gender,
       dob,
-      photo,
+      photo: uploadImage.secure_url,
       studentNumber,
       parentNumber,
       address,

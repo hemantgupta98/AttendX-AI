@@ -136,7 +136,7 @@ export default function Home() {
       const photoFile = data.photo?.[0];
 
       if (!photoFile) {
-        throw new Error("Please upload both photo and live image");
+        throw new Error("Please upload  face image.");
       }
 
       const [photo] = await Promise.all([fileToDataUrl(photoFile)]);
