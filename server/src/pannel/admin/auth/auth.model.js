@@ -11,6 +11,7 @@ const signupSchema = new mongoose.Schema(
     type: { type: String, required: true },
     year: { type: Number, required: true },
     board: { type: String, required: true },
+    photo: { type: String, required: true, trim: true },
     address: { type: String, required: true },
     city: { type: String, required: true },
     state: { type: String, required: true },

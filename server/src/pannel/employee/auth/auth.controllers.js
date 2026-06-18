@@ -6,6 +6,7 @@ import {
   findByEmployeeEmail,
   findByEmployeeLoginEmail,
 } from "./auth.service.js";
+import { uploadImage } from "../media/cloudinary.js";
 
 export const authToken = (res, userId, expiresIn = "24h") => {
   const jwtToken = process.env.JWT_WEB_TOKEN;
@@ -43,7 +44,6 @@ export const signup = async (req, res) => {
     subject,
     joiningYear,
     email,
-    faceScan,
     password,
     confirmPassword,
   } = req.body;
@@ -52,11 +52,20 @@ export const signup = async (req, res) => {
     if (userExist)
       return res.status(409).json({ message: "Employee already exist" });
 
+    if (!req.file) {
+      return res.status(400).json({
+        success: false,
+        message: "Failed to send photo in employee pannel.",
+      });
+    }
+
+    const Image = await uploadImage(req.file.path, "upload-image/employee");
+
     const user = await createEmployee({
       name,
       gender,
       dob,
-      photo,
+      photo: Image.secure_url,
       teacherNumber,
       parentNumber,
       address,
@@ -69,7 +78,7 @@ export const signup = async (req, res) => {
       subject,
       joiningYear,
       email,
-      faceScan,
+
       password,
       confirmPassword,
     });

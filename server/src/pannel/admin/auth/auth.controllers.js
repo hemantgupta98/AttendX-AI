@@ -6,6 +6,7 @@ import {
   findByAdminEmail,
   findByAdminLoginEmail,
 } from "./auth.service.js";
+import { uploadImage } from "../media/cloudinary.js";
 
 export const authToken = (res, userId, expiresIn = "24h") => {
   const jwtToken = process.env.JWT_WEB_TOKEN;
@@ -31,6 +32,7 @@ export const signup = async (req, res) => {
     type,
     year,
     board,
+    photo,
     address,
     city,
     state,
@@ -56,11 +58,20 @@ export const signup = async (req, res) => {
     if (userExist)
       return res.status(409).json({ message: "Admin already exist" });
 
+    if (!req.file) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Failed to upload Image in Admin ." });
+    }
+
+    const Image = await uploadImage(req.file.path, "upload-image/admin");
+
     const user = await createAdmin({
       name,
       type,
       year,
       board,
+      photo,
       address,
       city,
       state,

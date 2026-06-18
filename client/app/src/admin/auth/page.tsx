@@ -16,6 +16,7 @@ type Onboarding = {
   type: string;
   year: number;
   board: string;
+  photo: FileList;
   address: string;
   city: string;
   state: string;
@@ -36,6 +37,14 @@ type Onboarding = {
   password: string;
   confirmPassword: string;
 };
+
+const fileToDataUrl = (file: File) =>
+  new Promise<string>((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(String(reader.result ?? ""));
+    reader.onerror = () => reject(new Error("Unable to read image file"));
+    reader.readAsDataURL(file);
+  });
 
 export default function Home() {
   const apiBaseUrl =
@@ -60,7 +69,7 @@ export default function Home() {
 
   const router = useRouter();
   const stepFields: Record<number, (keyof Onboarding)[]> = {
-    1: ["name", "type", "year", "board"],
+    1: ["name", "type", "year", "board", "photo"],
     2: ["address", "city", "state", "pincode"],
     3: ["adminName", "designation", "adminEmail", "adminNumber"],
     4: ["department", "course", "student", "staff"],
@@ -71,7 +80,10 @@ export default function Home() {
   const saveStepData = (currentStep: number) => {
     const allValues = getValues();
     const fields = stepFields[currentStep];
-    const currentStepData: Record<string, string | number | undefined> = {};
+    const currentStepData: Record<
+      string,
+      string | number | FileList | undefined
+    > = {};
 
     fields.forEach((field) => {
       currentStepData[field] = allValues[field];
@@ -98,7 +110,10 @@ export default function Home() {
     setSignupError("");
     setIsSubmitting(true);
 
-    const finalStepData: Record<string, string | number | undefined> = {};
+    const finalStepData: Record<
+      string,
+      string | number | FileList | undefined
+    > = {};
     stepFields[6].forEach((field) => {
       finalStepData[field] = data[field];
     });
@@ -113,7 +128,20 @@ export default function Home() {
       const normalizedBaseUrl = apiBaseUrl.replace(/\/$/, "");
       const url = `${normalizedBaseUrl}/admin/auth/signup`;
 
-      const { data: result } = await axios.post(url, data, {
+      const photoFile = data.photo?.[0];
+
+      if (!photoFile) {
+        throw new Error("Please upload both photo and live image");
+      }
+
+      const [photo] = await Promise.all([fileToDataUrl(photoFile)]);
+
+      const payload = {
+        ...data,
+        photo,
+      };
+
+      const { data: result } = await axios.post(url, payload, {
         withCredentials: true,
         headers: {
           "Content-Type": "application/json",
@@ -251,6 +279,22 @@ export default function Home() {
                 />
                 {errors.board && (
                   <p className="  text-red-500">{errors.board.message}</p>
+                )}
+              </div>
+              <div className=" space-y-1">
+                <p className=" text-md font-light text-gray-700">
+                  Upload a Photo
+                  <span className="text-red-500 mb-5">*</span>
+                </p>
+                <Input
+                  type="file"
+                  {...register("photo", {
+                    required: "Upload your photo",
+                  })}
+                  placeholder="Eg:- emp.png/jpg or orthers"
+                />
+                {errors.photo && (
+                  <p className="  text-red-500">{errors.photo.message}</p>
                 )}
               </div>
             </div>
