@@ -58,13 +58,15 @@ export const signup = async (req, res) => {
     if (userExist)
       return res.status(409).json({ message: "Admin already exist" });
 
-    if (!req.file) {
+    const photoInput = req.file?.path || photo;
+
+    if (!photoInput) {
       return res
         .status(400)
         .json({ success: false, message: "Failed to upload Image in Admin ." });
     }
 
-    const Image = await uploadImage(req.file.path, "upload-image/admin");
+    const Image = await uploadImage(photoInput, "upload-image/admin");
 
     const user = await createAdmin({
       name,

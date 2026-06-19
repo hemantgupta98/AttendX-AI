@@ -38,14 +38,6 @@ type Onboarding = {
   confirmPassword: string;
 };
 
-const fileToDataUrl = (file: File) =>
-  new Promise<string>((resolve, reject) => {
-    const reader = new FileReader();
-    reader.onload = () => resolve(String(reader.result ?? ""));
-    reader.onerror = () => reject(new Error("Unable to read image file"));
-    reader.readAsDataURL(file);
-  });
-
 export default function Home() {
   const apiBaseUrl =
     process.env.NEXT_PUBLIC_API_URL2 ||
@@ -131,21 +123,21 @@ export default function Home() {
       const photoFile = data.photo?.[0];
 
       if (!photoFile) {
-        throw new Error("Please upload both photo and live image");
+        throw new Error("Please upload your photo");
       }
 
-      const [photo] = await Promise.all([fileToDataUrl(photoFile)]);
+      const payload = new FormData();
 
-      const payload = {
-        ...data,
-        photo,
-      };
+      Object.entries(data).forEach(([key, value]) => {
+        if (key === "photo") return;
+        if (value === undefined || value === null) return;
+        payload.append(key, String(value));
+      });
+
+      payload.append("photo", photoFile);
 
       const { data: result } = await axios.post(url, payload, {
         withCredentials: true,
-        headers: {
-          "Content-Type": "application/json",
-        },
       });
 
       if (result?.token) {
