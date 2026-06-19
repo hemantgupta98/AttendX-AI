@@ -27,7 +27,7 @@ export default function LogoutPage() {
     } finally {
       localStorage.removeItem("token");
       sessionStorage.removeItem("token");
-      document.cookie = "token=; Max-Age=0; path=/";
+      document.cookie = "token=; Max-Age=0; path=/; samesite=lax";
       router.push("/");
     }
   };
