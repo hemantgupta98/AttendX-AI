@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/immutability */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
@@ -49,6 +50,7 @@ export default function Home() {
 
       if (result?.token) {
         localStorage.setItem("token", result.token);
+        document.cookie = `token=${encodeURIComponent(result.token)}; path=/; samesite=lax`;
       }
       toast.success(result?.message || "Login successfully");
       router.push("/src/student/dashboard");
