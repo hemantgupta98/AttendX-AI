@@ -16,8 +16,21 @@ REFERENCE_IMAGE = DATA_DIR / "reference.jpg"
 DATA_DIR.mkdir(exist_ok=True)
 ATTENDANCE_DIR.mkdir(exist_ok=True)
 
-face_app = FaceAnalysis(name="buffalo_l")
-face_app.prepare(ctx_id=-1)
+# Load model only when needed
+face_app = None
+
+
+def get_face_app():
+    global face_app
+
+    if face_app is None:
+        face_app = FaceAnalysis(name="buffalo_sc")
+        face_app.prepare(
+            ctx_id=-1,
+            det_size=(320, 320)
+        )
+
+    return face_app
 
 
 def get_face_embedding(image_path):
@@ -26,7 +39,7 @@ def get_face_embedding(image_path):
     if image is None:
         return None
 
-    faces = face_app.get(image)
+    faces = get_face_app().get(image)
 
     if len(faces) == 0:
         return None
