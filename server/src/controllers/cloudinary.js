@@ -1,4 +1,7 @@
 import cloudinary from "../config/cloudinary.js";
+import FormData from "form-data";
+import fs from "fs";
+import axios from "axios";
 
 export const uploadImage = async (req, res) => {
   try {
@@ -36,10 +39,28 @@ export const uploadImage = async (req, res) => {
       folder,
     });
 
+    // send image to AI model
+
+    const form = new FormData();
+
+    form.append("image", fs.createReadStream(req.file.path));
+    form.append("type", type);
+    form.append("folder", folder);
+
+    const response = await axios.post(
+      "https://attendx-ai-1.onrender.com/api/live-image",
+      form,
+      {
+        headers: form.getHeaders(),
+      },
+    );
+
     res.status(200).json({
       success: true,
       imageUrl: result.secure_url,
       publicId: result.public_id,
+      airesponse: response.data,
+      folder,
     });
   } catch (error) {
     res.status(500).json({

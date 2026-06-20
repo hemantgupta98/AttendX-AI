@@ -19,7 +19,52 @@ def save_upload(image: UploadFile):
 
     return path
 
-@app.post("/enroll-face")
+@app.post("/admin/register")
+async def enroll_face(
+    image: UploadFile = File(...),
+    name: str = Form("admin")
+):
+    path = save_upload(image)
+
+    try:
+        reference = save_reference(path, name=name)
+
+        if reference is None:
+            raise HTTPException(status_code=400, detail="No face detected in the uploaded image")
+
+        return {
+            "success": True,
+            "message": f"Face enrolled for {name}",
+        }
+    finally:
+        if path.exists():
+            path.unlink()
+
+@app.post("/employee/register")
+async def enroll_face(
+    image: UploadFile = File(...),
+    name: str = Form("employee")
+):
+    path = save_upload(image)
+
+    try:
+        reference = save_reference(path, name=name)
+
+        if reference is None:
+            raise HTTPException(status_code=400, detail="No face detected in the uploaded image")
+
+        return {
+            "success": True,
+            "message": f"Face enrolled for {name}",
+        }
+    finally:
+        if path.exists():
+            path.unlink()
+
+
+
+
+@app.post("/student/register")
 async def enroll_face(
     image: UploadFile = File(...),
     name: str = Form("Student")

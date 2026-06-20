@@ -6,7 +6,8 @@ import {
   findByAdminEmail,
   findByAdminLoginEmail,
 } from "./auth.service.js";
-import { uploadImage } from "../media/cloudinary.js";
+import { uploadImage } from "../media/uploadCloudinary.js";
+import { uploadService } from "../aiService/ai.contollers.js";
 
 export const authToken = (res, userId, expiresIn = "24h") => {
   const jwtToken = process.env.JWT_WEB_TOKEN;
@@ -115,6 +116,8 @@ export const signup = async (req, res) => {
         email: user.email,
       },
     });
+
+    await uploadService(req.file.path, user._id);
   } catch (error) {
     console.log("Signup Admin error", error);
     res.status(500).json({
