@@ -1,197 +1,182 @@
-from fastapi import FastAPI, UploadFile, File, Form, HTTPException
-import shutil
-from pathlib import Path
-from uuid import uuid4
+from insightface.app import FaceAnalysis
 
-from service import verify_face
+import cv2
+import numpy as np
 
-app = FastAPI()
-
-
-TEMP_DIR = Path(__file__).resolve().parent / "temp"
-UPLOAD_DIR = Path(__file__).resolve().parent / "faces"
-
-TEMP_DIR.mkdir(exist_ok=True)
-UPLOAD_DIR.mkdir(exist_ok=True)
+import tempfile
+import os
 
 
-def save_upload(image: UploadFile, folder):
-
-    path = folder / f"{uuid4().hex}_{Path(image.filename).name}"
-
-    with open(path, "wb") as buffer:
-        shutil.copyfileobj(
-            image.file,
-            buffer
-        )
-
-    return path
+face_app = FaceAnalysis(
+    name="buffalo_sc"
+)
 
 
-
-# =========================
-# ADMIN SIGNUP
-# =========================
-
-@app.post("/admin/signup")
-async def admin_signup(
-    image: UploadFile = File(...),
-    name: str = Form(...)
-):
-
-    path = save_upload(
-        image,
-        UPLOAD_DIR
-    )
-
-    return {
-        "success": True,
-        "role": "admin",
-        "name": name,
-        "image": str(path),
-        "message": "Admin face registered"
-    }
-
-
-
-# =========================
-# EMPLOYEE SIGNUP
-# =========================
-
-@app.post("/employee/signup")
-async def employee_signup(
-    image: UploadFile = File(...),
-    name: str = Form(...)
-):
-
-    path = save_upload(
-        image,
-        UPLOAD_DIR
-    )
-
-    return {
-        "success": True,
-        "role": "employee",
-        "name": name,
-        "image": str(path),
-        "message": "Employee face registered"
-    }
-
-
-
-# =========================
-# STUDENT SIGNUP
-# =========================
-
-@app.post("/student/signup")
-async def student_signup(
-    image: UploadFile = File(...),
-    name: str = Form(...)
-):
-
-    path = save_upload(
-        image,
-        UPLOAD_DIR
-    )
-
-    return {
-        "success": True,
-        "role": "student",
-        "name": name,
-        "image": str(path),
-        "message": "Student face registered"
-    }
+face_app.prepare(
+    ctx_id=-1,
+    det_size=(320,320)
+)
 
 
 
 
-# =========================
-# ADMIN ATTENDANCE
-# =========================
+def get_face_embedding(image_path):
 
-@app.post("/admin/attendance")
-async def admin_attendance(
-    storedImage: UploadFile = File(...),
-    liveImage: UploadFile = File(...)
-):
-
-    return await check_attendance(
-        storedImage,
-        liveImage
+    image = cv2.imread(
+        image_path
     )
 
 
+    if image is None:
+        return None
 
 
-# =========================
-# EMPLOYEE ATTENDANCE
-# =========================
 
-@app.post("/employee/attendance")
-async def employee_attendance(
-    storedImage: UploadFile = File(...),
-    liveImage: UploadFile = File(...)
-):
-
-    return await check_attendance(
-        storedImage,
-        liveImage
+    faces = face_app.get(
+        image
     )
 
 
+    if len(faces)==0:
+        return None
 
 
-# =========================
-# STUDENT ATTENDANCE
-# =========================
+    return faces[0].embedding
 
-@app.post("/student/attendance")
-async def student_attendance(
-    storedImage: UploadFile = File(...),
-    liveImage: UploadFile = File(...)
+
+
+
+
+def compare_faces(
+    emb1,
+    emb2
 ):
 
-    return await check_attendance(
-        storedImage,
-        liveImage
+    score = np.dot(
+        emb1,
+        emb2
+    ) / (
+        np.linalg.norm(emb1)
+        *
+        np.linalg.norm(emb2)
     )
 
 
+    return float(score)
 
 
 
-async def check_attendance(
+
+
+async def verify_face(
     storedImage,
     liveImage
 ):
 
-    result = await verify_face(
-        storedImage,
-        liveImage
+
+    stored_temp = tempfile.NamedTemporaryFile(
+        delete=False,
+        suffix=".jpg"
     )
 
 
-    if result["matched"]:
+    live_temp = tempfile.NamedTemporaryFile(
+        delete=False,
+        suffix=".jpg"
+    )
+
+
+
+    try:
+
+
+        stored_temp.write(
+            await storedImage.read()
+        )
+
+
+        live_temp.write(
+            await liveImage.read()
+        )
+
+
+        stored_temp.close()
+        live_temp.close()
+
+
+
+        stored_embedding = get_face_embedding(
+            stored_temp.name
+        )
+
+
+        if stored_embedding is None:
+
+            return {
+
+                "matched":False,
+                "message":
+                "No face found in registered image"
+
+            }
+
+
+
+
+        live_embedding = get_face_embedding(
+            live_temp.name
+        )
+
+
+        if live_embedding is None:
+
+            return {
+
+                "matched":False,
+                "message":
+                "No face found in live image"
+
+            }
+
+
+
+
+        confidence = compare_faces(
+            stored_embedding,
+            live_embedding
+        )
+
+
+        matched = confidence >= 0.60
+
+
 
         return {
 
-            "success": True,
-            "attendance": "marked",
-            "message":
-            "Face matched. Attendance marked.",
+            "matched": matched,
+
             "confidence":
-            result["confidence"]
+            round(confidence,4),
+
+            "message":
+            (
+            "Face matched"
+            if matched
+            else
+            "Face not matched"
+            )
 
         }
 
 
-    return {
 
-        "success": False,
-        "attendance": "not marked",
-        "message":
-        result["message"],
-        "confidence":
-        result.get("confidence")
+    finally:
 
-    }
+
+        os.remove(
+            stored_temp.name
+        )
+
+        os.remove(
+            live_temp.name
+        )
