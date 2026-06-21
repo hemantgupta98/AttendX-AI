@@ -1,141 +1,197 @@
-from pathlib import Path
-import json
+from fastapi import FastAPI, UploadFile, File, Form, HTTPException
 import shutil
-from datetime import datetime
+from pathlib import Path
+from uuid import uuid4
 
-import cv2
-import numpy as np
-from insightface.app import FaceAnalysis
+from service import verify_face
 
-BASE_DIR = Path(__file__).resolve().parent
-DATA_DIR = BASE_DIR / "data"
-ATTENDANCE_DIR = DATA_DIR / "attendance"
-REFERENCE_FILE = DATA_DIR / "reference.json"
-REFERENCE_IMAGE = DATA_DIR / "reference.jpg"
-
-DATA_DIR.mkdir(exist_ok=True)
-ATTENDANCE_DIR.mkdir(exist_ok=True)
-
-# Load model only when needed
-face_app = None
+app = FastAPI()
 
 
-def get_face_app():
-    global face_app
+TEMP_DIR = Path(__file__).resolve().parent / "temp"
+UPLOAD_DIR = Path(__file__).resolve().parent / "faces"
 
-    if face_app is None:
-        face_app = FaceAnalysis(name="buffalo_sc")
-        face_app.prepare(
-            ctx_id=-1,
-            det_size=(320, 320)
+TEMP_DIR.mkdir(exist_ok=True)
+UPLOAD_DIR.mkdir(exist_ok=True)
+
+
+def save_upload(image: UploadFile, folder):
+
+    path = folder / f"{uuid4().hex}_{Path(image.filename).name}"
+
+    with open(path, "wb") as buffer:
+        shutil.copyfileobj(
+            image.file,
+            buffer
         )
 
-    return face_app
+    return path
 
 
-def get_face_embedding(image_path):
-    image = cv2.imread(str(image_path))
 
-    if image is None:
-        return None
+# =========================
+# ADMIN SIGNUP
+# =========================
 
-    faces = get_face_app().get(image)
+@app.post("/admin/signup")
+async def admin_signup(
+    image: UploadFile = File(...),
+    name: str = Form(...)
+):
 
-    if len(faces) == 0:
-        return None
-
-    return faces[0].embedding
-
-
-def compare_faces(stored_embedding, current_embedding):
-    stored_embedding = np.array(stored_embedding)
-    current_embedding = np.array(current_embedding)
-
-    similarity = np.dot(
-        stored_embedding,
-        current_embedding
-    ) / (
-        np.linalg.norm(stored_embedding)
-        * np.linalg.norm(current_embedding)
+    path = save_upload(
+        image,
+        UPLOAD_DIR
     )
-
-    return float(similarity)
-
-
-def save_reference(image_path, name="Student"):
-    embedding = get_face_embedding(image_path)
-
-    if embedding is None:
-        return None
-
-    reference = {
-        "name": name,
-        "embedding": embedding.tolist(),
-    }
-
-    shutil.copyfile(str(image_path), REFERENCE_IMAGE)
-
-    with open(REFERENCE_FILE, "w", encoding="utf-8") as file:
-        json.dump(reference, file)
-
-    return reference
-
-
-def save_attendance_capture(image_path, name="Student", matched=False, confidence=None):
-    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-    safe_name = "".join(char for char in name if char.isalnum() or char in ("-", "_", " ")).strip()
-    safe_name = safe_name.replace(" ", "_") or "Student"
-    status = "matched" if matched else "not_matched"
-    confidence_text = ""
-
-    if confidence is not None:
-        confidence_text = f"_{confidence:.3f}".replace(".", "_")
-
-    destination = ATTENDANCE_DIR / f"{timestamp}_{safe_name}_{status}{confidence_text}.jpg"
-    shutil.copyfile(str(image_path), destination)
-    return destination
-
-
-def load_reference():
-    if not REFERENCE_FILE.exists():
-        return None
-
-    with open(REFERENCE_FILE, "r", encoding="utf-8") as file:
-        return json.load(file)
-
-
-def check_reference(image_path, threshold=0.6):
-    reference = load_reference()
-
-    if reference is None:
-        return {
-            "success": False,
-            "message": "No enrolled face found"
-        }
-
-    current_embedding = get_face_embedding(image_path)
-
-    if current_embedding is None:
-        return {
-            "success": False,
-            "message": "No face detected in the image"
-        }
-
-    score = compare_faces(reference["embedding"], current_embedding)
-
-    if score >= threshold:
-        return {
-            "success": True,
-            "matched": True,
-            "name": reference["name"],
-            "confidence": score,
-            "message": "Face matched. Attendance marked."
-        }
 
     return {
         "success": True,
-        "matched": False,
-        "name": reference["name"],
-        "confidence": score,
-        "message": "Face not matched. Attendance not marked."
+        "role": "admin",
+        "name": name,
+        "image": str(path),
+        "message": "Admin face registered"
+    }
+
+
+
+# =========================
+# EMPLOYEE SIGNUP
+# =========================
+
+@app.post("/employee/signup")
+async def employee_signup(
+    image: UploadFile = File(...),
+    name: str = Form(...)
+):
+
+    path = save_upload(
+        image,
+        UPLOAD_DIR
+    )
+
+    return {
+        "success": True,
+        "role": "employee",
+        "name": name,
+        "image": str(path),
+        "message": "Employee face registered"
+    }
+
+
+
+# =========================
+# STUDENT SIGNUP
+# =========================
+
+@app.post("/student/signup")
+async def student_signup(
+    image: UploadFile = File(...),
+    name: str = Form(...)
+):
+
+    path = save_upload(
+        image,
+        UPLOAD_DIR
+    )
+
+    return {
+        "success": True,
+        "role": "student",
+        "name": name,
+        "image": str(path),
+        "message": "Student face registered"
+    }
+
+
+
+
+# =========================
+# ADMIN ATTENDANCE
+# =========================
+
+@app.post("/admin/attendance")
+async def admin_attendance(
+    storedImage: UploadFile = File(...),
+    liveImage: UploadFile = File(...)
+):
+
+    return await check_attendance(
+        storedImage,
+        liveImage
+    )
+
+
+
+
+# =========================
+# EMPLOYEE ATTENDANCE
+# =========================
+
+@app.post("/employee/attendance")
+async def employee_attendance(
+    storedImage: UploadFile = File(...),
+    liveImage: UploadFile = File(...)
+):
+
+    return await check_attendance(
+        storedImage,
+        liveImage
+    )
+
+
+
+
+# =========================
+# STUDENT ATTENDANCE
+# =========================
+
+@app.post("/student/attendance")
+async def student_attendance(
+    storedImage: UploadFile = File(...),
+    liveImage: UploadFile = File(...)
+):
+
+    return await check_attendance(
+        storedImage,
+        liveImage
+    )
+
+
+
+
+
+async def check_attendance(
+    storedImage,
+    liveImage
+):
+
+    result = await verify_face(
+        storedImage,
+        liveImage
+    )
+
+
+    if result["matched"]:
+
+        return {
+
+            "success": True,
+            "attendance": "marked",
+            "message":
+            "Face matched. Attendance marked.",
+            "confidence":
+            result["confidence"]
+
+        }
+
+
+    return {
+
+        "success": False,
+        "attendance": "not marked",
+        "message":
+        result["message"],
+        "confidence":
+        result.get("confidence")
+
     }

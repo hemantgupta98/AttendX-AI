@@ -48,7 +48,7 @@ export const uploadImage = async (req, res) => {
     form.append("folder", folder);
 
     const response = await axios.post(
-      "https://attendx-ai-1.onrender.com/api/live-image",
+      "https://attendx-ai-1.onrender.com/live-image",
       form,
       {
         headers: form.getHeaders(),

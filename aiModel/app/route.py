@@ -3,109 +3,266 @@ import shutil
 from pathlib import Path
 from uuid import uuid4
 
-from service import save_reference, check_reference, save_attendance_capture
+from service import verify_face
 
 app = FastAPI()
 
+
 TEMP_DIR = Path(__file__).resolve().parent / "temp"
+UPLOAD_DIR = Path(__file__).resolve().parent / "faces"
+
 TEMP_DIR.mkdir(exist_ok=True)
+UPLOAD_DIR.mkdir(exist_ok=True)
 
 
-def save_upload(image: UploadFile):
-    path = TEMP_DIR / f"temp_{uuid4().hex}_{Path(image.filename).name}"
+def save_upload(image: UploadFile, folder):
+
+    path = folder / f"{uuid4().hex}_{Path(image.filename).name}"
 
     with open(path, "wb") as buffer:
-        shutil.copyfileobj(image.file, buffer)
+        shutil.copyfileobj(
+            image.file,
+            buffer
+        )
 
     return path
 
-@app.post("/admin/register")
-async def enroll_face(
+
+
+# =========================
+# ADMIN SIGNUP
+# =========================
+
+@app.post("/admin/signup")
+async def admin_signup(
     image: UploadFile = File(...),
-    name: str = Form("admin")
+    name: str = Form(...)
 ):
-    path = save_upload(image)
 
-    try:
-        reference = save_reference(path, name=name)
+    path = save_upload(
+        image,
+        UPLOAD_DIR
+    )
 
-        if reference is None:
-            raise HTTPException(status_code=400, detail="No face detected in the uploaded image")
+    return {
+        "success": True,
+        "role": "admin",
+        "name": name,
+        "image": str(path),
+        "message": "Admin face registered"
+    }
 
-        return {
-            "success": True,
-            "message": f"Face enrolled for {name}",
-        }
-    finally:
-        if path.exists():
-            path.unlink()
 
-@app.post("/employee/register")
-async def enroll_face(
+
+# =========================
+# EMPLOYEE SIGNUP
+# =========================
+
+@app.post("/employee/signup")
+async def employee_signup(
     image: UploadFile = File(...),
-    name: str = Form("employee")
+    name: str = Form(...)
 ):
-    path = save_upload(image)
 
-    try:
-        reference = save_reference(path, name=name)
+    path = save_upload(
+        image,
+        UPLOAD_DIR
+    )
 
-        if reference is None:
-            raise HTTPException(status_code=400, detail="No face detected in the uploaded image")
-
-        return {
-            "success": True,
-            "message": f"Face enrolled for {name}",
-        }
-    finally:
-        if path.exists():
-            path.unlink()
+    return {
+        "success": True,
+        "role": "employee",
+        "name": name,
+        "image": str(path),
+        "message": "Employee face registered"
+    }
 
 
 
+# =========================
+# STUDENT SIGNUP
+# =========================
 
-@app.post("/student/register")
-async def enroll_face(
+@app.post("/student/signup")
+async def student_signup(
     image: UploadFile = File(...),
-    name: str = Form("Student")
+    name: str = Form(...)
 ):
-    path = save_upload(image)
 
-    try:
-        reference = save_reference(path, name=name)
+    path = save_upload(
+        image,
+        UPLOAD_DIR
+    )
 
-        if reference is None:
-            raise HTTPException(status_code=400, detail="No face detected in the uploaded image")
-
-        return {
-            "success": True,
-            "message": f"Face enrolled for {name}",
-        }
-    finally:
-        if path.exists():
-            path.unlink()
+    return {
+        "success": True,
+        "role": "student",
+        "name": name,
+        "image": str(path),
+        "message": "Student face registered"
+    }
 
 
-@app.post("/check-attendance")
+
+
+# =========================
+# ADMIN ATTENDANCE
+# =========================
+
+@app.post("/admin/attendance")
+async def admin_attendance(
+    storedImage: UploadFile = File(...),
+    liveImage: UploadFile = File(...)
+):
+
+    return await check_attendance(
+        storedImage,
+        liveImage
+    )
+
+
+
+
+# =========================
+# EMPLOYEE ATTENDANCE
+# =========================
+
+@app.post("/employee/attendance")
+async def employee_attendance(
+    storedImage: UploadFile = File(...),
+    liveImage: UploadFile = File(...)
+):
+
+    return await check_attendance(
+        storedImage,
+        liveImage
+    )
+
+
+
+
+# =========================
+# STUDENT ATTENDANCE
+# =========================
+
+@app.post("/student/attendance")
+async def student_attendance(
+    storedImage: UploadFile = File(...),
+    liveImage: UploadFile = File(...)
+):
+
+    return await check_attendance(
+        storedImage,
+        liveImage
+    )
+
+
+
+
+
 async def check_attendance(
-    image: UploadFile = File(...)
+    storedImage,
+    liveImage
 ):
-    path = save_upload(image)
 
-    try:
-        result = check_reference(path)
+    result = await verify_face(
+        storedImage,
+        liveImage
+    )
 
-        if not result["success"]:
-            raise HTTPException(status_code=400, detail=result["message"])
 
-        save_attendance_capture(
-            path,
-            name=result.get("name", "Student"),
-            matched=result.get("matched", False),
-            confidence=result.get("confidence"),
-        )
+    if result["matched"]:
 
-        return result
-    finally:
-        if path.exists():
-            path.unlink()
+        return {
+
+            "success": True,
+            "attendance": "marked",
+            "message":
+            "Face matched. Attendance marked.",
+            "confidence":
+            result["confidence"]
+
+        }
+
+
+    return {
+
+        "success": False,
+        "attendance": "not marked",
+        "message":
+        result["message"],
+        "confidence":
+        result.get("confidence")
+
+    }
+
+@app.post("/admin/verify")
+async def admin_verify(
+    storedImage: UploadFile = File(...),
+    liveImage: UploadFile = File(...)
+):
+
+    result = await verify_face(
+        storedImage,
+        liveImage
+    )
+
+    return result
+
+
+
+# =========================
+# EMPLOYEE VERIFY
+# =========================
+
+@app.post("/employee/verify")
+async def employee_verify(
+    storedImage: UploadFile = File(...),
+    liveImage: UploadFile = File(...)
+):
+
+    result = await verify_face(
+        storedImage,
+        liveImage
+    )
+
+    return result
+
+
+
+# =========================
+# STUDENT VERIFY
+# =========================
+
+@app.post("/student/verify")
+async def student_verify(
+    storedImage: UploadFile = File(...),
+    liveImage: UploadFile = File(...)
+):
+
+    result = await verify_face(
+        storedImage,
+        liveImage
+    )
+
+
+    if result["matched"]:
+
+        return {
+            "success": True,
+            "attendance": "marked",
+            "message":
+            "Face matched. Attendance marked.",
+            "confidence":
+            result["confidence"]
+        }
+
+
+    return {
+        "success": False,
+        "attendance": "not marked",
+        "message":
+        result["message"],
+        "confidence":
+        result.get("confidence")
+    }
