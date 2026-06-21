@@ -1,7 +1,7 @@
 import axios from "axios";
 import FormData from "form-data";
 import fs from "fs";
-import { uploadImage as uploadToCloudinary } from "../media/uploadCloudinary.js";
+import { uploadImage as uploadToCloudinary } from "../media/cloudinary.js";
 
 const roleFolders = {
   employee: "live-image/admin",
