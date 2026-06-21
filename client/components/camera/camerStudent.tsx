@@ -102,7 +102,7 @@ export default function Dashboard() {
 
     try {
       const response = await fetch(
-        "https://attendx-ai-n8uq.onrender.com/api/images/upload",
+        "https://attendx-ai-n8uq.onrender.com/api/admin/live-image/upload/student",
         {
           method: "POST",
           body: formData,
