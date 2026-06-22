@@ -10,7 +10,7 @@ export const uploadService = async (filePath, userId) => {
     form.append("userId", userId);
 
     const response = await axios.post(
-      "https://attendx-ai-1.onrender.com/admin/signup",
+      "https://attendx-ai-1.onrender.com/ai/admin/signup",
       form,
       {
         headers: form.getHeaders(),

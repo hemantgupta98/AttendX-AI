@@ -33,7 +33,7 @@ def save_upload(image: UploadFile, folder):
 # ADMIN SIGNUP
 # =========================
 
-@app.post("/admin/signup")
+@app.post("/ai/admin/signup")
 async def admin_signup(
     image: UploadFile = File(...),
     name: str = Form(...)
@@ -58,7 +58,7 @@ async def admin_signup(
 # EMPLOYEE SIGNUP
 # =========================
 
-@app.post("/employee/signup")
+@app.post("/ai/employee/signup")
 async def employee_signup(
     image: UploadFile = File(...),
     name: str = Form(...)
@@ -83,7 +83,7 @@ async def employee_signup(
 # STUDENT SIGNUP
 # =========================
 
-@app.post("/student/signup")
+@app.post("/ai/student/signup")
 async def student_signup(
     image: UploadFile = File(...),
     name: str = Form(...)
@@ -109,7 +109,7 @@ async def student_signup(
 # ADMIN ATTENDANCE
 # =========================
 
-@app.post("/admin/attendance")
+@app.post("/ai/admin/attendance")
 async def admin_attendance(
     storedImage: UploadFile = File(...),
     liveImage: UploadFile = File(...)
@@ -127,7 +127,7 @@ async def admin_attendance(
 # EMPLOYEE ATTENDANCE
 # =========================
 
-@app.post("/employee/attendance")
+@app.post("/ai/employee/attendance")
 async def employee_attendance(
     storedImage: UploadFile = File(...),
     liveImage: UploadFile = File(...)
@@ -145,7 +145,7 @@ async def employee_attendance(
 # STUDENT ATTENDANCE
 # =========================
 
-@app.post("/student/attendance")
+@app.post("/ai/student/attendance")
 async def student_attendance(
     storedImage: UploadFile = File(...),
     liveImage: UploadFile = File(...)
@@ -196,7 +196,11 @@ async def check_attendance(
 
     }
 
-@app.post("/admin/verify")
+# =========================
+# ADMIN VERIFY
+# =========================
+
+@app.post("/ai/admin/verify")
 async def admin_verify(
     storedImage: UploadFile = File(...),
     liveImage: UploadFile = File(...)
@@ -215,7 +219,7 @@ async def admin_verify(
 # EMPLOYEE VERIFY
 # =========================
 
-@app.post("/employee/verify")
+@app.post("/ai/employee/verify")
 async def employee_verify(
     storedImage: UploadFile = File(...),
     liveImage: UploadFile = File(...)
@@ -234,7 +238,7 @@ async def employee_verify(
 # STUDENT VERIFY
 # =========================
 
-@app.post("/student/verify")
+@app.post("/ai/student/verify")
 async def student_verify(
     storedImage: UploadFile = File(...),
     liveImage: UploadFile = File(...)

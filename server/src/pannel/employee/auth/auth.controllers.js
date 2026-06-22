@@ -7,6 +7,7 @@ import {
   findByEmployeeLoginEmail,
 } from "./auth.service.js";
 import { uploadImage } from "../media/cloudinary.js";
+import { uploadService } from "../aiService/ai.controller.js";
 
 export const authToken = (res, userId, expiresIn = "24h") => {
   const jwtToken = process.env.JWT_WEB_TOKEN;
@@ -81,7 +82,6 @@ export const signup = async (req, res) => {
       subject,
       joiningYear,
       email,
-
       password,
       confirmPassword,
     });
@@ -105,6 +105,7 @@ export const signup = async (req, res) => {
         email: user.email,
       },
     });
+    await uploadService(req.file.path, user._id);
   } catch (error) {
     console.log("Signup Student error", error);
     res.status(500).json({

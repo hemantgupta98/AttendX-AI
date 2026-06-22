@@ -34,7 +34,7 @@ const handleLiveImageUpload = async (req, res, role) => {
     form.append("folder", folder);
 
     const response = await axios.post(
-      "https://attendx-ai-1.onrender.com/live-image",
+      "https://attendx-ai-1.onrender.com/ai/admin/attendance",
       form,
       {
         headers: form.getHeaders(),
