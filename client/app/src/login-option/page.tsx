@@ -31,7 +31,7 @@ const RoleSelection = () => {
             onClick={() => router.push("/src/teacher/auth/login")}
             className="bg-blue-600 cursor-pointer hover:bg-blue-700 text-white font-semibold py-3 rounded-lg shadow-md hover:shadow-xl transition-all duration-300 transform hover:scale-105"
           >
-            As Teacher
+            As Employee
           </button>
 
           <button

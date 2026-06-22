@@ -16,6 +16,7 @@ import {
   CircleCheck,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { toast, Toaster } from "sonner";
 
 export default function Home() {
   // Refs for smooth scroll navigation
@@ -142,6 +143,7 @@ export default function Home() {
             Contact
           </motion.button>
         </div>
+        <Toaster position="top-center" richColors />
         <div className="flex gap-2 sm:gap-3">
           <button
             onClick={() => router.push("/src/signup-option")}
@@ -184,8 +186,12 @@ export default function Home() {
             Designed for schools, universities and corporate offices.
           </p>
           <div className="mt-6 flex flex-col sm:flex-row gap-3 sm:gap-4">
-            <button className={btnPrimary}>Start Free Trial</button>
-            <button className={btnSecondary}>Watch Demo</button>
+            <button
+              onClick={() => router.push("/src/signup-option")}
+              className={btnPrimary}
+            >
+              Start Free Trial
+            </button>
           </div>
         </motion.div>
 
@@ -589,10 +595,10 @@ export default function Home() {
             </div>
             <div className=" rounded-md shadow-4xl p-4 sm:p-5 mt-10 sm:mt-15 mx-4 sm:mx-auto sm:max-w-xs mb-4 sm:mb-5">
               <button
-                onClick={() => handlePayment("popular", 40000)}
+                onClick={() => toast.message("Payment feature not implemented")}
                 className={btnGradient}
               >
-                {loadingPayment ? "Processing..." : "Get Started"}
+                {loadingPayment ? "Processing" : "Get Started"}
               </button>
             </div>
           </motion.div>
@@ -639,7 +645,14 @@ export default function Home() {
               </p>
             </div>
             <div className=" rounded-md shadow-4xl p-4 sm:p-5 mt-10 sm:mt-15 mx-4 sm:mx-auto sm:max-w-xs mb-4 sm:mb-5">
-              <button className={btnGradient}>Contact Admin</button>
+              <a
+                href="https://wa.me/919867742834?text=Hello%20Hemant%2C%20I%20want%20to%20discuss%20of%20this%20software"
+                target="_blank"
+                rel="noopener noreferrer"
+                className={btnGradient}
+              >
+                Contact Admin
+              </a>
             </div>
           </motion.div>
         </div>
@@ -657,8 +670,17 @@ export default function Home() {
             security with AttendX-AI. Get started today with a free pilot
           </p>
           <div className=" flex flex-col sm:flex-row gap-3 sm:gap-5 mt-8 sm:mt-15">
-            <button className={btnSecondary}>Free Pilot</button>
-            <button className={btnSecondary}>Start with plan</button>
+            <button onClick={() => router.push("/src/signup-option")}>
+              Free Pilot
+            </button>
+            <motion.button
+              onClick={() => scrollToSection(pricingRef)}
+              whileHover={{ scale: 1.1 }}
+              whileDrag={{ scale: 0.95 }}
+              className={btnSecondary}
+            >
+              Start with plan
+            </motion.button>
           </div>
         </div>
       </section>
