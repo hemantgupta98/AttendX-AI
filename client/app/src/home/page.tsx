@@ -595,7 +595,7 @@ export default function Home() {
             </div>
             <div className=" rounded-md shadow-4xl p-4 sm:p-5 mt-10 sm:mt-15 mx-4 sm:mx-auto sm:max-w-xs mb-4 sm:mb-5">
               <button
-                onClick={() => toast.message("Payment feature not implemented")}
+                onClick={() => toast.info("Payment feature not implemented")}
                 className={btnGradient}
               >
                 {loadingPayment ? "Processing" : "Get Started"}
@@ -645,14 +645,17 @@ export default function Home() {
               </p>
             </div>
             <div className=" rounded-md shadow-4xl p-4 sm:p-5 mt-10 sm:mt-15 mx-4 sm:mx-auto sm:max-w-xs mb-4 sm:mb-5">
-              <a
-                href="https://wa.me/919867742834?text=Hello%20Hemant%2C%20I%20want%20to%20discuss%20of%20this%20software"
-                target="_blank"
-                rel="noopener noreferrer"
+              <button
+                onClick={() =>
+                  window.open(
+                    "https://wa.me/919867742834?text=Hello%20Hemant%2C%20I%20want%20to%20discuss%20this%20software",
+                    "_blank",
+                  )
+                }
                 className={btnGradient}
               >
                 Contact Admin
-              </a>
+              </button>
             </div>
           </motion.div>
         </div>
