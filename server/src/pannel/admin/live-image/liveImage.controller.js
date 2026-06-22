@@ -60,11 +60,3 @@ const handleLiveImageUpload = async (req, res, role) => {
 export const uploadAdminImage = async (req, res) => {
   return handleLiveImageUpload(req, res, "admin");
 };
-
-export const uploadEmployeeImage = async (req, res) => {
-  return handleLiveImageUpload(req, res, "employee");
-};
-
-export const uploadStudentImage = async (req, res) => {
-  return handleLiveImageUpload(req, res, "student");
-};
