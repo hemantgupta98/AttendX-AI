@@ -176,6 +176,10 @@ export default function Home() {
           <h1 className=" text-gray-700 mt-5 text-center text-xl font-semibold mb-2">
             Welcome! <br /> Let’s set up your institution in just a few steps 🚀
           </h1>
+          <p className="text-gray-500 mt-2">
+            This is a prototype. You may enter any sample or dummy information
+            to continue.
+          </p>
           <p className="text-sm text-gray-500 mb-2">Step {step} of 6</p>
           <div className="w-full bg-gray-200 h-2 rounded-full mb-6">
             <div

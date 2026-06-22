@@ -203,6 +203,10 @@ export default function Home() {
             <br />
             Let’s Set Up Your Teaching Profile
           </h1>
+          <p className="text-gray-500 mt-2">
+            This is a prototype. You may enter any sample or dummy information
+            to continue.
+          </p>
           <p className="text-sm text-gray-500 mb-2">Step {step} of 5</p>
           <div className="w-full bg-gray-200 h-2 rounded-full mb-6">
             <div
