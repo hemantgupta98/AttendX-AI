@@ -4,6 +4,6 @@ import { uploadEmployeeImage } from "./liveImage.controller.js";
 
 const router = express.Router();
 
-router.post("/upload/employee", upload.single("image"), uploadEmployeeImage);
+router.post("/upload", upload.single("image"), uploadEmployeeImage);
 
 export default router;

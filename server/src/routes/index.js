@@ -9,6 +9,6 @@ const router = express.Router();
 router.use("/admin", admin);
 router.use("/employee", employee);
 router.use("/student", student);
-router.use("/ai", liveImage);
+router.use("/employee", liveImage);
 
 export default router;
