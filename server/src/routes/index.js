@@ -7,7 +7,8 @@ import liveImage from "../pannel/employee/live-image/liveImage.routes.js";
 const router = express.Router();
 
 router.use("/admin", admin);
-router.use("/employee", employee, liveImage);
+router.use("/employee", employee);
 router.use("/student", student);
+router.use("/ai", liveImage);
 
 export default router;
