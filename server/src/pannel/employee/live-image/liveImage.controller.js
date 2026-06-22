@@ -52,7 +52,7 @@ const handleLiveImageUpload = async (req, res, role) => {
   } catch (error) {
     return res.status(500).json({
       success: false,
-      message: error.message,
+      message: "failed to send img of employee",
     });
   }
 };
