@@ -96,6 +96,7 @@ export default function AdminProfile() {
   };
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     fetchProfile();
   }, []);
 
@@ -218,8 +219,6 @@ export default function AdminProfile() {
             </div>
           </div>
         </div>
-
-        {error && <p className="text-red-400">{error}</p>}
       </div>
     </div>
   );
