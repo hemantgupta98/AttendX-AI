@@ -2,6 +2,7 @@
 "use client";
 
 import { useRef, useEffect, useState, useCallback } from "react";
+import axios from "axios";
 
 export default function Dashboard() {
   const videoRef = useRef<HTMLVideoElement | null>(null);
@@ -11,6 +12,8 @@ export default function Dashboard() {
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [isUploading, setIsUploading] = useState(false);
   const [streamActive, setStreamActive] = useState(false);
+  const [matched, setMatched] = useState(false);
+  const [message, setMessage] = useState("");
 
   const stopCamera = useCallback(() => {
     const stream = videoRef.current?.srcObject;
@@ -141,6 +144,26 @@ export default function Dashboard() {
     setPreviewUrl(null);
   };
 
+  const verifyImage = async () => {
+    try {
+      const response = await axios.post(
+        "https://attendx-ai-n8uq.onrender.com/api/admin/verified/attendance",
+      );
+      setMatched(response.data.matched);
+      setMessage(response.data.message);
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        console.error(error.response?.data);
+        alert(
+          error.response?.data?.message ??
+            error.message ??
+            "Failed to retrive the data from admin.",
+        );
+      } else {
+        console.error(error);
+      }
+    }
+  };
   return (
     <div className="min-h-screen bg-[radial-gradient(circle_at_top,#eef4ff_0%,#f8fafc_35%,#eef2f7_100%)] text-slate-900">
       <main className="mx-auto flex min-h-screen w-full max-w-7xl items-center px-4 py-6 sm:px-6 lg:px-8">
@@ -230,6 +253,22 @@ export default function Dashboard() {
               >
                 {isUploading ? "Uploading..." : "Submit Attendance"}
               </button>
+              <button
+                onClick={verifyImage}
+                className={`inline-flex items-center justify-center rounded-full px-5 py-3 text-sm font-semibold transition ${image ? "bg-pink-600 text-white hover:bg-pink-500" : "cursor-not-allowed bg-slate-200 text-slate-400"}`}
+              >
+                Verfiy Capture
+              </button>
+              {message && (
+                <div>
+                  <p className=" text-gray-500 text-2xl">{message}</p>
+                </div>
+              )}
+              {matched && (
+                <div>
+                  <p className=" text-gray-500 text-2xl">{matched}</p>
+                </div>
+              )}
               <button
                 onClick={deleteImage}
                 disabled={!image || isUploading}

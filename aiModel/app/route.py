@@ -204,6 +204,7 @@ async def check_attendance(
 async def admin_verify(
     storedImage: UploadFile = File(...),
     liveImage: UploadFile = File(...)
+    
 ):
 
     result = await verify_face(
