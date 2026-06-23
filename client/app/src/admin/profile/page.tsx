@@ -55,16 +55,14 @@ const initialProfileState: ProfileForm = {
 };
 
 export default function AdminProfile() {
-  const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL2;
-  {
-    /**  "https://attendx-ai-n8uq.onrender.com/api";*/
-  }
+  const apiBaseUrl = "https://attendx-ai-n8uq.onrender.com/api";
+
   const [profile, setProfile] = useState<ProfileForm>(initialProfileState);
   const [error, setError] = useState("");
 
   const fetchProfile = async () => {
     try {
-      const res = await axios.get(`${apiBaseUrl}/auth/admin/getprofile`);
+      const res = await axios.get(`${apiBaseUrl}/admin/auth/getprofile`);
       const profile = {
         name: res.data?.data?.name || "",
         type: res.data?.data?.type || "",
@@ -89,6 +87,7 @@ export default function AdminProfile() {
         email: res.data?.data?.email || "",
       };
       setProfile(profile);
+      setError(error);
     } catch (error) {
       console.log(error);
     }
