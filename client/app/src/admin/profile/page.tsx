@@ -63,38 +63,39 @@ export default function AdminProfile() {
   const fetchProfile = async () => {
     try {
       const res = await axios.get(`${apiBaseUrl}/admin/auth/getprofile`);
-      const profile = {
-        name: res.data?.data?.name || "",
-        type: res.data?.data?.type || "",
-        year: res.data?.data?.year || "",
-        board: res.data?.data?.board || "",
-        address: res.data?.data?.address || "",
-        city: res.data?.data?.city || "",
-        state: res.data?.data?.state || "",
-        pincode: res.data?.data?.pincode || "",
-        adminName: res.data?.data?.adminName || "",
-        designation: res.data?.data?.designation || "",
-        adminEmail: res.data?.data?.adminEmail || "",
-        adminNumber: res.data?.data?.adminNumber || "",
-        department: res.data?.data?.department || "",
-        course: res.data?.data?.course || "",
-        student: res.data?.data?.student || "",
-        staff: res.data?.data?.staff || "",
-        attendenceType: res.data?.data?.attendenceType || "",
-        workingDays: res.data?.data?.workingDays || "",
-        attendance: res.data?.data?.attendance || "",
-        classTiming: res.data?.data?.classTiming || "",
-        email: res.data?.data?.email || "",
-      };
-      setProfile(profile);
-      setError(error);
-    } catch (error) {
-      console.log(error);
+
+      setProfile({
+        name: res.data?.data?.name ?? "",
+        type: res.data?.data?.type ?? "",
+        year: res.data?.data?.year ?? 0,
+        board: res.data?.data?.board ?? "",
+        address: res.data?.data?.address ?? "",
+        city: res.data?.data?.city ?? "",
+        state: res.data?.data?.state ?? "",
+        pincode: res.data?.data?.pincode ?? 0,
+        adminName: res.data?.data?.adminName ?? "",
+        designation: res.data?.data?.designation ?? "",
+        adminEmail: res.data?.data?.adminEmail ?? "",
+        adminNumber: res.data?.data?.adminNumber ?? 0,
+        department: res.data?.data?.department ?? "",
+        course: res.data?.data?.course ?? "",
+        student: res.data?.data?.student ?? 0,
+        staff: res.data?.data?.staff ?? 0,
+        attendenceType: res.data?.data?.attendenceType ?? "",
+        workingDays: res.data?.data?.workingDays ?? 0,
+        attendance: res.data?.data?.attendance ?? 0,
+        classTiming: res.data?.data?.classTiming ?? 0,
+        email: res.data?.data?.email ?? "",
+      });
+
+      setError("");
+    } catch (error: any) {
+      console.error(error);
+      setError(error.response?.data?.message || "Failed to fetch profile");
     }
   };
 
   useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect
     fetchProfile();
   }, []);
 
@@ -266,7 +267,7 @@ function Stat({ label, value }: { label: string; value: any }) {
   return (
     <div className="flex justify-between text-sm">
       <span>{label}</span>
-      <b>{value || 0}</b>
+      <b>{value ?? 0}</b>
     </div>
   );
 }
