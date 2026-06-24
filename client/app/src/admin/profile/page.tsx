@@ -59,10 +59,17 @@ export default function AdminProfile() {
 
   const [profile, setProfile] = useState<ProfileForm>(initialProfileState);
   const [error, setError] = useState("");
+  const token = localStorage.getItem("token");
 
   const fetchProfile = async () => {
     try {
-      const res = await axios.get(`${apiBaseUrl}/admin/auth/getprofile`);
+      const res = await axios.get(`${apiBaseUrl}/admin/auth/getprofile`, {
+        headers: {
+          Authorization: `Bearer${token}`,
+          withCredentials: true,
+        },
+      });
+
       const profile = {
         name: res.data?.data?.name ?? "",
         type: res.data?.data?.type ?? "",
