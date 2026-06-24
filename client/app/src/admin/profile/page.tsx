@@ -63,8 +63,7 @@ export default function AdminProfile() {
   const fetchProfile = async () => {
     try {
       const res = await axios.get(`${apiBaseUrl}/admin/auth/getprofile`);
-
-      setProfile({
+      const profile = {
         name: res.data?.data?.name ?? "",
         type: res.data?.data?.type ?? "",
         year: res.data?.data?.year ?? 0,
@@ -86,8 +85,8 @@ export default function AdminProfile() {
         attendance: res.data?.data?.attendance ?? 0,
         classTiming: res.data?.data?.classTiming ?? 0,
         email: res.data?.data?.email ?? "",
-      });
-
+      };
+      setProfile(profile);
       setError("");
     } catch (error: any) {
       console.error(error);
@@ -217,6 +216,7 @@ export default function AdminProfile() {
                 Change Password
               </button>
             </div>
+            <p className=" text-red-500">{error}</p>
           </div>
         </div>
       </div>

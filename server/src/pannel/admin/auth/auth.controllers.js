@@ -176,7 +176,7 @@ export const getProfile = async (req, res) => {
     const userId = req.user.id;
 
     const user = await signupModel
-      .findByAdminEmail(userId)
+      .findById(userId)
       .select(
         "name type year board address city state pincode adminName designation adminEmail adminNumber department course student staff attendenceType workingDays attendance classTiming email",
       );
@@ -190,7 +190,30 @@ export const getProfile = async (req, res) => {
 
     return res.status(200).json({
       success: true,
-      data: user,
+      data: {
+        userId: user._id,
+        name: user.name || "",
+        type: user.type || "",
+        year: user.year || "",
+        board: user.board || "",
+        address: user.address || "",
+        city: user.city || "",
+        state: user.state || "",
+        pincode: user.pincode || "",
+        adminName: user.adminName || "",
+        designation: user.designation || "",
+        adminEmail: user.adminEmail || "",
+        adminNumber: user.adminNumber || "",
+        department: user.department || "",
+        course: user.course || "",
+        student: user.student || "",
+        staff: user.staff || "",
+        attendenceType: user.attendenceType || "",
+        workingDays: user.workingDays || "",
+        attendance: user.attendance || "",
+        classTiming: user.classTiming || "",
+        email: user.email || "",
+      },
     });
   } catch (error) {
     return res.status(500).json({
