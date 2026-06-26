@@ -209,16 +209,13 @@ export default function Home() {
               </h2>
               <div className=" space-y-1">
                 <p className=" text-md font-light text-gray-700">
-                  Admin ID<span className="text-red-500 mb-5">*</span>
+                  Admin ID <span className="text-red-500">Auto Generated</span>
                 </p>
                 <Input
                   {...register("adminCode")}
                   readOnly
-                  placeholder="Eg:- Admin ID for add employee."
+                  placeholder="Admin ID for add employee."
                 />
-                {errors.name && (
-                  <p className="  text-red-500">{errors.name.message}</p>
-                )}
               </div>
               <div className=" space-y-1">
                 <p className=" text-md font-light text-gray-700">

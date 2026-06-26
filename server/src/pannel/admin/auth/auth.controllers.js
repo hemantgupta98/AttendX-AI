@@ -5,6 +5,7 @@ import {
   createAdmin,
   findByAdminEmail,
   findByAdminLoginEmail,
+  generateAdminCode,
 } from "./auth.service.js";
 import { uploadImage } from "../media/uploadCloudinary.js";
 import { uploadService } from "../aiService/ai.contollers.js";
@@ -69,6 +70,12 @@ export const signup = async (req, res) => {
 
     const Image = await uploadImage(photoInput, "upload-image/admin");
 
+    let adminCode;
+
+    do {
+      adminCode = generateAdminCode();
+    } while (await signupModel.findOne({ adminCode }));
+
     const user = await createAdmin({
       name,
       type,
@@ -95,11 +102,13 @@ export const signup = async (req, res) => {
       email,
       password,
       confirmPassword,
+      adminCode,
     });
 
     console.log("Admin signup saved", {
       id: user._id,
       email: user.email,
+      adminCode: user.adminCode,
       db: user?.constructor?.db?.name,
       collection: user?.constructor?.collection?.name,
     });
@@ -114,6 +123,7 @@ export const signup = async (req, res) => {
       user: {
         id: user._id,
         email: user.email,
+        adminCode: user.adminCode,
       },
     });
 

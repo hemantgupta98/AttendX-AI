@@ -7,6 +7,11 @@ const signupSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "admin",
     },
+    adminCode: {
+      type: String,
+      required: true,
+      unique: true,
+    },
     name: { type: String, required: true },
     type: { type: String, required: true },
     year: { type: Number, required: true },

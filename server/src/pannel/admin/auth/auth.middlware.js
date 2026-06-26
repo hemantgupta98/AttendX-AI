@@ -67,6 +67,7 @@ export const verifyToken = async (req, res, next) => {
       workingDays: user.workingDays,
       attendance: user.attendance,
       classTiming: user.classTiming,
+      adminCode: user.adminCode,
     };
 
     next();

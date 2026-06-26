@@ -29,6 +29,7 @@ type ProfileForm = {
   attendance?: number;
   classTiming?: number;
   email: string;
+  adminCode: string;
 };
 
 const initialProfileState: ProfileForm = {
@@ -54,6 +55,7 @@ const initialProfileState: ProfileForm = {
   attendance: 0,
   classTiming: 0,
   email: "",
+  adminCode: "",
 };
 
 export default function AdminProfile() {
@@ -96,6 +98,7 @@ export default function AdminProfile() {
         attendance: res.data?.data?.attendance ?? 0,
         classTiming: res.data?.data?.classTiming ?? 0,
         email: res.data?.data?.email ?? "",
+        adminCode: res.data?.data?.adminCode,
       };
       setProfile(profile);
       setError("");
@@ -133,6 +136,21 @@ export default function AdminProfile() {
               {profile.designation || "Principal"}
             </p>
           </div>
+        </div>
+        <div className="rounded-xl border border-red-200 bg-red-50 p-5 shadow-sm">
+          <h3 className="text-lg font-semibold text-gray-800">
+            Institution Code
+          </h3>
+
+          <p className="mt-2 text-3xl font-bold tracking-wider text-red-600">
+            {profile.adminCode}
+          </p>
+
+          <p className="mt-3 text-sm leading-6 text-gray-600">
+            Share this unique institution code with teachers during
+            registration. Teachers must enter this code in the signup form to
+            join your institution.
+          </p>
         </div>
 
         <div className="grid lg:grid-cols-3 gap-6">

@@ -43,3 +43,14 @@ export const createAdmin = async (data) => {
     email: normalizedEmail,
   });
 };
+
+export const generateAdminCode = () => {
+  const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+  let code = "SCH-";
+
+  for (let i = 0; i < 8; i++) {
+    code += chars[Math.floor(Math.random() * chars.length)];
+  }
+
+  return code;
+};
