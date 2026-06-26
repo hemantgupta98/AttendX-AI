@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 
-const publicAdminRoutes = ["/src/admin/auth", "/src/admin/login", "/src/admin/logout" , "/src/student/auth/signup" , "/src/student/auth/login", "/src/student/logout", "/src/teacher/auth/signup", "/src/teacher/auth/login" , "/src/teacher/logout"];
+const publicAdminRoutes = ["/src/admin/auth", "/src/admin/login", "/src/student/auth/signup" , "/src/student/auth/login",  "/src/teacher/auth/signup", "/src/teacher/auth/login" , ];
 
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
