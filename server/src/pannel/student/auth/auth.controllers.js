@@ -1,5 +1,5 @@
 import jwt from "jsonwebtoken";
-import { loginModel } from "./auth.model.js";
+import { loginModel, signupModel } from "./auth.model.js";
 import { comparePassword } from "./auth.hashed.js";
 import {
   createStudent,
@@ -163,9 +163,7 @@ export const getProfile = async (req, res) => {
 
     const user = await signupModel
       .findById(userId)
-      .select(
-        "userId name gender dob photo studentNumber parentNumber address city state pincode institutionName studentID class stream section admissionYear email ",
-      );
+      .select("-password -confirmPassword -__v");
 
     if (!user) {
       return res.status(404).json({
@@ -177,8 +175,8 @@ export const getProfile = async (req, res) => {
     return res.status(200).json({
       success: true,
       data: {
-        userId: user.userId || "",
         id: user._id,
+        userId: user.userId || "",
         name: user.name || "",
         gender: user.gender || "",
         dob: user.dob || "",
@@ -207,6 +205,7 @@ export const getProfile = async (req, res) => {
     });
   }
 };
+
 export const logout = async (req, res) => {
   try {
     const isProduction = process.env.NODE_ENV === "production";
