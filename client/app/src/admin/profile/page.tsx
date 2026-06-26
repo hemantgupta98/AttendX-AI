@@ -11,6 +11,7 @@ type ProfileForm = {
   type: string;
   year: number;
   board: string;
+  photo: string;
   address: string;
   city: string;
   state: string;
@@ -35,6 +36,7 @@ const initialProfileState: ProfileForm = {
   type: "",
   year: 0,
   board: "",
+  photo: "",
   address: "",
   city: "",
   state: "",
@@ -76,6 +78,7 @@ export default function AdminProfile() {
         type: res.data?.data?.type ?? "",
         year: res.data?.data?.year ?? 0,
         board: res.data?.data?.board ?? "",
+        photo: res.data?.data?.photo ?? "",
         address: res.data?.data?.address ?? "",
         city: res.data?.data?.city ?? "",
         state: res.data?.data?.state ?? "",
@@ -121,7 +124,7 @@ export default function AdminProfile() {
         {/* Top Card */}
         <div className="bg-white text-black rounded-xl p-6 flex items-center gap-6">
           <div className="w-20 h-20 rounded-full overflow-hidden border-4 border-blue-400">
-            <Image src="/logo.png" alt="admin" width={80} height={80} />
+            <Image src={profile.photo || "/logo.png"} alt="logo" />
           </div>
 
           <div className="flex-1">
@@ -130,10 +133,6 @@ export default function AdminProfile() {
               {profile.designation || "Principal"}
             </p>
           </div>
-
-          <button className="bg-[#0b2e4d] text-white px-4 py-2 rounded-lg">
-            Edit Profile
-          </button>
         </div>
 
         <div className="grid lg:grid-cols-3 gap-6">
@@ -216,13 +215,9 @@ export default function AdminProfile() {
                 Security Notice
               </h3>
 
-              <p className="text-sm mb-3">
+              <p className="text-sm text-red-300 mb-3">
                 Keep admin credentials safe. Never share passwords.
               </p>
-
-              <button className="border border-red-400 px-4 py-2 rounded-lg w-full">
-                Change Password
-              </button>
             </div>
             <p className=" text-red-500">{error}</p>
           </div>

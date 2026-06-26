@@ -178,7 +178,7 @@ export const getProfile = async (req, res) => {
     const user = await signupModel
       .findById(userId)
       .select(
-        "name type year board address city state pincode adminName designation adminEmail adminNumber department course student staff attendenceType workingDays attendance classTiming email",
+        "name type year board photo address city state pincode adminName designation adminEmail adminNumber department course student staff attendenceType workingDays attendance classTiming email",
       );
 
     if (!user) {
@@ -196,6 +196,7 @@ export const getProfile = async (req, res) => {
         type: user.type || "",
         year: user.year || "",
         board: user.board || "",
+        photo: user.photo || "",
         address: user.address || "",
         city: user.city || "",
         state: user.state || "",
@@ -219,6 +220,34 @@ export const getProfile = async (req, res) => {
     return res.status(500).json({
       success: false,
       message: "error in backend of getProfile ",
+    });
+  }
+};
+
+export const logout = async (req, res) => {
+  try {
+    const isProduction = process.env.NODE_ENV === "production";
+
+    res.clearCookie("auth_token", {
+      httpOnly: true,
+      sameSite: isProduction ? "none" : "lax",
+      secure: isProduction,
+    });
+
+    res.clearCookie("token", {
+      httpOnly: true,
+      sameSite: isProduction ? "none" : "lax",
+      secure: isProduction,
+    });
+
+    return res.status(200).json({
+      success: true,
+      message: "Logged out successfully",
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: "Logout failed",
     });
   }
 };
