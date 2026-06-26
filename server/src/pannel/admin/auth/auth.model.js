@@ -7,11 +7,7 @@ const signupSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "admin",
     },
-    adminCode: {
-      type: String,
-      required: true,
-      unique: true,
-    },
+
     name: { type: String, required: true },
     type: { type: String, required: true },
     year: { type: Number, required: true },
@@ -36,6 +32,11 @@ const signupSchema = new mongoose.Schema(
     email: { type: String, required: true },
     password: { type: String, required: true },
     confirmPassword: { type: String, required: true },
+    adminCode: {
+      type: String,
+      required: true,
+      unique: true,
+    },
   },
   { timestamps: true },
 );

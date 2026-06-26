@@ -70,7 +70,7 @@ export default function AdminProfile() {
 
       const res = await axios.get(`${apiBaseUrl}/admin/auth/getprofile`, {
         headers: {
-          Authorization: `Bearer${token}`,
+          Authorization: `Bearer ${token}`,
         },
         withCredentials: true,
       });
@@ -98,7 +98,7 @@ export default function AdminProfile() {
         attendance: res.data?.data?.attendance ?? 0,
         classTiming: res.data?.data?.classTiming ?? 0,
         email: res.data?.data?.email ?? "",
-        adminCode: res.data?.data?.adminCode,
+        adminCode: res.data?.data?.adminCode ?? "",
       };
       setProfile(profile);
       setError("");
@@ -145,6 +145,12 @@ export default function AdminProfile() {
           <p className="mt-2 text-3xl font-bold tracking-wider text-red-600">
             {profile.adminCode}
           </p>
+          <button
+            onClick={() => navigator.clipboard.writeText(profile.adminCode)}
+            className="rounded-md bg-blue-600 px-3 py-1 text-sm text-white hover:bg-red-700"
+          >
+            Copy
+          </button>
 
           <p className="mt-3 text-sm leading-6 text-gray-600">
             Share this unique institution code with teachers during
