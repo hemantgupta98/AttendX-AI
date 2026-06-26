@@ -3,7 +3,6 @@ import { signupModel } from "./auth.model.js";
 
 export const verifyToken = async (req, res, next) => {
   try {
-    // Get token from header or cookie
     const authHeader = req.headers.authorization;
 
     const bearerToken =
@@ -23,7 +22,7 @@ export const verifyToken = async (req, res, next) => {
     }
 
     // Verify JWT
-    const decoded = jwt.verify(token, process.env.JWT_TOKEN);
+    const decoded = jwt.verify(token, process.env.JWT_WEB_TOKEN);
 
     if (!decoded?.id) {
       return res.status(401).json({
@@ -32,7 +31,6 @@ export const verifyToken = async (req, res, next) => {
       });
     }
 
-    // Find user/admin
     const user = await signupModel
       .findById(decoded.id)
       .select("-password -confirmPassword");
@@ -44,7 +42,6 @@ export const verifyToken = async (req, res, next) => {
       });
     }
 
-    // Attach user data to request
     req.user = {
       id: user._id,
       userId: user.userId,
