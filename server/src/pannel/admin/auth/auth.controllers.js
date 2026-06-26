@@ -75,6 +75,7 @@ export const signup = async (req, res) => {
     do {
       adminCode = generateAdminCode();
     } while (await signupModel.findOne({ adminCode }));
+    console.log("Generated Admin Code:", adminCode);
 
     const user = await createAdmin({
       name,
@@ -112,6 +113,7 @@ export const signup = async (req, res) => {
       db: user?.constructor?.db?.name,
       collection: user?.constructor?.collection?.name,
     });
+    console.log("Saved Admin Code:", user.adminCode);
 
     const issueSignupToken = process.env.ISSUE_SIGNUP_TOKEN !== "false";
     const token = authToken(res, user._id);
@@ -188,7 +190,7 @@ export const getProfile = async (req, res) => {
     const user = await signupModel
       .findById(userId)
       .select(
-        "name type year board photo address city state pincode adminName designation adminEmail adminNumber department course student staff attendenceType workingDays attendance classTiming email",
+        "name type year board photo address city state pincode adminName designation adminEmail adminNumber department course student staff attendenceType workingDays attendance classTiming email adminCode",
       );
 
     if (!user) {
@@ -224,6 +226,7 @@ export const getProfile = async (req, res) => {
         attendance: user.attendance || "",
         classTiming: user.classTiming || "",
         email: user.email || "",
+        adminCode: user.adminCode || "",
       },
     });
   } catch (error) {
