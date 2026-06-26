@@ -105,7 +105,7 @@ const page = () => {
             <h1 className="text-4xl font-bold">Student Profile</h1>
 
             <p className="mt-2 text-blue-100">
-              View your personal and academic information
+              View your personal and academic information.
             </p>
           </div>
 
@@ -229,7 +229,7 @@ const page = () => {
               {/* Quick Overview */}
               <div className="rounded-3xl bg-white p-6 shadow-xl">
                 <h3 className="mb-6 text-xl font-bold text-slate-700">
-                  Quick Overview
+                  Quick Overviews.
                 </h3>
 
                 <div className="space-y-4">
