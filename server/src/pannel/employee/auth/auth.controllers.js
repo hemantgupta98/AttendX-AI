@@ -1,5 +1,5 @@
 import jwt from "jsonwebtoken";
-import { loginModel } from "./auth.model.js";
+import { loginModel, signupModel } from "./auth.model.js";
 import { comparePassword } from "./auth.hashed.js";
 import {
   createEmployee,
