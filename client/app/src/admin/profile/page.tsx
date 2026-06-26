@@ -124,7 +124,7 @@ export default function AdminProfile() {
         {/* Top Card */}
         <div className="bg-white text-black rounded-xl p-6 flex items-center gap-6">
           <div className="relative w-20 h-20 rounded-full overflow-hidden border-4 border-blue-400">
-            <Image src="/logo.png" alt="logo" fill className="object-cover" />
+            <Image src="/logo.png" alt="Admin" fill className="object-cover" />
           </div>
 
           <div className="flex-1">
