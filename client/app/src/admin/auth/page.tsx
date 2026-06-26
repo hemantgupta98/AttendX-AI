@@ -12,6 +12,7 @@ import AuthLeft from "@/components/ui/authLeft";
 import { Toaster, toast } from "sonner";
 
 type Onboarding = {
+  adminCode: string;
   name: string;
   type: string;
   year: number;
@@ -61,7 +62,7 @@ export default function Home() {
 
   const router = useRouter();
   const stepFields: Record<number, (keyof Onboarding)[]> = {
-    1: ["name", "type", "year", "board", "photo"],
+    1: ["adminCode", "name", "type", "year", "board", "photo"],
     2: ["address", "city", "state", "pincode"],
     3: ["adminName", "designation", "adminEmail", "adminNumber"],
     4: ["department", "course", "student", "staff"],
@@ -206,6 +207,19 @@ export default function Home() {
               <h2 className="text-xl font-semibold ">
                 Institution Details<span className="text-red-500 mb-5">*</span>
               </h2>
+              <div className=" space-y-1">
+                <p className=" text-md font-light text-gray-700">
+                  Admin ID<span className="text-red-500 mb-5">*</span>
+                </p>
+                <Input
+                  {...register("adminCode")}
+                  readOnly
+                  placeholder="Eg:- Admin ID for add employee."
+                />
+                {errors.name && (
+                  <p className="  text-red-500">{errors.name.message}</p>
+                )}
+              </div>
               <div className=" space-y-1">
                 <p className=" text-md font-light text-gray-700">
                   Institution Name<span className="text-red-500 mb-5">*</span>
