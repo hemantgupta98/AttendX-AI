@@ -23,7 +23,6 @@ const signupSchema = new mongoose.Schema(
     subject: { type: String, required: true },
     joiningYear: { type: Number, required: true },
     email: { type: String, required: true },
-    faceScan: { type: String, required: true, trim: true },
     password: { type: String, required: true },
     confirmPassword: { type: String, required: true },
   },

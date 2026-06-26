@@ -156,3 +156,81 @@ export const login = async (req, res) => {
       .json({ success: false, message: "Server error in Student login" });
   }
 };
+
+export const getProfile = async (req, res) => {
+  try {
+    const userId = req.user.id;
+
+    const user = await signupModel
+      .findById(userId)
+      .select(
+        "userId name gender dob photo studentNumber parentNumber address city state pincode institutionName studentID class stream section admissionYear email ",
+      );
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "Profile not found",
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      data: {
+        userId: user.userId || "",
+        id: user._id,
+        name: user.name || "",
+        gender: user.gender || "",
+        dob: user.dob || "",
+        photo: user.photo || "",
+        studentNumber: user.studentNumber || "",
+        parentNumber: user.parentNumber || "",
+        address: user.address || "",
+        city: user.city || "",
+        state: user.state || "",
+        pincode: user.pincode || "",
+        institutionName: user.institutionName || "",
+        studentID: user.studentID || "",
+        class: user.class || "",
+        stream: user.stream || "",
+        section: user.section || "",
+        admissionYear: user.admissionYear || "",
+        email: user.email || "",
+      },
+    });
+  } catch (error) {
+    console.error("Get Profile Error:", error);
+
+    return res.status(500).json({
+      success: false,
+      message: "Error in getProfile controller",
+    });
+  }
+};
+export const logout = async (req, res) => {
+  try {
+    const isProduction = process.env.NODE_ENV === "production";
+
+    res.clearCookie("auth_token", {
+      httpOnly: true,
+      sameSite: isProduction ? "none" : "lax",
+      secure: isProduction,
+    });
+
+    res.clearCookie("token", {
+      httpOnly: true,
+      sameSite: isProduction ? "none" : "lax",
+      secure: isProduction,
+    });
+
+    return res.status(200).json({
+      success: true,
+      message: "Logged out successfully",
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: "Logout failed",
+    });
+  }
+};
