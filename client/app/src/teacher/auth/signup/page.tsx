@@ -32,6 +32,7 @@ type Teacher = {
   state: string;
   pincode: number;
   institutionName: string;
+  adminCode: string;
   employeeID: string;
   class: string;
   subject: string;
@@ -76,7 +77,7 @@ export default function Home() {
   const stepFields: Record<number, (keyof Teacher)[]> = {
     1: ["name", "gender", "dob", "photo"],
     2: ["address", "city", "state", "pincode"],
-    3: ["institutionName", "subject", "employeeID", "joiningYear"],
+    3: ["institutionName", "adminCode", "subject", "employeeID", "joiningYear"],
     4: ["parentNumber", "teacherNumber"],
     5: ["email", "password", "confirmPassword"],
   };
@@ -430,6 +431,24 @@ export default function Home() {
                   </p>
                 )}
               </div>
+              <div>
+                <p className=" text-md font-light text-gray-700">
+                  Institution ID<span className="text-red-500 mb-5">*</span>
+                </p>
+                <Input
+                  className="input"
+                  placeholder="Eg:- Jharkhand Rai University etc."
+                  {...register("adminCode", {
+                    required: "Enter your institution ID",
+                  })}
+                />
+                {errors.adminCode && (
+                  <p className="m-2 text-sm text-red-500">
+                    {errors.adminCode.message}
+                  </p>
+                )}
+              </div>
+
               <div>
                 <p className=" text-md font-light text-gray-700">
                   Employee ID<span className="text-red-500 mb-5">*</span>

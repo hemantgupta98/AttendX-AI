@@ -18,6 +18,7 @@ const signupSchema = new mongoose.Schema(
     state: { type: String, required: true },
     pincode: { type: String, required: true },
     institutionName: { type: String, required: true },
+    institutionId: { type: String, required: true },
     employeeID: { type: String, required: true },
     class: { type: String, required: true },
     subject: { type: String, required: true },

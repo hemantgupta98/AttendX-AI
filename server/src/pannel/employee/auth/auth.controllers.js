@@ -8,6 +8,7 @@ import {
 } from "./auth.service.js";
 import { uploadImage } from "../media/cloudinary.js";
 import { uploadService } from "../aiService/ai.controller.js";
+import { signupModel as adminModel } from "../../admin/auth/auth.model.js";
 
 export const authToken = (res, userId, expiresIn = "24h") => {
   const jwtToken = process.env.JWT_WEB_TOKEN;
@@ -40,6 +41,7 @@ export const signup = async (req, res) => {
     state,
     pincode,
     institutionName,
+    adminCode,
     employeeID,
     class: className,
     subject,
@@ -64,6 +66,16 @@ export const signup = async (req, res) => {
 
     const Image = await uploadImage(photoInput, "upload-image/employee");
 
+    let institutionId = null;
+    if (adminCode) {
+      const institution = await adminModel.findOne({ adminCode });
+
+      if (!institution) {
+        res.status(400).json({ success: false, message: "instution ID wrong" });
+      }
+      institutionId = institution._id;
+    }
+
     const user = await createEmployee({
       name,
       gender,
@@ -77,6 +89,7 @@ export const signup = async (req, res) => {
       state,
       pincode,
       institutionName,
+      institutionId,
       employeeID,
       class: className,
       subject,
