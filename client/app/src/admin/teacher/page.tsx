@@ -31,8 +31,7 @@ type Teachers = {
 export default function TeachersPage() {
   const apiBaseUrl = "https://attendx-ai-n8uq.onrender.com/api";
   const [search, setSearch] = useState("");
-  // FIX: profile should be an array of teachers, not a single object,
-  // since we call .filter() on it and render a list of cards.
+
   const [profile, setProfile] = useState<Teachers[]>([]);
   const [error, setError] = useState("");
 
@@ -44,14 +43,12 @@ export default function TeachersPage() {
         `${apiBaseUrl}/admin/connection/getTeachers`,
         {
           headers: {
-            // FIX: missing space before the token broke the Authorization header
             Authorization: `Bearer ${token}`,
           },
           withCredentials: true,
         },
       );
 
-      // FIX: the API returns a LIST of teachers, so we map over
       // res.data.data (an array) instead of reading it as one object.
       const rawList: any[] = Array.isArray(res.data?.data) ? res.data.data : [];
 
