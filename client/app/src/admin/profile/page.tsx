@@ -101,7 +101,7 @@ export default function AdminProfile() {
         adminCode: res.data?.data?.adminCode ?? "",
       };
       setProfile(profile);
-      window.alert(`Institution Code: ${res.data?.data?.adminCode}`);
+
       setError("");
     } catch (error: any) {
       console.error(error);
