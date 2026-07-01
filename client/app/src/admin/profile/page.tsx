@@ -66,7 +66,7 @@ export default function AdminProfile() {
 
   const fetchProfile = async () => {
     try {
-      const token = localStorage.getItem("token");
+      const token = localStorage.getItem("adminToken");
 
       const res = await axios.get(`${apiBaseUrl}/admin/auth/getprofile`, {
         headers: {

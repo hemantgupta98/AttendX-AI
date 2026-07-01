@@ -50,9 +50,9 @@ export default function Home() {
       });
 
       if (result?.token) {
-        localStorage.setItem("token", result.token);
+        localStorage.setItem("adminToken", result.token);
         // eslint-disable-next-line react-hooks/immutability
-        document.cookie = `token=${encodeURIComponent(result.token)}; path=/; samesite=lax`;
+        document.cookie = `adminToken=${encodeURIComponent(result.token)}; path=/; samesite=lax`;
       }
       toast.success(result?.message || "Login successfully");
       router.push("/src/admin/dashboard");

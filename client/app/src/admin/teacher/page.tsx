@@ -37,7 +37,7 @@ export default function TeachersPage() {
 
   const fetchProfile = async () => {
     try {
-      const token = localStorage.getItem("token");
+      const token = localStorage.getItem("adminToken");
 
       const res = await axios.get(
         `${apiBaseUrl}/admin/connection/getTeachers`,

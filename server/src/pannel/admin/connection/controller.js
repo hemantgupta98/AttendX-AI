@@ -1,9 +1,9 @@
-import { signupModel } from "../../employee/auth/auth.model.js";
+import { signupModel } from "../auth/auth.model";
 
 export const getTeacher = async (req, res) => {
   try {
     const teachers = await signupModel
-      .find({ institutionId: req.user.id })
+      .find({ institutionId: String(req.user.id) })
       .select(
         "userId name gender dob photo teacherNumber parentNumber address city state pincode institutionName employeeID class subject joiningYear email institutionId",
       );
