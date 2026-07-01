@@ -53,11 +53,11 @@ const page = () => {
 
   const fetchProfile = async () => {
     try {
-      const token = localStorage.getItem("token");
+      const token = localStorage.getItem("teacherToken");
 
       const res = await axios.get(`${apiBaseUrl}/employee/auth/getprofile`, {
         headers: {
-          Authorization: `Bearer${token}`,
+          Authorization: `Bearer ${token}`,
         },
         withCredentials: true,
       });

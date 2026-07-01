@@ -18,7 +18,7 @@ export const authToken = (res, userId, expiresIn = "24h") => {
   }
   const token = jwt.sign({ id: userId }, jwtToken, { expiresIn });
   const isProduction = process.env.NODE_ENV === "production";
-  res.cookie("auth_token", token, {
+  res.cookie("teacher_auth_token", token, {
     httpOnly: true,
     sameSite: isProduction ? "none" : "lax",
     secure: isProduction,
@@ -225,6 +225,12 @@ export const getProfile = async (req, res) => {
 export const logout = async (req, res) => {
   try {
     const isProduction = process.env.NODE_ENV === "production";
+
+    res.clearCookie("teacher_auth_token", {
+      httpOnly: true,
+      sameSite: isProduction ? "none" : "lax",
+      secure: isProduction,
+    });
 
     res.clearCookie("auth_token", {
       httpOnly: true,

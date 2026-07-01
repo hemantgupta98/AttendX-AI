@@ -10,7 +10,7 @@ export const verifyToken = async (req, res, next) => {
         ? authHeader.split(" ")[1]
         : null;
 
-    const cookieToken = req.cookies?.auth_token || null;
+    const cookieToken = req.cookies?.teacher_auth_token || null;
 
     const token = bearerToken || cookieToken;
 
