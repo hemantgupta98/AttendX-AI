@@ -1,4 +1,4 @@
-import { signupModel } from "../auth/auth.model";
+import { signupModel } from "../auth/auth.model.js";
 
 export const getTeacher = async (req, res) => {
   try {
