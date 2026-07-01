@@ -49,8 +49,11 @@ export default function TeachersPage() {
         },
       );
 
-      // res.data.data (an array) instead of reading it as one object.
-      const rawList: any[] = Array.isArray(res.data?.data) ? res.data.data : [];
+      const rawList: any[] = Array.isArray(res.data?.teachers)
+        ? res.data.teachers
+        : Array.isArray(res.data?.data)
+          ? res.data.data
+          : [];
 
       const teachersList: Teachers[] = rawList.map((item: any) => ({
         institutionId: item?.institutionId ?? "",
