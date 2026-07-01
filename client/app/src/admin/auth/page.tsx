@@ -143,7 +143,9 @@ export default function Home() {
 
       if (result?.token) {
         localStorage.setItem("adminToken", result.token);
+        localStorage.setItem("token", result.token);
         document.cookie = `adminToken=${encodeURIComponent(result.token)}; path=/; samesite=lax`;
+        document.cookie = `token=${encodeURIComponent(result.token)}; path=/; samesite=lax`;
       }
 
       toast.success(result?.message || "Account created successfully");

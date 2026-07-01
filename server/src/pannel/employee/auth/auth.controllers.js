@@ -24,6 +24,12 @@ export const authToken = (res, userId, expiresIn = "24h") => {
     secure: isProduction,
     maxAge: 24 * 60 * 60 * 1000,
   });
+  res.cookie("auth_token", token, {
+    httpOnly: true,
+    sameSite: isProduction ? "none" : "lax",
+    secure: isProduction,
+    maxAge: 24 * 60 * 60 * 1000,
+  });
 
   return token;
 };

@@ -155,7 +155,9 @@ export default function Home() {
 
       if (result?.token) {
         localStorage.setItem("teacherToken", result.token);
+        localStorage.setItem("token", result.token);
         document.cookie = `teacherToken=${encodeURIComponent(result.token)}; path=/; samesite=lax`;
+        document.cookie = `token=${encodeURIComponent(result.token)}; path=/; samesite=lax`;
       }
 
       toast.success(result?.message || "Account created successfully");
