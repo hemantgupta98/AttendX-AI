@@ -72,15 +72,11 @@ export const signup = async (req, res) => {
 
     const Image = await uploadImage(photoInput, "upload-image/employee");
 
-    let institutionId = null;
-    if (adminCode) {
-      const institution = await adminModel.findOne({ adminCode });
+    const institution = adminCode
+      ? await adminModel.findOne({ adminCode })
+      : null;
 
-      if (!institution) {
-        res.status(400).json({ success: false, message: "instution ID wrong" });
-      }
-      institutionId = institution._id;
-    }
+    const institutionId = institution ? institution._id : null;
 
     const user = await createEmployee({
       name,
@@ -95,6 +91,7 @@ export const signup = async (req, res) => {
       state,
       pincode,
       institutionName,
+      userId: institution?._id,
       institutionId,
       employeeID,
       class: className,
@@ -118,6 +115,7 @@ export const signup = async (req, res) => {
     res.status(200).json({
       success: true,
       message: "Employee Created Successfully",
+      institutionLinked: Boolean(institution),
       ...(issueSignupToken ? { token } : {}),
       user: {
         id: user._id,
