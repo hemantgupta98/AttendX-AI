@@ -267,13 +267,14 @@ export default function Dashboard() {
               >
                 {isUploading ? "Uploading..." : "Submit Attendance"}
               </button>
-              <button
+              {/** <button
                 onClick={verifyImage}
                 disabled={isUploading}
                 className={`inline-flex items-center justify-center rounded-full px-5 py-3 text-sm font-semibold transition ${isUploading ? "cursor-not-allowed bg-slate-200 text-slate-400" : "bg-pink-600 text-white hover:bg-pink-500"}`}
               >
                 Verfiy Capture
-              </button>
+              </button> */}
+
               {message && (
                 <div>
                   <p className=" text-gray-500 text-2xl">{message}</p>
