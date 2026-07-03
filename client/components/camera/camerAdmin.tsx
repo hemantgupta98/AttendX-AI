@@ -42,7 +42,7 @@ export default function Dashboard() {
         // attempt to autoplay (some browsers require this to be called)
         try {
           await videoRef.current.play();
-        } catch (e) {
+        } catch {
           // ignore autoplay errors
         }
       }
@@ -108,6 +108,7 @@ export default function Dashboard() {
         "https://attendx-ai-n8uq.onrender.com/api/admin/live-image/upload",
         {
           method: "POST",
+          credentials: "include",
           body: formData,
         },
       );
@@ -120,13 +121,14 @@ export default function Dashboard() {
 
       const data = await response.json();
       console.log(data);
-      alert("Thanks — image sent");
-      // clear preview and image
-      setImage(null);
-      setPreviewUrl((prev) => {
-        if (prev) URL.revokeObjectURL(prev);
-        return null;
-      });
+      const faceMatched = Boolean(data?.matched ?? data?.airesponse?.success);
+      const serverMessage =
+        data?.message || data?.airesponse?.message || "Verification complete";
+
+      setMatched(faceMatched);
+      setMessage(serverMessage);
+      alert(faceMatched ? "Face matched" : "Face not matched");
+      // Keep the captured image so user can retry or verify again without recapturing.
     } catch (err) {
       console.error(err);
       alert("Upload error: " + (err as Error).message);
@@ -148,10 +150,22 @@ export default function Dashboard() {
     try {
       const response = await axios.post(
         "https://attendx-ai-n8uq.onrender.com/api/admin/verified/attendance",
+        {},
+        {
+          withCredentials: true,
+        },
       );
-      setMatched(response.data.matched);
-      setMessage(response.data.message);
+      const isMatched = Boolean(
+        response.data?.matched ?? response.data?.success,
+      );
+      const statusMessage = isMatched ? "Face matched" : "Face not matched";
+
+      setMatched(isMatched);
+      setMessage(response.data?.message || statusMessage);
+      alert(statusMessage);
     } catch (error) {
+      setMatched(false);
+      setMessage("Face not matched");
       if (axios.isAxiosError(error)) {
         console.error(error.response?.data);
         alert(
@@ -255,7 +269,8 @@ export default function Dashboard() {
               </button>
               <button
                 onClick={verifyImage}
-                className={`inline-flex items-center justify-center rounded-full px-5 py-3 text-sm font-semibold transition ${image ? "bg-pink-600 text-white hover:bg-pink-500" : "cursor-not-allowed bg-slate-200 text-slate-400"}`}
+                disabled={isUploading}
+                className={`inline-flex items-center justify-center rounded-full px-5 py-3 text-sm font-semibold transition ${isUploading ? "cursor-not-allowed bg-slate-200 text-slate-400" : "bg-pink-600 text-white hover:bg-pink-500"}`}
               >
                 Verfiy Capture
               </button>
@@ -266,7 +281,7 @@ export default function Dashboard() {
               )}
               {matched && (
                 <div>
-                  <p className=" text-gray-500 text-2xl">{matched}</p>
+                  <p className=" text-emerald-600 text-2xl">Face matched</p>
                 </div>
               )}
               <button
@@ -302,7 +317,7 @@ export default function Dashboard() {
                 playsInline
                 autoPlay
                 muted
-                className="aspect-[4/3] w-full object-cover"
+                className="aspect-4/3 w-full object-cover"
               />
             </div>
 

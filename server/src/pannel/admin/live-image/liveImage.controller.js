@@ -1,6 +1,7 @@
 import axios from "axios";
 import FormData from "form-data";
 import fs from "fs";
+import path from "path";
 import { uploadImage as uploadToCloudinary } from "../media/uploadCloudinary.js";
 
 const roleFolders = {
@@ -8,6 +9,8 @@ const roleFolders = {
 };
 
 const handleLiveImageUpload = async (req, res, role) => {
+  let storedImagePath;
+
   try {
     if (!req.file) {
       return res.status(400).json({
@@ -26,11 +29,33 @@ const handleLiveImageUpload = async (req, res, role) => {
     }
 
     const result = await uploadToCloudinary(req.file.path, folder);
+    const storedPhotoUrl = req.user?.photo;
+
+    if (!storedPhotoUrl) {
+      return res.status(400).json({
+        success: false,
+        message: "Stored signup photo not found for admin.",
+      });
+    }
+
+    const tempDir = path.resolve("server/src/temp");
+    fs.mkdirSync(tempDir, { recursive: true });
+    storedImagePath = path.join(tempDir, `admin_stored_${Date.now()}.jpg`);
+
+    const storedImageResponse = await axios.get(storedPhotoUrl, {
+      responseType: "stream",
+    });
+
+    await new Promise((resolve, reject) => {
+      const writer = fs.createWriteStream(storedImagePath);
+      storedImageResponse.data.pipe(writer);
+      writer.on("finish", resolve);
+      writer.on("error", reject);
+    });
 
     const form = new FormData();
 
-    // Current live capture flow only sends one file; use it for both fields expected by AI attendance API.
-    form.append("storedImage", fs.createReadStream(req.file.path));
+    form.append("storedImage", fs.createReadStream(storedImagePath));
     form.append("liveImage", fs.createReadStream(req.file.path));
 
     const response = await axios.post(
@@ -45,7 +70,8 @@ const handleLiveImageUpload = async (req, res, role) => {
       success: true,
       imageUrl: result.secure_url,
       publicId: result.public_id,
-      message: "Yes, AI model received the admin live image",
+      message: response.data?.success ? "Face matched" : "Face not matched",
+      matched: Boolean(response.data?.success),
       airesponse: response.data,
       folder,
       type: role,
@@ -55,6 +81,10 @@ const handleLiveImageUpload = async (req, res, role) => {
       success: false,
       message: error?.response?.data?.message || error.message,
     });
+  } finally {
+    if (storedImagePath && fs.existsSync(storedImagePath)) {
+      fs.unlinkSync(storedImagePath);
+    }
   }
 };
 
