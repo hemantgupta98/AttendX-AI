@@ -3,7 +3,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Search, Filter, Plus } from "lucide-react";
+import { Search, Filter, Plus, X } from "lucide-react";
 import axios from "axios";
 import Image from "next/image";
 
@@ -34,6 +34,7 @@ export default function TeachersPage() {
 
   const [profile, setProfile] = useState<Teachers[]>([]);
   const [error, setError] = useState("");
+  const [selectedTeacher, setSelectedTeacher] = useState<Teachers | null>(null);
 
   const fetchProfile = async () => {
     try {
@@ -155,7 +156,7 @@ export default function TeachersPage() {
                 {/* Top */}
                 <div className="flex items-center gap-4">
                   <Image
-                    src={teacher.photo || "/logo.png"}
+                    src="/logo.png"
                     alt={teacher.name}
                     // FIX: next/image requires width/height (or fill).
                     width={64}
@@ -222,7 +223,11 @@ export default function TeachersPage() {
                 </div>
 
                 {/* Button */}
-                <button className="mt-6 w-full rounded-xl bg-purple-600 py-3 text-white font-semibold hover:bg-purple-700 transition">
+                <button
+                  type="button"
+                  onClick={() => setSelectedTeacher(teacher)}
+                  className="mt-6 w-full rounded-xl bg-purple-600 py-3 text-white font-semibold hover:bg-purple-700 transition"
+                >
                   View Profile
                 </button>
               </div>
@@ -231,23 +236,93 @@ export default function TeachersPage() {
         )}
       </div>
 
-      {/* Bottom Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
-        <div className="bg-white p-4 rounded-2xl shadow">
-          <h3 className="text-gray-500 text-sm">Total Teaching Hours</h3>
-          <p className="text-xl font-bold mt-1">1,248h</p>
-        </div>
+      {selectedTeacher && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/60 px-4 py-6 backdrop-blur-sm">
+          <div className="relative w-full max-w-3xl overflow-hidden rounded-3xl bg-white shadow-2xl">
+            <button
+              type="button"
+              onClick={() => setSelectedTeacher(null)}
+              className="absolute right-4 top-4 rounded-full bg-slate-100 p-2 text-slate-600 transition hover:bg-slate-200 hover:text-slate-900"
+              aria-label="Close teacher details"
+            >
+              <X size={18} />
+            </button>
 
-        <div className="bg-white p-4 rounded-2xl shadow">
-          <h3 className="text-gray-500 text-sm">Avg. Attendance</h3>
-          <p className="text-xl font-bold mt-1">92.4%</p>
-        </div>
+            <div className="grid gap-0 md:grid-cols-[280px_1fr]">
+              <div className="bg-linear-to-br from-purple-600 to-indigo-700 p-6 text-white">
+                <div className="flex flex-col items-center text-center">
+                  <Image
+                    src="/logo.png"
+                    alt={selectedTeacher.name}
+                    width={160}
+                    height={160}
+                    className="h-40 w-40 rounded-full border-4 border-white/40 object-cover shadow-lg"
+                  />
 
-        <div className="bg-white p-4 rounded-2xl shadow">
-          <h3 className="text-gray-500 text-sm">Punctuality Rate</h3>
-          <p className="text-xl font-bold mt-1">98.1%</p>
+                  <h2 className="mt-5 text-2xl font-bold">
+                    {selectedTeacher.name}
+                  </h2>
+                  <p className="mt-1 text-sm text-white/80">
+                    {selectedTeacher.subject}
+                  </p>
+                  <div className="mt-4 rounded-full bg-white/15 px-4 py-1 text-sm font-medium">
+                    {selectedTeacher.status}
+                  </div>
+                </div>
+              </div>
+
+              <div className="max-h-[80vh] overflow-y-auto p-6 md:p-8">
+                <h3 className="text-xl font-semibold text-slate-900">
+                  Teacher Details
+                </h3>
+                <p className="mt-1 text-sm text-slate-500">
+                  Full profile information for the selected teacher.
+                </p>
+
+                <div className="mt-6 grid gap-4 sm:grid-cols-2">
+                  {[
+                    ["Employee ID", selectedTeacher.employeeID],
+                    ["Institution ID", selectedTeacher.institutionId],
+                    ["Institution Name", selectedTeacher.institutionName],
+                    ["Class", selectedTeacher.class],
+                    ["Subject", selectedTeacher.subject],
+                    ["Joining Year", String(selectedTeacher.joiningYear)],
+                    ["Gender", selectedTeacher.gender],
+                    ["Date of Birth", selectedTeacher.dob],
+                    ["Phone", String(selectedTeacher.teacherNumber)],
+                    ["Parent Phone", String(selectedTeacher.parentNumber)],
+                    ["Email", selectedTeacher.email],
+                    ["Pincode", selectedTeacher.pincode],
+                    ["City", selectedTeacher.city],
+                    ["State", selectedTeacher.state],
+                  ].map(([label, value]) => (
+                    <div
+                      key={label}
+                      className="rounded-2xl border border-slate-200 bg-slate-50 p-4"
+                    >
+                      <p className="text-xs font-medium uppercase tracking-wide text-slate-500">
+                        {label}
+                      </p>
+                      <p className="mt-2 wrap-break-word text-sm font-semibold text-slate-900">
+                        {value || "-"}
+                      </p>
+                    </div>
+                  ))}
+
+                  <div className="sm:col-span-2 rounded-2xl border border-slate-200 bg-slate-50 p-4">
+                    <p className="text-xs font-medium uppercase tracking-wide text-slate-500">
+                      Address
+                    </p>
+                    <p className="mt-2 text-sm font-semibold text-slate-900">
+                      {selectedTeacher.address || "-"}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 }
