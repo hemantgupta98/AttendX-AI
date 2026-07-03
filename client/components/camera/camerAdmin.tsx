@@ -275,14 +275,9 @@ export default function Dashboard() {
                 Verfiy Capture
               </button> */}
 
-              {message && (
-                <div>
-                  <p className=" text-gray-500 text-2xl">{message}</p>
-                </div>
-              )}
               {matched && (
                 <div>
-                  <p className=" text-emerald-600 text-2xl">Face matched</p>
+                  <p className=" text-emerald-600 text-2xl">{message}</p>
                 </div>
               )}
               <button
