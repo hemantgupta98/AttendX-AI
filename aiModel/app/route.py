@@ -35,12 +35,12 @@ def save_upload(image: UploadFile, folder):
 
 @app.post("/ai/admin/signup")
 async def admin_signup(
-    image: UploadFile = File(...),
+    photo: UploadFile = File(..., alias="image"),
     name: str = Form(...)
 ):
 
     path = save_upload(
-        image,
+        photo,
         UPLOAD_DIR
     )
 
@@ -48,8 +48,8 @@ async def admin_signup(
         "success": True,
         "role": "admin",
         "name": name,
-        "image": str(path),
-        "message": "Admin face registered"
+        "photo": str(path),
+        "message": "Yes, I received the admin image successfully"
     }
 
 
@@ -60,12 +60,12 @@ async def admin_signup(
 
 @app.post("/ai/employee/signup")
 async def employee_signup(
-    image: UploadFile = File(...),
+    photo: UploadFile = File(..., alias="image"),
     name: str = Form(...)
 ):
 
     path = save_upload(
-        image,
+        photo,
         UPLOAD_DIR
     )
 
@@ -73,8 +73,8 @@ async def employee_signup(
         "success": True,
         "role": "employee",
         "name": name,
-        "image": str(path),
-        "message": "Employee face registered"
+        "photo": str(path),
+        "message": "Yes, I received the employee image successfully"
     }
 
 
@@ -85,12 +85,12 @@ async def employee_signup(
 
 @app.post("/ai/student/signup")
 async def student_signup(
-    image: UploadFile = File(...),
+    photo: UploadFile = File(..., alias="image"),
     name: str = Form(...)
 ):
 
     path = save_upload(
-        image,
+        photo,
         UPLOAD_DIR
     )
 
@@ -98,8 +98,8 @@ async def student_signup(
         "success": True,
         "role": "student",
         "name": name,
-        "image": str(path),
-        "message": "Student face registered"
+        "photo": str(path),
+        "message": "Yes, I received the student image successfully"
     }
 
 

@@ -112,6 +112,19 @@ export const signup = async (req, res) => {
       adminCode,
     });
 
+    let aiUpload = null;
+
+    try {
+      aiUpload = await uploadService(req.file.path, name);
+    } catch (uploadError) {
+      console.log("Admin AI upload failed", uploadError);
+      aiUpload = {
+        success: false,
+        message:
+          uploadError?.message || "Admin face was saved, but AI upload failed.",
+      };
+    }
+
     console.log("Admin signup saved", {
       id: user._id,
       email: user.email,
@@ -133,9 +146,8 @@ export const signup = async (req, res) => {
         email: user.email,
         adminCode: user.adminCode,
       },
+      aiUpload,
     });
-
-    await uploadService(req.file.path, user._id);
   } catch (error) {
     console.log("Signup Admin error", error);
     res.status(500).json({

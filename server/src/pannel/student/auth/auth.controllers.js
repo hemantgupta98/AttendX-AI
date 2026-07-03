@@ -84,6 +84,20 @@ export const signup = async (req, res) => {
       confirmPassword,
     });
 
+    let aiUpload = null;
+
+    try {
+      aiUpload = await uploadService(req.file.path, name);
+    } catch (uploadError) {
+      console.log("Student AI upload failed", uploadError);
+      aiUpload = {
+        success: false,
+        message:
+          uploadError?.message ||
+          "Student face was saved, but AI upload failed.",
+      };
+    }
+
     console.log("Student signup saved", {
       id: user._id,
       email: user.email,
@@ -102,8 +116,8 @@ export const signup = async (req, res) => {
         id: user._id,
         email: user.email,
       },
+      aiUpload,
     });
-    await uploadService(req.file.path, user._id);
   } catch (error) {
     console.log("Signup Student error", error);
     res.status(500).json({

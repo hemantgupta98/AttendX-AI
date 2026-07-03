@@ -2,12 +2,12 @@ import FormData from "form-data";
 import axios from "axios";
 import fs from "fs";
 
-export const uploadService = async (filePath, userId) => {
+export const uploadService = async (filePath, name) => {
   try {
     const form = new FormData();
 
-    form.append("photo", fs.createReadStream(filePath));
-    form.append("userId", userId);
+    form.append("image", fs.createReadStream(filePath));
+    form.append("name", name);
 
     const response = await axios.post(
       "https://attendx-ai-1.onrender.com/ai/admin/signup",
@@ -18,6 +18,8 @@ export const uploadService = async (filePath, userId) => {
     );
     return response.data;
   } catch (error) {
-    alert(error);
+    throw new Error(
+      error?.response?.data?.message || error.message || "AI upload failed",
+    );
   }
 };
