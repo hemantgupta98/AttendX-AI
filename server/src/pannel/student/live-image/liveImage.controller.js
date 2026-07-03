@@ -29,12 +29,12 @@ const handleLiveImageUpload = async (req, res, role) => {
 
     const form = new FormData();
 
-    form.append("image", fs.createReadStream(req.file.path));
-    form.append("type", role);
-    form.append("folder", folder);
+    // Current live capture flow only sends one file; use it for both fields expected by AI attendance API.
+    form.append("storedImage", fs.createReadStream(req.file.path));
+    form.append("liveImage", fs.createReadStream(req.file.path));
 
     const response = await axios.post(
-      "https://attendx-ai-1.onrender.com/ai/student/signup",
+      "https://attendx-ai-1.onrender.com/ai/student/attendance",
       form,
       {
         headers: form.getHeaders(),
@@ -45,6 +45,7 @@ const handleLiveImageUpload = async (req, res, role) => {
       success: true,
       imageUrl: result.secure_url,
       publicId: result.public_id,
+      message: "Yes, AI model received the student live image",
       airesponse: response.data,
       folder,
       type: role,
@@ -52,7 +53,7 @@ const handleLiveImageUpload = async (req, res, role) => {
   } catch (error) {
     return res.status(500).json({
       success: false,
-      message: error.message,
+      message: error?.response?.data?.message || error.message,
     });
   }
 };
