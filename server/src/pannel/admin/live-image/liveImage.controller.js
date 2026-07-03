@@ -66,12 +66,23 @@ const handleLiveImageUpload = async (req, res, role) => {
       },
     );
 
+    const now = new Date();
+    const isMatched = Boolean(response.data?.success);
+    const attendanceDetails = {
+      name: req.user?.name || req.user?.adminName || "Admin",
+      photo: req.user?.photo || result.secure_url,
+      date: now.toLocaleDateString(),
+      time: now.toLocaleTimeString(),
+      status: isMatched ? "Present" : "Not Matched",
+    };
+
     return res.status(200).json({
       success: true,
       imageUrl: result.secure_url,
       publicId: result.public_id,
-      message: response.data?.success ? "Face matched" : "Face not matched",
-      matched: Boolean(response.data?.success),
+      message: isMatched ? "Face matched" : "Face not matched",
+      matched: isMatched,
+      attendanceDetails,
       airesponse: response.data,
       folder,
       type: role,

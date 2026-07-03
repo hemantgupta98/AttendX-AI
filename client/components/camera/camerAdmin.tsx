@@ -2,7 +2,7 @@
 "use client";
 
 import { useRef, useEffect, useState, useCallback } from "react";
-import axios from "axios";
+import { useRouter } from "next/navigation";
 
 export default function Dashboard() {
   const videoRef = useRef<HTMLVideoElement | null>(null);
@@ -14,6 +14,7 @@ export default function Dashboard() {
   const [streamActive, setStreamActive] = useState(false);
   const [matched, setMatched] = useState(false);
   const [message, setMessage] = useState("");
+  const router = useRouter();
 
   const stopCamera = useCallback(() => {
     const stream = videoRef.current?.srcObject;
@@ -128,7 +129,14 @@ export default function Dashboard() {
       setMatched(faceMatched);
       setMessage(serverMessage);
       alert(faceMatched ? "Face matched" : "Face not matched");
-      // Keep the captured image so user can retry or verify again without recapturing.
+
+      if (faceMatched && data?.attendanceDetails) {
+        sessionStorage.setItem(
+          "adminAttendanceDetails",
+          JSON.stringify(data.attendanceDetails),
+        );
+        router.push("/src/admin/attendance");
+      }
     } catch (err) {
       console.error(err);
       alert("Upload error: " + (err as Error).message);
@@ -146,38 +154,6 @@ export default function Dashboard() {
     setPreviewUrl(null);
   };
 
-  const verifyImage = async () => {
-    try {
-      const response = await axios.post(
-        "https://attendx-ai-n8uq.onrender.com/api/admin/verified/attendance",
-        {},
-        {
-          withCredentials: true,
-        },
-      );
-      const isMatched = Boolean(
-        response.data?.matched ?? response.data?.success,
-      );
-      const statusMessage = isMatched ? "Face matched" : "Face not matched";
-
-      setMatched(isMatched);
-      setMessage(response.data?.message || statusMessage);
-      alert(statusMessage);
-    } catch (error) {
-      setMatched(false);
-      setMessage("Face not matched");
-      if (axios.isAxiosError(error)) {
-        console.error(error.response?.data);
-        alert(
-          error.response?.data?.message ??
-            error.message ??
-            "Failed to retrive the data from admin.",
-        );
-      } else {
-        console.error(error);
-      }
-    }
-  };
   return (
     <div className="min-h-screen bg-[radial-gradient(circle_at_top,#eef4ff_0%,#f8fafc_35%,#eef2f7_100%)] text-slate-900">
       <main className="mx-auto flex min-h-screen w-full max-w-7xl items-center px-4 py-6 sm:px-6 lg:px-8">
