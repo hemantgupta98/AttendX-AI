@@ -3,6 +3,7 @@ import FormData from "form-data";
 import fs from "fs";
 import path from "path";
 import { uploadImage as uploadToCloudinary } from "../media/uploadCloudinary.js";
+import { attendance, attendance } from "../database/attendance.model.js";
 
 const roleFolders = {
   admin: "live-image/admin",
@@ -68,6 +69,18 @@ const handleLiveImageUpload = async (req, res, role) => {
 
     const now = new Date();
     const isMatched = Boolean(response.data?.success);
+    await attendance.create({
+      admin: req.user._id,
+      name: req.user.name,
+      storedImage: req.user.photo,
+      liveImage: result.secure_url,
+      status: isMatched ? "Present" : "Absent",
+      matched: isMatched,
+      confidence:
+        response.data?.confidence || response.data?.match_percentage || null,
+      aiResponse: response.data,
+      date: now,
+    });
     const attendanceDetails = {
       name: req.user?.name || req.user?.adminName || "Admin",
       photo: req.user?.photo || result.secure_url,
@@ -81,6 +94,7 @@ const handleLiveImageUpload = async (req, res, role) => {
       imageUrl: result.secure_url,
       publicId: result.public_id,
       message: isMatched ? "Face matched" : "Face not matched",
+      status: isMatched ? "Present" : "Absent",
       matched: isMatched,
       attendanceDetails,
       airesponse: response.data,
@@ -101,4 +115,51 @@ const handleLiveImageUpload = async (req, res, role) => {
 
 export const uploadAdminImage = async (req, res) => {
   return handleLiveImageUpload(req, res, "admin");
+};
+
+export const getAttendance = async (req, res) => {
+  try {
+    const attendanceData = await attendance
+      .findById(req.params.id)
+      .populate({
+        path: "user",
+        select:
+          "name email photo employeeID teacherNumber parentNumber gender dob address city state pincode institutionName class subject department course designation joiningYear",
+      })
+      .populate({
+        path: "admin",
+        select: "name email institutionName",
+      });
+
+    if (!attendanceData) {
+      return res.status(404).json({
+        success: false,
+        message: "Attendance not found",
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      data: {
+        attendanceId: attendanceData._id,
+        user: attendanceData.user,
+        admin: attendanceData.admin,
+        storedImage: attendanceData.storedImage,
+        liveImage: attendanceData.liveImage,
+        status: attendanceData.status,
+        matched: attendanceData.matched,
+        confidence: attendanceData.confidence,
+        location: attendanceData.location,
+        date: attendanceData.date,
+        time: attendanceData.time,
+        createdAt: attendanceData.createdAt,
+        updatedAt: attendanceData.updatedAt,
+      },
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
 };

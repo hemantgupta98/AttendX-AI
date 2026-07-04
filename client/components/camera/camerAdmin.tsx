@@ -40,12 +40,10 @@ export default function Dashboard() {
       if (videoRef.current) {
         videoRef.current.srcObject = stream;
         setStreamActive(true);
-        // attempt to autoplay (some browsers require this to be called)
+
         try {
           await videoRef.current.play();
-        } catch {
-          // ignore autoplay errors
-        }
+        } catch {}
       }
     } catch (error) {
       console.log(error);

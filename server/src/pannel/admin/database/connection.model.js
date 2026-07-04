@@ -1,7 +1,6 @@
 import mongoose from "mongoose";
-import { hashPassword } from "./auth.hashed.js";
 
-const signupSchema = new mongoose.Schema(
+const teacherSchema = new mongoose.Schema(
   {
     userId: {
       type: mongoose.Schema.Types.ObjectId,
@@ -20,7 +19,7 @@ const signupSchema = new mongoose.Schema(
     institutionName: { type: String, required: true },
     institutionId: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "admin",
+      ref: "teacher",
       required: false,
       default: null,
     },
@@ -35,28 +34,4 @@ const signupSchema = new mongoose.Schema(
   { timestamps: true },
 );
 
-signupSchema.pre("save", async function () {
-  if (!this.isModified("password")) return;
-  this.password = await hashPassword(this.password);
-});
-
-const loginSchema = new mongoose.Schema(
-  {
-    userId: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "admin",
-    },
-    email: { type: String, required: true },
-    password: { type: String, required: true },
-    loginAt: {
-      type: Date,
-      default: Date.now,
-    },
-  },
-  { timestamps: true },
-);
-
-const signupModel = mongoose.model("EmployeesignupHistory", signupSchema);
-const loginModel = mongoose.model("EmployeeloginHistory", loginSchema);
-
-export { signupModel, loginModel };
+export const Teacher = mongoose.model("Teacher", teacherSchema);
