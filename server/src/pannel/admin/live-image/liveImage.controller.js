@@ -3,7 +3,7 @@ import FormData from "form-data";
 import fs from "fs";
 import path from "path";
 import { uploadImage as uploadToCloudinary } from "../media/uploadCloudinary.js";
-import { attendance, attendance } from "../database/attendance.model.js";
+import { attendance } from "../database/attendance.model.js";
 
 const roleFolders = {
   admin: "live-image/admin",
