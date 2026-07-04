@@ -69,6 +69,6 @@ const attendanceSchema = new mongoose.Schema(
   },
 );
 
-const attendance = mongoose.model("AdminsignupHistory", attendanceSchema);
+const attendance = mongoose.model("AttendanceHistory", attendanceSchema);
 
 export { attendance };
