@@ -50,8 +50,8 @@ export default function TeachersPage() {
         },
       );
 
-      const rawList: any[] = Array.isArray(res.data?.teachers)
-        ? res.data.teachers
+      const rawList: any[] = Array.isArray(res.data?.student)
+        ? res.data.student
         : Array.isArray(res.data?.data)
           ? res.data.data
           : [];
@@ -97,7 +97,6 @@ export default function TeachersPage() {
   return (
     <div className="p-6 bg-gray-50 min-h-screen">
       {/* Header */}
-      {/* ================= Header ================= */}
 
       <div className="mb-8 flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
         <div>
