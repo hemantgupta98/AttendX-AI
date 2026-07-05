@@ -129,7 +129,7 @@ export default function TeachersPage() {
               Please share your{" "}
               <span className="font-semibold">Institution Code</span> from the{" "}
               <span className="font-semibold">Profile</span> section with the
-              teacher. They will need this code during registration to join your
+              student. They will need this code during registration to join your
               institution.
             </p>
 

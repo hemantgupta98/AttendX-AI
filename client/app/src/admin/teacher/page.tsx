@@ -276,7 +276,7 @@ export default function TeachersPage() {
               <div className="bg-linear-to-br from-purple-600 to-indigo-700 p-6 text-white">
                 <div className="flex flex-col items-center text-center">
                   <Image
-                    src="/logo.png"
+                    src={selectedTeacher.photo || "/logo.png"}
                     alt={selectedTeacher.name}
                     width={160}
                     height={160}
