@@ -2,6 +2,7 @@
 "use client";
 
 import { useRef, useEffect, useState, useCallback } from "react";
+import { useRouter } from "next/navigation";
 
 export default function Dashboard() {
   const videoRef = useRef<HTMLVideoElement | null>(null);
@@ -11,6 +12,9 @@ export default function Dashboard() {
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [isUploading, setIsUploading] = useState(false);
   const [streamActive, setStreamActive] = useState(false);
+  const [matched, setMatched] = useState(false);
+  const [message, setMessage] = useState("");
+  const router = useRouter();
 
   const stopCamera = useCallback(() => {
     const stream = videoRef.current?.srcObject;
@@ -39,9 +43,7 @@ export default function Dashboard() {
         // attempt to autoplay (some browsers require this to be called)
         try {
           await videoRef.current.play();
-        } catch (e) {
-          // ignore autoplay errors
-        }
+        } catch (e) {}
       }
     } catch (error) {
       console.log(error);
@@ -105,6 +107,7 @@ export default function Dashboard() {
         "https://attendx-ai-n8uq.onrender.com/api/employee/live-image/upload",
         {
           method: "POST",
+          credentials: "include",
           body: formData,
         },
       );
@@ -117,13 +120,21 @@ export default function Dashboard() {
 
       const data = await response.json();
       console.log(data);
-      alert("Thanks — image sent");
-      // clear preview and image
-      setImage(null);
-      setPreviewUrl((prev) => {
-        if (prev) URL.revokeObjectURL(prev);
-        return null;
-      });
+      const faceMatched = Boolean(data?.matched ?? data?.airesponse?.success);
+      const serverMessage =
+        data?.message || data?.airesponse?.message || "Verification complete";
+
+      setMatched(faceMatched);
+      setMessage(serverMessage);
+      alert(faceMatched ? "Face matched" : "Face not matched");
+
+      if (faceMatched && data?.attendanceDetails) {
+        sessionStorage.setItem(
+          "adminAttendanceDetails",
+          JSON.stringify(data.attendanceDetails),
+        );
+        router.push("/src/teacher/dashboard");
+      }
     } catch (err) {
       console.error(err);
       alert("Upload error: " + (err as Error).message);
@@ -230,6 +241,11 @@ export default function Dashboard() {
               >
                 {isUploading ? "Uploading..." : "Submit Attendance"}
               </button>
+              {matched && (
+                <div>
+                  <p className=" text-emerald-600 text-2xl">{message}</p>
+                </div>
+              )}
               <button
                 onClick={deleteImage}
                 disabled={!image || isUploading}
