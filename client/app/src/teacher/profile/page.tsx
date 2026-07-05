@@ -113,7 +113,7 @@ const page = () => {
             <div className="-mt-16 flex flex-col gap-6 p-8 lg:flex-row lg:items-center">
               <div className="relative h-36 w-36 overflow-hidden rounded-full border-8 border-white shadow-xl">
                 <Image
-                  src="/logo.png"
+                  src={profile.photo || "/logo.png"}
                   alt="Employee"
                   fill
                   className="object-cover"
