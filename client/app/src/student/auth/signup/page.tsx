@@ -32,6 +32,7 @@ type Student = {
   state: string;
   pincode: number;
   institutionName: string;
+  adminCode: string;
   studentID: string;
   class: string;
   stream: string;
@@ -69,7 +70,14 @@ export default function Home() {
   const stepFields: Record<number, (keyof Student)[]> = {
     1: ["name", "gender", "dob", "photo"],
     2: ["address", "city", "state", "pincode"],
-    3: ["institutionName", "stream", "section", "studentID", "admissionYear"],
+    3: [
+      "institutionName",
+      "adminCode",
+      "stream",
+      "section",
+      "studentID",
+      "admissionYear",
+    ],
     4: ["parentNumber", "studentNumber"],
     5: ["email", "password", "confirmPassword"],
   };
@@ -427,6 +435,23 @@ export default function Home() {
                 {errors.institutionName && (
                   <p className="m-2 text-sm text-red-500">
                     {errors.institutionName.message}
+                  </p>
+                )}
+              </div>
+              <div>
+                <p className=" text-md font-light text-gray-700">
+                  Institution ID<span className="text-red-500 mb-5">*</span>
+                </p>
+                <Input
+                  className="input"
+                  placeholder="Eg:- Jharkhand Rai University etc."
+                  {...register("adminCode", {
+                    required: "Enter your institution ID",
+                  })}
+                />
+                {errors.adminCode && (
+                  <p className="m-2 text-sm text-red-500">
+                    {errors.adminCode.message}
                   </p>
                 )}
               </div>

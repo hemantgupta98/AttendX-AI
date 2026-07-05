@@ -18,6 +18,12 @@ const signupSchema = new mongoose.Schema(
     state: { type: String, required: true },
     pincode: { type: String, required: true },
     institutionName: { type: String, required: true },
+    institutionId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "student",
+      required: false,
+      default: null,
+    },
     studentID: { type: String, required: true },
     class: { type: String, required: true },
     stream: { type: String, required: true },

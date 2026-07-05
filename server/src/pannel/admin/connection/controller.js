@@ -1,4 +1,5 @@
 import { signupModel } from "../../employee/auth/auth.model.js";
+import { signupModel as studentModel } from "../../student/auth/auth.model.js";
 
 export const getTeacher = async (req, res) => {
   try {
@@ -40,6 +41,49 @@ export const getTeacher = async (req, res) => {
     res.status(500).json({
       success: false,
       message: "Failed to fetch teachers.",
+    });
+  }
+};
+
+export const getStudent = async (req, res) => {
+  try {
+    const student = await studentModel
+      .find({ institutionId: req.user.id })
+      .select(
+        "userId name gender dob photo studentNumber parentNumber address city state pincode institutionName studentID class stream  admissionYear email institutionId",
+      );
+    res.status(200).json({
+      success: true,
+      message: "Students fetched successfully",
+      totalStudent: student.length,
+      student: student.map((user) => ({
+        userId: user.userId || "",
+        id: user._id,
+        institutionId: user.institutionId || "",
+        name: user.name || "",
+        gender: user.gender || "",
+        dob: user.dob || "",
+        photo: user.photo || "",
+        studentNumber: user.studentNumber || "",
+        parentNumber: user.parentNumber || "",
+        address: user.address || "",
+        city: user.city || "",
+        state: user.state || "",
+        pincode: user.pincode || "",
+        institutionName: user.institutionName || "",
+        studentID: user.studentID || "",
+        class: user.class || "",
+        stream: user.stream || "",
+        admissionYear: user.admissionYear || "",
+        email: user.email || "",
+      })),
+    });
+  } catch (error) {
+    console.error("Get Students Error:", error);
+
+    res.status(500).json({
+      success: false,
+      message: "Failed to fetch students.",
     });
   }
 };

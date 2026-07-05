@@ -1,190 +1,379 @@
+/* eslint-disable react-hooks/set-state-in-effect */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { Search, Filter, Plus, X } from "lucide-react";
+import axios from "axios";
 import Image from "next/image";
 
-interface Student {
-  id: string;
+type Students = {
+  institutionId: string;
   name: string;
-  email: string;
+  gender: string;
+  dob: string;
+  photo: string;
+  studentNumber: number;
+  parentNumber: number;
+  address: string;
+  city: string;
+  state: string;
+  pincode: string;
+  institutionName: string;
+  studentID: string;
   class: string;
-  section: string;
-  attendance: number;
-  faceStatus: "Ready" | "Low Quality" | "Missing";
-  image: string;
-}
+  stream: string;
+  admissionYear: number;
+  email: string;
+  status: "Active";
+};
 
-const studentsData: Student[] = [
-  {
-    id: "STU-2024-001",
-    name: "Alexander Thompson",
-    email: "alex.t@school.edu",
-    class: "Grade 10",
-    section: "A",
-    attendance: 94,
-    faceStatus: "Ready",
-    image: "https://i.pravatar.cc/100?img=1",
-  },
-  {
-    id: "STU-2024-002",
-    name: "Sarah Jenkins",
-    email: "sarah.j@school.edu",
-    class: "Grade 10",
-    section: "B",
-    attendance: 88,
-    faceStatus: "Ready",
-    image: "https://i.pravatar.cc/100?img=2",
-  },
-  {
-    id: "STU-2024-003",
-    name: "Michael Chen",
-    email: "m.chen@school.edu",
-    class: "Grade 11",
-    section: "A",
-    attendance: 72,
-    faceStatus: "Low Quality",
-    image: "https://i.pravatar.cc/100?img=3",
-  },
-  {
-    id: "STU-2024-004",
-    name: "Elena Rodriguez",
-    email: "elena.r@school.edu",
-    class: "Grade 10",
-    section: "A",
-    attendance: 96,
-    faceStatus: "Ready",
-    image: "https://i.pravatar.cc/100?img=4",
-  },
-  {
-    id: "STU-2024-005",
-    name: "James Wilson",
-    email: "j.wilson@school.edu",
-    class: "Grade 12",
-    section: "C",
-    attendance: 45,
-    faceStatus: "Missing",
-    image: "https://i.pravatar.cc/100?img=5",
-  },
-];
-
-export default function StudentDirectory() {
+export default function TeachersPage() {
+  const apiBaseUrl = "https://attendx-ai-n8uq.onrender.com/api";
   const [search, setSearch] = useState("");
 
-  const filtered = studentsData.filter((s) =>
-    s.name.toLowerCase().includes(search.toLowerCase()),
+  const [profile, setProfile] = useState<Students[]>([]);
+  const [error, setError] = useState("");
+  const [selectedStudent, setSelectedStudent] = useState<Students | null>(null);
+
+  const fetchProfile = async () => {
+    try {
+      const token = localStorage.getItem("adminToken");
+
+      const res = await axios.get(
+        `${apiBaseUrl}/admin/connection/getStudents`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+          withCredentials: true,
+        },
+      );
+
+      const rawList: any[] = Array.isArray(res.data?.teachers)
+        ? res.data.teachers
+        : Array.isArray(res.data?.data)
+          ? res.data.data
+          : [];
+
+      const studentList: Students[] = rawList.map((item: any) => ({
+        institutionId: item?.institutionId ?? "",
+        name: item?.name ?? "",
+        gender: item?.gender ?? "",
+        dob: item?.dob ?? "",
+        photo: item?.photo ?? "",
+        studentNumber: item?.studentNumber ?? 0,
+        parentNumber: item?.parentNumber ?? 0,
+        address: item?.address ?? "",
+        city: item?.city ?? "",
+        state: item?.state ?? "",
+        pincode: item?.pincode ?? "",
+        institutionName: item?.institutionName ?? "",
+        studentID: item?.studentID ?? "",
+        class: item?.class ?? "",
+        stream: item?.stream ?? "",
+        admissionYear: item?.admissionYear ?? 0,
+        email: item?.email ?? "",
+        status: "Active",
+      }));
+
+      setProfile(studentList);
+      setError("");
+    } catch (error: any) {
+      console.error(error);
+      setError(error.response?.data?.message || "Failed to fetch profile");
+    }
+  };
+
+  useEffect(() => {
+    fetchProfile();
+  }, []);
+
+  // FIX: now works because profile is an array.
+  const filteredStudents = profile.filter((t: Students) =>
+    t.name.toLowerCase().includes(search.toLowerCase()),
   );
 
   return (
     <div className="p-6 bg-gray-50 min-h-screen">
       {/* Header */}
-      <div className="flex justify-between items-center mb-6">
+      {/* ================= Header ================= */}
+
+      <div className="mb-8 flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
         <div>
-          <h1 className="text-2xl font-bold">Student Directory</h1>
-          <p className="text-gray-500 text-sm">
-            Manage student profiles and attendance
+          <h1 className="text-3xl font-bold text-slate-900">
+            Student Management
+          </h1>
+
+          <p className="mt-2 text-sm text-slate-500">
+            Manage student records, admission details, academic information, and
+            profile updates from one place.
           </p>
         </div>
-        <div className="flex gap-3">
-          <button className="px-4 py-2 border rounded-lg text-sm">
-            Bulk Upload
-          </button>
-          <button className="px-4 py-2 border rounded-lg text-sm">
-            Export
-          </button>
-          <button className="px-4 py-2 bg-purple-600 text-white rounded-lg text-sm">
-            + Add Student
-          </button>
+
+        <button className="flex items-center justify-center gap-2 rounded-xl bg-indigo-600 px-5 py-3 font-semibold text-white shadow hover:bg-indigo-700 transition">
+          <Plus size={18} />
+          Add Student
+        </button>
+      </div>
+
+      {/* Search + Filter */}
+      <div className="mb-6 flex flex-col gap-4 md:flex-row">
+        {/* Search */}
+
+        <div className="flex flex-1 items-center rounded-xl border bg-white px-4 py-3 shadow-sm">
+          <Search size={20} className="text-slate-400" />
+
+          <input
+            placeholder="Search by name, Student ID, email..."
+            className="ml-3 w-full bg-transparent outline-none"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+          />
         </div>
+
+        {/* Filter */}
+
+        <button className="flex items-center justify-center gap-2 rounded-xl border bg-white px-5 py-3 hover:bg-slate-50">
+          <Filter size={18} />
+          Filters
+        </button>
       </div>
 
-      {/* Stats */}
-      <div className="grid grid-cols-4 gap-4 mb-6">
-        {[
-          { label: "Total Students", value: "1,248" },
-          { label: "Enrolled Faces", value: "1,192" },
-          { label: "Incomplete Data", value: "56" },
-          { label: "Active Classes", value: "24" },
-        ].map((item, i) => (
-          <div key={i} className="bg-white p-4 rounded-xl shadow-sm">
-            <p className="text-gray-500 text-sm">{item.label}</p>
-            <h2 className="text-xl font-semibold">{item.value}</h2>
-          </div>
-        ))}
-      </div>
+      {/* FIX: error message is now actually shown to the user */}
+      {error && (
+        <div className="mb-4 rounded-xl bg-red-50 border border-red-200 text-red-600 text-sm px-4 py-3">
+          {error}
+        </div>
+      )}
 
-      {/* Search */}
-      <div className="mb-4">
-        <input
-          type="text"
-          placeholder="Search by name or ID..."
-          className="w-full p-3 border rounded-lg"
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-        />
-      </div>
+      {/* Cards */}
 
-      {/* Table */}
-      <div className="bg-white rounded-xl shadow-sm overflow-hidden">
-        <table className="w-full text-sm">
-          <thead className="bg-gray-100 text-gray-600">
-            <tr>
-              <th className="p-3 text-left">Photo</th>
-              <th className="p-3 text-left">Name</th>
-              <th className="p-3 text-left">Student ID</th>
-              <th className="p-3 text-left">Class</th>
-              <th className="p-3 text-left">Attendance</th>
-              <th className="p-3 text-left">Face Data</th>
-            </tr>
-          </thead>
-          <tbody>
-            {filtered.map((s) => (
-              <tr key={s.id} className="border-t">
-                <td className="p-3">
-                  <Image src="/logo.png" alt="logo" height={105} width={105} />
-                </td>
-                <td className="p-3">
-                  <p className="font-medium">{s.name}</p>
-                  <p className="text-gray-400 text-xs">{s.email}</p>
-                </td>
-                <td className="p-3">{s.id}</td>
-                <td className="p-3">
-                  {s.class} {s.section}
-                </td>
-                <td className="p-3">
-                  <div className="flex items-center gap-2">
-                    <div className="w-24 h-2 bg-gray-200 rounded-full">
-                      <div
-                        className={`h-2 rounded-full ${
-                          s.attendance > 85
-                            ? "bg-green-500"
-                            : s.attendance > 60
-                              ? "bg-yellow-500"
-                              : "bg-red-500"
-                        }`}
-                        style={{ width: `${s.attendance}%` }}
-                      />
-                    </div>
-                    <span>{s.attendance}%</span>
-                  </div>
-                </td>
-                <td className="p-3">
-                  <span
-                    className={`px-2 py-1 text-xs rounded-full ${
-                      s.faceStatus === "Ready"
-                        ? "bg-green-100 text-green-600"
-                        : s.faceStatus === "Low Quality"
-                          ? "bg-yellow-100 text-yellow-600"
-                          : "bg-red-100 text-red-600"
-                    }`}
+      {filteredStudents.length === 0 ? (
+        <div className="flex flex-col items-center justify-center py-20">
+          <h2 className="mt-6 text-2xl font-bold text-slate-800">
+            No Students Found
+          </h2>
+          <p className="mt-2 max-w-md text-center text-slate-500">
+            There are currently no students available. Click the button below to
+            add your first student.
+          </p>
+        </div>
+      ) : (
+        <div className="rounded-2xl border border-slate-200 bg-white shadow-sm overflow-hidden">
+          <div className="overflow-x-auto">
+            <table className="min-w-275 w-full">
+              <thead className="bg-slate-100">
+                <tr className="text-left text-sm font-semibold text-slate-700">
+                  <th className="px-6 py-4">Student</th>
+                  <th className="px-6 py-4">Student ID</th>
+                  <th className="px-6 py-4">Class</th>
+                  <th className="px-6 py-4">Stream</th>
+                  <th className="px-6 py-4">Gender</th>
+                  <th className="px-6 py-4">Phone</th>
+                  <th className="px-6 py-4">Email</th>
+                  <th className="px-6 py-4">Status</th>
+                  <th className="px-6 py-4 text-center">Action</th>
+                </tr>
+              </thead>
+
+              <tbody>
+                {filteredStudents.map((student) => (
+                  <tr
+                    key={student.studentID}
+                    className="border-t hover:bg-slate-50 transition-all duration-200"
                   >
-                    {s.faceStatus}
+                    {/* Student */}
+                    <td className="px-6 py-4">
+                      <div className="flex items-center gap-3">
+                        <Image
+                          src={student.photo || "/logo.png"}
+                          alt={student.name}
+                          width={50}
+                          height={50}
+                          className="rounded-full border object-cover"
+                        />
+
+                        <div>
+                          <h3 className="font-semibold text-slate-800">
+                            {student.name}
+                          </h3>
+
+                          <p className="text-sm text-slate-500">
+                            {student.institutionName}
+                          </p>
+                        </div>
+                      </div>
+                    </td>
+
+                    {/* Student ID */}
+                    <td className="px-6 py-4 font-medium">
+                      {student.studentID}
+                    </td>
+
+                    {/* Class */}
+                    <td className="px-6 py-4">
+                      <span className="rounded-lg bg-indigo-50 px-3 py-1 text-indigo-700 font-medium">
+                        {student.class}
+                      </span>
+                    </td>
+
+                    {/* Stream */}
+                    <td className="px-6 py-4">{student.stream}</td>
+
+                    {/* Gender */}
+                    <td className="px-6 py-4">{student.gender}</td>
+
+                    {/* Phone */}
+                    <td className="px-6 py-4">{student.studentNumber}</td>
+
+                    {/* Email */}
+                    <td className="px-6 py-4 text-slate-600">
+                      {student.email}
+                    </td>
+
+                    {/* Status */}
+                    <td className="px-6 py-4">
+                      <span className="rounded-full bg-green-100 px-3 py-1 text-sm font-medium text-green-700">
+                        Active
+                      </span>
+                    </td>
+
+                    {/* Action */}
+                    <td className="px-6 py-4 text-center">
+                      <button
+                        onClick={() => setSelectedStudent(student)}
+                        className="rounded-xl bg-indigo-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-indigo-700"
+                      >
+                        View Profile
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+
+          {filteredStudents.length === 0 && (
+            <div className="py-12 text-center text-slate-500">
+              No students found.
+            </div>
+          )}
+        </div>
+      )}
+      {selectedStudent && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 px-4 py-6 backdrop-blur-sm">
+          <div className="relative w-full max-w-5xl overflow-hidden rounded-3xl bg-white shadow-2xl">
+            {/* Close Button */}
+            <button
+              onClick={() => setSelectedStudent(null)}
+              className="absolute right-5 top-5 rounded-full bg-slate-100 p-2 text-slate-600 transition hover:bg-slate-200"
+            >
+              <X size={18} />
+            </button>
+
+            <div className="grid md:grid-cols-[320px_1fr]">
+              {/* Left Side */}
+              <div className="bg-linear-to-br from-indigo-600 via-purple-600 to-violet-700 p-8 text-white">
+                <div className="flex flex-col items-center">
+                  <Image
+                    src={selectedStudent.photo || "/logo.png"}
+                    alt={selectedStudent.name}
+                    width={170}
+                    height={170}
+                    className="h-40 w-40 rounded-full border-4 border-white object-cover shadow-lg"
+                  />
+
+                  <h2 className="mt-5 text-2xl font-bold">
+                    {selectedStudent.name}
+                  </h2>
+
+                  <p className="mt-1 text-white/80">Student</p>
+
+                  <span className="mt-4 rounded-full bg-white/20 px-4 py-2 text-sm font-semibold">
+                    {selectedStudent.status}
                   </span>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+
+                  <div className="mt-8 w-full space-y-4">
+                    <div className="rounded-xl bg-white/10 p-4">
+                      <p className="text-xs text-white/70">Student ID</p>
+                      <p className="font-semibold">
+                        {selectedStudent.studentID}
+                      </p>
+                    </div>
+
+                    <div className="rounded-xl bg-white/10 p-4">
+                      <p className="text-xs text-white/70">Class</p>
+                      <p className="font-semibold">{selectedStudent.class}</p>
+                    </div>
+
+                    <div className="rounded-xl bg-white/10 p-4">
+                      <p className="text-xs text-white/70">Stream</p>
+                      <p className="font-semibold">{selectedStudent.stream}</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Right Side */}
+
+              <div className="max-h-[85vh] overflow-y-auto p-8">
+                <h2 className="text-2xl font-bold text-slate-800">
+                  Student Details
+                </h2>
+
+                <p className="mt-1 text-slate-500">
+                  Complete information about the selected student.
+                </p>
+
+                <div className="mt-8 grid gap-5 sm:grid-cols-2">
+                  {[
+                    ["Student ID", selectedStudent.studentID],
+                    ["Institution ID", selectedStudent.institutionId],
+                    ["Institution Name", selectedStudent.institutionName],
+                    ["Class", selectedStudent.class],
+                    ["Stream", selectedStudent.stream],
+                    ["Admission Year", selectedStudent.admissionYear],
+                    ["Gender", selectedStudent.gender],
+                    ["Date of Birth", selectedStudent.dob],
+                    ["Student Number", selectedStudent.studentNumber],
+                    ["Parent Number", selectedStudent.parentNumber],
+                    ["Email", selectedStudent.email],
+                    ["City", selectedStudent.city],
+                    ["State", selectedStudent.state],
+                    ["Pincode", selectedStudent.pincode],
+                  ].map(([label, value]) => (
+                    <div
+                      key={label}
+                      className="rounded-2xl border border-slate-200 bg-slate-50 p-5"
+                    >
+                      <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">
+                        {label}
+                      </p>
+
+                      <p className="mt-2 wrap-break-word text-base font-semibold text-slate-800">
+                        {value || "-"}
+                      </p>
+                    </div>
+                  ))}
+
+                  {/* Address */}
+
+                  <div className="sm:col-span-2 rounded-2xl border border-slate-200 bg-slate-50 p-5">
+                    <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">
+                      Address
+                    </p>
+
+                    <p className="mt-2 text-base font-semibold text-slate-800">
+                      {selectedStudent.address || "-"}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
