@@ -69,18 +69,6 @@ const handleLiveImageUpload = async (req, res, role) => {
 
     const now = new Date();
     const isMatched = Boolean(response.data?.success);
-    await attendance.create({
-      admin: req.user._id,
-      name: req.user.name,
-      storedImage: req.user.photo,
-      liveImage: result.secure_url,
-      status: isMatched ? "Present" : "Absent",
-      matched: isMatched,
-      confidence:
-        response.data?.confidence || response.data?.match_percentage || null,
-      aiResponse: response.data,
-      date: now,
-    });
     const attendanceDetails = {
       name: req.user?.name || req.user?.adminName || "Admin",
       photo: req.user?.photo || result.secure_url,
@@ -94,7 +82,6 @@ const handleLiveImageUpload = async (req, res, role) => {
       imageUrl: result.secure_url,
       publicId: result.public_id,
       message: isMatched ? "Face matched" : "Face not matched",
-      status: isMatched ? "Present" : "Absent",
       matched: isMatched,
       attendanceDetails,
       airesponse: response.data,
@@ -163,3 +150,18 @@ export const getAttendance = async (req, res) => {
     });
   }
 };
+
+{
+  /** await attendance.create({
+      admin: req.user._id,
+      name: req.user.name,
+      storedImage: req.user.photo,
+      liveImage: result.secure_url,
+      status: isMatched ? "Present" : "Absent",
+      matched: isMatched,
+      confidence:
+        response.data?.confidence || response.data?.match_percentage || null,
+      aiResponse: response.data,
+      date: now,
+    }); */
+}
