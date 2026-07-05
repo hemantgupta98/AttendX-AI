@@ -8,6 +8,7 @@ import axios from "axios";
 import Image from "next/image";
 
 type Teachers = {
+  id: string;
   institutionId: string;
   name: string;
   gender: string;
@@ -57,6 +58,7 @@ export default function TeachersPage() {
           : [];
 
       const teachersList: Teachers[] = rawList.map((item: any) => ({
+        id: item?.id ?? "",
         institutionId: item?.institutionId ?? "",
         name: item?.name ?? "",
         gender: item?.gender ?? "",
@@ -93,6 +95,30 @@ export default function TeachersPage() {
   const filteredTeachers = profile.filter((t: Teachers) =>
     t.name.toLowerCase().includes(search.toLowerCase()),
   );
+  const deleteTeacher = async (id: string) => {
+    try {
+      const token = localStorage.getItem("adminToken");
+
+      await axios.delete(`${apiBaseUrl}/admin/connection/deleteTeacher/${id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      fetchProfile();
+    } catch (error) {
+      console.error(error);
+    }
+  };
+  const handleDelete = async (id: string) => {
+    const confirmDelete = window.confirm(
+      "Are you sure you want to delete this student?",
+    );
+
+    if (!confirmDelete) return;
+
+    await deleteTeacher(id);
+  };
 
   return (
     <div className="p-6 bg-gray-50 min-h-screen">
@@ -253,6 +279,14 @@ export default function TeachersPage() {
                   className="mt-6 w-full rounded-xl bg-purple-600 py-3 text-white font-semibold hover:bg-purple-700 transition"
                 >
                   View Profile
+                </button>
+                {/* Button */}
+                <button
+                  type="button"
+                  onClick={() => handleDelete(teacher.id)}
+                  className="mt-6 w-full rounded-xl bg-purple-600 py-3 text-white font-semibold hover:bg-purple-700 transition"
+                >
+                  Delete
                 </button>
               </div>
             ))}
