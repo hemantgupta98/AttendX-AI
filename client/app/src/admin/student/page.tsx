@@ -8,6 +8,7 @@ import axios from "axios";
 import Image from "next/image";
 
 type Students = {
+  id: string;
   institutionId: string;
   name: string;
   gender: string;
@@ -57,6 +58,7 @@ export default function TeachersPage() {
           : [];
 
       const studentList: Students[] = rawList.map((item: any) => ({
+        id: item.id ?? "",
         institutionId: item?.institutionId ?? "",
         name: item?.name ?? "",
         gender: item?.gender ?? "",
@@ -93,6 +95,30 @@ export default function TeachersPage() {
   const filteredStudents = profile.filter((t: Students) =>
     t.name.toLowerCase().includes(search.toLowerCase()),
   );
+  const deleteStudent = async (id: string) => {
+    try {
+      const token = localStorage.getItem("adminToken");
+
+      await axios.delete(`${apiBaseUrl}/admin/connection/deleteStudent/${id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      fetchProfile();
+    } catch (error) {
+      console.error(error);
+    }
+  };
+  const handleDelete = async (id: string) => {
+    const confirmDelete = window.confirm(
+      "Are you sure you want to delete this student?",
+    );
+
+    if (!confirmDelete) return;
+
+    await deleteStudent(id);
+  };
 
   return (
     <div className="p-6 bg-gray-50 min-h-screen">
@@ -196,6 +222,7 @@ export default function TeachersPage() {
                   <th className="px-6 py-4">Email</th>
                   <th className="px-6 py-4">Status</th>
                   <th className="px-6 py-4 text-center">Action</th>
+                  <th className="px-6 py-4 text-center">Delete</th>
                 </tr>
               </thead>
 
@@ -268,6 +295,14 @@ export default function TeachersPage() {
                         className="rounded-xl bg-indigo-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-indigo-700"
                       >
                         View Profile
+                      </button>
+                    </td>
+                    <td className="px-6 py-4 text-center">
+                      <button
+                        onClick={() => handleDelete(student.id)}
+                        className="rounded-lg bg-red-600 px-3 py-2 text-white hover:bg-red-700"
+                      >
+                        Delete
                       </button>
                     </td>
                   </tr>
