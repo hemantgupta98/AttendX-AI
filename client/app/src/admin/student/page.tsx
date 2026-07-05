@@ -3,7 +3,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Search, Filter, Plus, X } from "lucide-react";
+import { Search, Plus, X } from "lucide-react";
 import axios from "axios";
 import Image from "next/image";
 
@@ -133,11 +133,6 @@ export default function TeachersPage() {
         </div>
 
         {/* Filter */}
-
-        <button className="flex items-center justify-center gap-2 rounded-xl border bg-white px-5 py-3 hover:bg-slate-50">
-          <Filter size={18} />
-          Filters
-        </button>
       </div>
 
       {/* FIX: error message is now actually shown to the user */}

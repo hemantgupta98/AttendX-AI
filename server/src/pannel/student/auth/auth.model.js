@@ -20,7 +20,7 @@ const signupSchema = new mongoose.Schema(
     institutionName: { type: String, required: true },
     institutionId: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "student",
+      ref: "admin",
       required: false,
       default: null,
     },
