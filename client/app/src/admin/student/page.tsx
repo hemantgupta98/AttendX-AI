@@ -162,7 +162,7 @@ export default function TeachersPage() {
             <div className="mt-6 flex justify-end">
               <button
                 onClick={() => setShowPopup(false)}
-                className="rounded-lg bg-purple-600 px-5 py-2 text-white hover:bg-purple-700"
+                className="rounded-lg bg-purple-600 cursor-pointer px-5 py-2 text-white hover:bg-purple-700"
               >
                 OK
               </button>
@@ -292,7 +292,7 @@ export default function TeachersPage() {
                     <td className="px-6 py-4 text-center">
                       <button
                         onClick={() => setSelectedStudent(student)}
-                        className="rounded-xl bg-indigo-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-indigo-700"
+                        className="rounded-xl bg-indigo-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-indigo-700 cursor-pointer"
                       >
                         View Profile
                       </button>
@@ -300,7 +300,7 @@ export default function TeachersPage() {
                     <td className="px-6 py-4 text-center">
                       <button
                         onClick={() => handleDelete(student.id)}
-                        className="rounded-lg bg-red-600 px-3 py-2 text-white hover:bg-red-700"
+                        className="rounded-lg bg-red-600 px-3 py-2 text-white hover:bg-red-700 cursor-pointer"
                       >
                         Delete
                       </button>

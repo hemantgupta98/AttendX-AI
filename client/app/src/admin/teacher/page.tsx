@@ -276,7 +276,7 @@ export default function TeachersPage() {
                 <button
                   type="button"
                   onClick={() => setSelectedTeacher(teacher)}
-                  className="mt-6 w-full rounded-xl bg-purple-600 py-3 text-white font-semibold hover:bg-purple-700 transition"
+                  className="mt-6 w-full rounded-xl bg-purple-600 py-3 text-white font-semibold hover:bg-purple-700 transition cursor-pointer"
                 >
                   View Profile
                 </button>
@@ -284,7 +284,7 @@ export default function TeachersPage() {
                 <button
                   type="button"
                   onClick={() => handleDelete(teacher.id)}
-                  className="mt-6 w-full rounded-xl bg-purple-600 py-3 text-white font-semibold hover:bg-purple-700 transition"
+                  className="mt-6 w-full rounded-xl bg-red-600 py-3 text-white font-semibold hover:bg-red-700 transition cursor-pointer"
                 >
                   Delete
                 </button>
