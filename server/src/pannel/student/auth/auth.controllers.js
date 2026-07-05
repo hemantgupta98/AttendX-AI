@@ -8,6 +8,7 @@ import {
 } from "./auth.service.js";
 import { uploadImage } from "../media/cloudinary.js";
 import { uploadService } from "../aiService/ai.controller.js";
+import { signupModel as adminModel } from "../../admin/auth/auth.model.js";
 
 export const authToken = (res, userId, expiresIn = "24h") => {
   const jwtToken = process.env.JWT_WEB_TOKEN;
@@ -61,6 +62,12 @@ export const signup = async (req, res) => {
     }
 
     const Image = await uploadImage(req.file.path, "upload-image/student");
+
+    const institution = adminCode
+      ? await adminModel.findOne({ adminCode })
+      : null;
+
+    const institutionId = institution ? institution._id : null;
 
     const user = await createStudent({
       name,
