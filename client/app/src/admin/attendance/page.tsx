@@ -80,24 +80,6 @@ export default function AttendancePage() {
   return (
     <div className="min-h-screen bg-[#f2f2f2] p-6">
       <div className="mx-auto max-w-7xl space-y-6">
-        <div className="flex flex-col justify-between gap-5 rounded-3xl bg-linear-to-r from-indigo-600 via-blue-600 to-cyan-500 p-8 text-white shadow-xl md:flex-row md:items-center">
-          <div>
-            <h1 className="text-4xl font-bold">Attendance Report</h1>
-
-            <p className="mt-2 text-white/80">
-              AI Powered Face Recognition Attendance
-            </p>
-          </div>
-
-          <div
-            className={`rounded-full px-6 py-3 text-lg font-semibold shadow-lg ${
-              attendance?.matched ? "bg-green-500" : "bg-red-500"
-            }`}
-          >
-            {attendance?.matched ? "✓ Face Verified" : "✗ Verification Failed"}
-          </div>
-        </div>
-
         <div className="grid gap-5 md:grid-cols-5">
           <Card
             title="Status"
