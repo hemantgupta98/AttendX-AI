@@ -6,7 +6,6 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 
 type LeaveForm = {
-  id: string;
   leaveType: string;
   startDate: string;
   endDate: string;
@@ -33,24 +32,15 @@ export default function LeavePage() {
     try {
       setLoading(true);
 
-      const formData = new FormData();
-
-      formData.append("leaveType", data.leaveType);
-      formData.append("startDate", data.startDate);
-      formData.append("endDate", data.endDate);
-      formData.append("reason", data.reason);
-
-      if (data.file && data.file.length > 0) {
-        formData.append("attachment", data.file[0]);
-      }
-
       const res = await axios.post(
         "https://attendx-ai-n8uq.onrender.com/api/student/leave/apply",
-        formData,
         {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
+          leaveType: data.leaveType,
+          startDate: data.startDate,
+          endDate: data.endDate,
+          reason: data.reason,
+        },
+        {
           withCredentials: true,
         },
       );
@@ -59,7 +49,6 @@ export default function LeavePage() {
 
       reset();
       setFileName("");
-
       fetchLeaves();
     } catch (error: any) {
       alert(error.response?.data?.message || "Something went wrong.");
