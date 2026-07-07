@@ -1,4 +1,4 @@
-import { LeaveModel } from "./leave.model.js";
+import { LeaveModel } from "./model.js";
 
 export const applyLeave = async (req, res) => {
   try {
