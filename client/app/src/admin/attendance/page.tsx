@@ -258,7 +258,7 @@ export default function AttendancePage() {
                 }}
               />
             </div>
-            <div className="rounded-3xl bg-white p-8 shadow-sm">
+            <div className="rounded-3xl bg-white p-8 shadow-sm mt-5">
               <div className="mb-8 flex items-center gap-3">
                 <div className="rounded-xl bg-violet-100 p-3">
                   <Brain className="text-violet-600" />
