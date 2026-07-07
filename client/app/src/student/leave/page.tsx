@@ -77,17 +77,14 @@ export default function LeavePage() {
 
   const deleteLeave = async (id: string) => {
     try {
-      const token = localStorage.getItem("studentToken");
-
       await axios.delete(`${apiBaseUrl}/student/leave/delete/${id}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+        withCredentials: true,
       });
 
       fetchLeaves();
-    } catch (error) {
-      console.error(error);
+    } catch (error: any) {
+      console.log(error.response?.status);
+      console.log(error.response?.data);
     }
   };
   const handleDelete = async (id: string) => {
