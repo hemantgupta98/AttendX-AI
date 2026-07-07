@@ -17,7 +17,7 @@ export default function LeavePage() {
   const [fileName, setFileName] = useState("");
   const [leaveHistory, setLeaveHistory] = useState([]);
   const [loading, setLoading] = useState(false);
-
+  const apiBaseUrl = "https://attendx-ai-n8uq.onrender.com/api";
   const {
     register,
     handleSubmit,
@@ -84,6 +84,31 @@ export default function LeavePage() {
   useEffect(() => {
     fetchLeaves();
   }, []);
+
+  const deleteLeave = async (id: string) => {
+    try {
+      const token = localStorage.getItem("studentToken");
+
+      await axios.delete(`${apiBaseUrl}/student/leave//delete/${id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      fetchLeaves();
+    } catch (error) {
+      console.error(error);
+    }
+  };
+  const handleDelete = async (id: string) => {
+    const confirmDelete = window.confirm(
+      "Are you sure you want to delete this leave?",
+    );
+
+    if (!confirmDelete) return;
+
+    await deleteLeave(id);
+  };
 
   return (
     <div className="min-h-screen bg-white text-gray-900 p-6">
@@ -294,6 +319,7 @@ export default function LeavePage() {
                 <th className="p-3 text-left">End</th>
                 <th className="p-3 text-left">Days</th>
                 <th className="p-3 text-left">Status</th>
+                <th className="p-3 text-left">Remove</th>
               </tr>
             </thead>
 
@@ -332,6 +358,15 @@ export default function LeavePage() {
                       >
                         {leave.status}
                       </span>
+                    </td>
+                    <td>
+                      <button
+                        type="button"
+                        onClick={() => handleDelete(leave.id)}
+                        className="mt-6 w-full rounded-xl bg-red-600 py-3 text-white font-semibold hover:bg-red-700 transition cursor-pointer"
+                      >
+                        Delete
+                      </button>
                     </td>
                   </tr>
                 ))
