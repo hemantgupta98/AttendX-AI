@@ -120,7 +120,8 @@ export const deleteLeave = async (req, res) => {
 
     return res.status(500).json({
       success: false,
-      message: "Failed to delete leave request.",
+      message: error.message,
+      error,
     });
   }
 };
