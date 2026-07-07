@@ -361,9 +361,9 @@ export default function LeavePage() {
                     </td>
                     <td>
                       <button
-                        type="button"
+                        type="submit"
                         onClick={() => handleDelete(leave.id)}
-                        className="mt-6 w-full rounded-xl bg-red-600 py-3 text-white font-semibold hover:bg-red-700 transition cursor-pointer"
+                        className="mt-2 w-full rounded-xl bg-red-600 py-3 text-white font-semibold hover:bg-red-700 transition cursor-pointer"
                       >
                         Delete
                       </button>
