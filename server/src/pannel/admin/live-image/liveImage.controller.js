@@ -152,14 +152,3 @@ export const getAttendance = async (req, res) => {
     });
   }
 };
-
-await attendance.create({
-  admin: req.user._id,
-  name: req.user.name,
-  storedImage: req.user.photo,
-  liveImage: result.secure_url,
-  status: isMatched ? "Present" : "Absent",
-  matched: isMatched,
-  aiResponse: response.data,
-  date: now,
-});
