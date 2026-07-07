@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 
 type LeaveForm = {
-  id: string;
+  _id: string;
   leaveType: string;
   startDate: string;
   endDate: string;
@@ -34,7 +34,7 @@ export default function LeavePage() {
       setLoading(true);
 
       const formData = new FormData();
-      formData.append("id", data.id);
+      formData.append("id", data._id);
       formData.append("leaveType", data.leaveType);
       formData.append("startDate", data.startDate);
       formData.append("endDate", data.endDate);
@@ -363,7 +363,7 @@ export default function LeavePage() {
                     <td>
                       <button
                         type="submit"
-                        onClick={() => handleDelete(leave.id)}
+                        onClick={() => handleDelete(leave._id)}
                         className="mt-2 w-full rounded-xl bg-red-600 py-3 text-white font-semibold hover:bg-red-700 transition cursor-pointer"
                       >
                         Delete
