@@ -1,11 +1,39 @@
 "use client";
 
 import { useState } from "react";
+import { useForm } from "react-hook-form";
+
+type LeaveForm = {
+  leaveType: string;
+  startDate: string;
+  endDate: string;
+  reason: string;
+  file: FileList;
+};
 
 export default function LeavePage() {
-  const [leaveType, setLeaveType] = useState("Sick Leave");
-  const [reason, setReason] = useState("");
-  const [file, setFile] = useState<File | null>(null);
+  const [fileName, setFileName] = useState("");
+
+  const {
+    register,
+    handleSubmit,
+    watch,
+    formState: { errors },
+    reset,
+  } = useForm<LeaveForm>();
+
+  const reason = watch("reason") || "";
+
+  const onSubmit = (data: LeaveForm) => {
+    console.log(data);
+
+    alert(
+      "✅ Your leave request has been sent to your assigned teacher for approval.\n\nPlease wait for the teacher's response.",
+    );
+
+    reset();
+    setFileName("");
+  };
 
   return (
     <div className="min-h-screen bg-white text-gray-900 p-6">
@@ -17,149 +45,206 @@ export default function LeavePage() {
         </p>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* LEFT - FORM */}
-        <div className="lg:col-span-2 bg-gray-50 rounded-2xl p-6 shadow-sm border border-gray-200">
-          <h2 className="text-xl font-semibold mb-1">Apply for Leave</h2>
-          <p className="text-gray-600 text-sm mb-6">
-            Please provide accurate details for official records.
-          </p>
+      {/* Notice */}
+      <div className="mb-6 rounded-xl border border-yellow-300 bg-yellow-50 p-4">
+        <p className="text-sm font-medium text-yellow-800">
+          ⚠️ Important Instructions
+        </p>
 
-          {/* Leave Type */}
-          <div className="mb-4">
-            <label className="text-sm text-gray-600">Leave Type</label>
-            <select
-              value={leaveType}
-              onChange={(e) => setLeaveType(e.target.value)}
-              className="w-full mt-1 p-3 rounded-lg bg-white text-gray-900 border border-gray-300 focus:outline-none"
-            >
-              <option>Sick Leave</option>
-              <option>Casual Leave</option>
-              <option>Emergency Leave</option>
-            </select>
-          </div>
+        <ul className="mt-2 list-disc pl-5 text-sm text-yellow-700 space-y-1">
+          <li>
+            You may apply for only <strong>4 leave requests</strong> in a month.
+          </li>
+          <li>Fill all required fields before submitting.</li>
+          <li>Medical proof is mandatory for extended sick leave.</li>
+          <li>Your leave request will be sent to your assigned teacher.</li>
+        </ul>
+      </div>
 
-          {/* Duration */}
-          <div className="grid grid-cols-2 gap-4 mb-4">
-            <div>
-              <label className="text-sm text-gray-600">Start Date</label>
-              <input
-                type="date"
-                className="w-full mt-1 p-3 rounded-lg bg-white text-gray-900 border border-gray-300"
-              />
-            </div>
-            <div>
-              <label className="text-sm text-gray-600">End Date</label>
-              <input
-                type="date"
-                className="w-full mt-1 p-3 rounded-lg bg-white text-gray-900 border border-gray-300"
-              />
-            </div>
-          </div>
-
-          {/* Reason */}
-          <div className="mb-4">
-            <label className="text-sm text-gray-600">Reason for Leave</label>
-            <textarea
-              rows={4}
-              value={reason}
-              onChange={(e) => setReason(e.target.value)}
-              placeholder="Write your reason..."
-              className="w-full mt-1 p-3 rounded-lg bg-white text-gray-900 border border-gray-300 resize-none"
-            />
-            <p className="text-xs text-gray-500 text-right mt-1">
-              {reason.length}/500
-            </p>
-          </div>
-
-          {/* File Upload */}
-          <div className="mb-6">
-            <label className="text-sm text-gray-600">
-              Supporting Documents (Optional)
-            </label>
-
-            <div className="mt-2 border-2 border-dashed border-gray-300 rounded-xl p-6 text-center cursor-pointer hover:border-gray-500 transition">
-              <input
-                type="file"
-                className="hidden"
-                id="fileUpload"
-                onChange={(e) =>
-                  setFile(e.target.files ? e.target.files[0] : null)
-                }
-              />
-              <label htmlFor="fileUpload" className="cursor-pointer">
-                <p className="text-gray-600">
-                  Click to upload or drag and drop
-                </p>
-                <p className="text-xs text-gray-500">
-                  PDF, JPG or PNG (Max 5MB)
-                </p>
+      <form onSubmit={handleSubmit(onSubmit)}>
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          {/* LEFT */}
+          <div className="lg:col-span-2 bg-gray-50 rounded-2xl p-6 shadow-sm border">
+            {/* Leave Type */}
+            <div className="mb-4">
+              <label className="text-sm font-medium">
+                Leave Type <span className="text-red-500">*</span>
               </label>
 
-              {file && (
-                <div className="mt-4 text-sm bg-gray-100 p-2 rounded-lg inline-block text-gray-800">
-                  {file.name}
-                </div>
-              )}
+              <select
+                {...register("leaveType", {
+                  required: "Please select leave type",
+                })}
+                className="w-full mt-1 p-3 rounded-lg border"
+              >
+                <option value="">Select Leave Type</option>
+                <option value="Sick Leave">Sick Leave</option>
+                <option value="Casual Leave">Casual Leave</option>
+                <option value="Emergency Leave">Emergency Leave</option>
+              </select>
+
+              <p className="text-red-500 text-sm mt-1">
+                {errors.leaveType?.message}
+              </p>
+            </div>
+
+            {/* Dates */}
+            <div className="grid grid-cols-2 gap-4 mb-4">
+              <div>
+                <label className="text-sm font-medium">
+                  Start Date <span className="text-red-500">*</span>
+                </label>
+
+                <input
+                  type="date"
+                  {...register("startDate", {
+                    required: "Start date is required",
+                  })}
+                  className="w-full mt-1 p-3 rounded-lg border"
+                />
+
+                <p className="text-red-500 text-sm mt-1">
+                  {errors.startDate?.message}
+                </p>
+              </div>
+
+              <div>
+                <label className="text-sm font-medium">
+                  End Date <span className="text-red-500">*</span>
+                </label>
+
+                <input
+                  type="date"
+                  {...register("endDate", {
+                    required: "End date is required",
+                  })}
+                  className="w-full mt-1 p-3 rounded-lg border"
+                />
+
+                <p className="text-red-500 text-sm mt-1">
+                  {errors.endDate?.message}
+                </p>
+              </div>
+            </div>
+
+            {/* Reason */}
+            <div className="mb-4">
+              <label className="text-sm font-medium">
+                Reason <span className="text-red-500">*</span>
+              </label>
+
+              <textarea
+                rows={5}
+                maxLength={500}
+                {...register("reason", {
+                  required: "Reason is required",
+                  minLength: {
+                    value: 10,
+                    message: "Reason should contain at least 10 characters",
+                  },
+                })}
+                className="w-full mt-1 p-3 rounded-lg border resize-none"
+                placeholder="Enter reason..."
+              />
+
+              <div className="flex justify-between mt-1">
+                <p className="text-red-500 text-sm">{errors.reason?.message}</p>
+
+                <p className="text-xs text-gray-500">{reason.length}/500</p>
+              </div>
+            </div>
+
+            {/* File */}
+            <div className="mb-6">
+              <label className="text-sm font-medium">
+                Supporting Document <span className="text-red-500">*</span>
+              </label>
+
+              <div className="mt-2 border-2 border-dashed rounded-xl p-6 text-center">
+                <input
+                  id="fileUpload"
+                  type="file"
+                  className="hidden"
+                  accept=".pdf,.jpg,.jpeg,.png"
+                  {...register("file", {
+                    required: "Please upload a document",
+                  })}
+                  onChange={(e) => {
+                    if (e.target.files?.length) {
+                      setFileName(e.target.files[0].name);
+                    } else {
+                      setFileName("");
+                    }
+                  }}
+                />
+
+                <label htmlFor="fileUpload" className="cursor-pointer">
+                  Click to Upload
+                </label>
+
+                {fileName && (
+                  <div className="mt-3 text-sm bg-gray-200 inline-block px-3 py-2 rounded-lg">
+                    {fileName}
+                  </div>
+                )}
+
+                <p className="text-red-500 text-sm mt-2">
+                  {errors.file?.message}
+                </p>
+              </div>
+            </div>
+
+            {/* Buttons */}
+            <div className="flex justify-end gap-3">
+              <button
+                type="button"
+                className="border px-5 py-2 rounded-lg"
+                onClick={() => {
+                  reset();
+                  setFileName("");
+                }}
+              >
+                Reset
+              </button>
+
+              <button
+                type="submit"
+                className="bg-blue-600 text-white px-5 py-2 rounded-lg hover:bg-blue-700"
+              >
+                Submit Leave
+              </button>
             </div>
           </div>
 
-          {/* Buttons */}
-          <div className="flex justify-between items-center">
-            <button className="text-gray-600 hover:text-black text-sm">
-              ← Back to Dashboard
-            </button>
+          {/* Right Side */}
+          <div className="space-y-6">
+            <div className="bg-gray-50 p-5 rounded-2xl border">
+              <p className="text-sm text-gray-500">Current Attendance</p>
 
-            <div className="flex gap-3">
-              <button className="px-4 py-2 rounded-lg border border-gray-300 hover:bg-gray-100 text-sm text-gray-800">
-                Save Draft
-              </button>
-              <button className="px-5 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium">
-                Submit Application →
-              </button>
+              <h2 className="text-3xl font-bold">84.2%</h2>
+
+              <div className="w-full h-2 bg-gray-200 rounded-full mt-3">
+                <div className="h-full w-[84%] bg-gray-800 rounded-full"></div>
+              </div>
+
+              <p className="text-xs text-gray-500 mt-2">
+                Attendance is above the required minimum.
+              </p>
+            </div>
+
+            <div className="bg-gray-50 p-5 rounded-2xl border">
+              <h3 className="font-semibold mb-3">Leave Policy</h3>
+
+              <ul className="space-y-2 text-sm text-gray-600">
+                <li>• Maximum 4 leave requests per month.</li>
+                <li>• Submit at least 48 hours in advance.</li>
+                <li>• Medical proof required for long sick leave.</li>
+                <li>• Maintain at least 75% attendance.</li>
+              </ul>
             </div>
           </div>
         </div>
-
-        {/* RIGHT SIDE */}
-        <div className="space-y-6">
-          {/* Attendance Card */}
-          <div className="bg-gray-50 p-5 rounded-2xl shadow-sm border border-gray-200">
-            <p className="text-sm text-gray-600">Current Standing</p>
-            <h2 className="text-3xl font-bold mt-1">84.2%</h2>
-            <p className="text-green-600 text-sm mt-1">Safe Zone</p>
-
-            <div className="w-full h-2 bg-gray-200 rounded-full mt-3">
-              <div className="w-[84%] h-full bg-gray-800 rounded-full"></div>
-            </div>
-
-            <p className="text-xs text-gray-500 mt-2">
-              Applying for 2 days will reduce this to approx 82.8%
-            </p>
-          </div>
-
-          {/* Policy */}
-          <div className="bg-gray-50 p-5 rounded-2xl border border-gray-300">
-            <h3 className="font-semibold mb-3">Leave Policy</h3>
-            <ul className="text-sm text-gray-700 space-y-2">
-              <li>• Submit requests at least 48 hours in advance</li>
-              <li>• Medical proof required for 2+ sick days</li>
-              <li>• Maintain 75% attendance</li>
-            </ul>
-          </div>
-
-          {/* Help */}
-          <div className="bg-gray-50 p-5 rounded-2xl border border-gray-200">
-            <h3 className="font-semibold mb-2">Need Help?</h3>
-            <p className="text-sm text-gray-600 mb-3">
-              Unsure about leave type? Contact academic office.
-            </p>
-            <button className="text-gray-800 text-sm hover:underline">
-              View Academic Handbook
-            </button>
-          </div>
-        </div>
-      </div>
+      </form>
     </div>
   );
 }
