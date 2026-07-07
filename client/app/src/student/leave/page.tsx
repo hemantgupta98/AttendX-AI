@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 
 type LeaveForm = {
+  _id: string;
   leaveType: string;
   startDate: string;
   endDate: string;
@@ -76,6 +77,7 @@ export default function LeavePage() {
   }, []);
 
   const deleteLeave = async (id: string) => {
+    console.log("Deleting ID:", id);
     try {
       await axios.delete(`${apiBaseUrl}/student/leave/delete/${id}`, {
         withCredentials: true,
@@ -349,7 +351,7 @@ export default function LeavePage() {
                     <td>
                       <button
                         type="button"
-                        onClick={() => handleDelete(leave.id)}
+                        onClick={() => handleDelete(leave._id)}
                         className="mt-2 w-full rounded-xl bg-red-600 py-3 text-white font-semibold hover:bg-red-700 transition cursor-pointer"
                       >
                         Delete
