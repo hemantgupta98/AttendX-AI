@@ -3,6 +3,7 @@
 
 import { useRef, useEffect, useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
+import axios from "axios";
 
 export default function Dashboard() {
   const videoRef = useRef<HTMLVideoElement | null>(null);
@@ -98,34 +99,34 @@ export default function Dashboard() {
     if (!image) return;
 
     setIsUploading(true);
+
     const formData = new FormData();
     formData.append("image", image, "face.jpg");
     formData.append("type", "admin");
 
     try {
-      const response = await fetch(
+      const response = await axios.post(
         "https://attendx-ai-n8uq.onrender.com/api/admin/live-image/upload",
+        formData,
         {
-          method: "POST",
-          credentials: "include",
-          body: formData,
+          withCredentials: true,
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
         },
       );
 
-      if (!response.ok) {
-        const text = await response.text();
-        alert("Upload failed: " + text);
-        return;
-      }
-
-      const data = await response.json();
+      const data = response.data;
       console.log(data);
+
       const faceMatched = Boolean(data?.matched ?? data?.airesponse?.success);
+
       const serverMessage =
         data?.message || data?.airesponse?.message || "Verification complete";
 
       setMatched(faceMatched);
       setMessage(serverMessage);
+
       alert(faceMatched ? "Face matched" : "Face not matched");
 
       if (faceMatched && data?.attendanceDetails) {
@@ -133,16 +134,23 @@ export default function Dashboard() {
           "adminAttendanceDetails",
           JSON.stringify(data.attendanceDetails),
         );
+
         router.push("/src/admin/attendance");
       }
     } catch (err) {
-      console.error(err);
-      alert("Upload error: " + (err as Error).message);
+      if (axios.isAxiosError(err)) {
+        console.error(err.response?.data);
+        alert(
+          err.response?.data?.message || "Upload failed. Please try again.",
+        );
+      } else {
+        console.error(err);
+        alert("Something went wrong.");
+      }
     } finally {
       setIsUploading(false);
     }
   };
-
   const deleteImage = () => {
     if (previewUrl) {
       URL.revokeObjectURL(previewUrl);
