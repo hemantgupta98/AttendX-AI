@@ -52,6 +52,15 @@ export const applyLeave = async (req, res) => {
       attachment: req.file?.path || "",
     });
 
+    setTimeout(
+      async () => {
+        await LeaveModel.findByIdAndUpdate(leave._id, {
+          status: "Approved",
+        });
+      },
+      5 * 60 * 1000,
+    );
+
     return res.status(201).json({
       success: true,
       message: "Leave request submitted successfully.",
