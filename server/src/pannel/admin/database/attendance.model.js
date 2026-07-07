@@ -58,17 +58,12 @@ const attendanceSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.Mixed,
       default: {},
     },
-
-    location: {
-      latitude: Number,
-      longitude: Number,
-    },
   },
   {
     timestamps: true,
   },
 );
 
-const attendance = mongoose.model("AttendanceHistory", attendanceSchema);
+const attendance = mongoose.model("AdminAttendanceHistory", attendanceSchema);
 
 export { attendance };

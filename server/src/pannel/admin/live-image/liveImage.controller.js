@@ -69,24 +69,26 @@ const handleLiveImageUpload = async (req, res, role) => {
 
     const now = new Date();
     const isMatched = Boolean(response.data?.success);
-    const attendanceDetails = {
-      name: req.user?.name || req.user?.adminName || "Admin",
-      photo: req.user?.photo || result.secure_url,
-      date: now.toLocaleDateString(),
-      time: now.toLocaleTimeString(),
-      status: isMatched ? "Present" : "Not Matched",
-    };
+    let attendanceRecord = null;
+    if (isMatched) {
+      attendanceRecord = await attendance.create({
+        admin: req.user._id,
+        name: req.user.name || req.user.adminName,
+        storedImage: req.user.photo,
+        liveImage: result.secure_url,
+        status: "Present",
+        matched: true,
+        confidence: response.data.confidence,
+        aiResponse: response.data,
+      });
+    }
 
     return res.status(200).json({
       success: true,
-      imageUrl: result.secure_url,
-      publicId: result.public_id,
       message: isMatched ? "Face matched" : "Face not matched",
       matched: isMatched,
-      attendanceDetails,
-      airesponse: response.data,
-      folder,
-      type: role,
+      attendanceId: attendanceRecord?._id || null,
+      confidence: response.data.confidence || null,
     });
   } catch (error) {
     return res.status(500).json({
@@ -151,17 +153,13 @@ export const getAttendance = async (req, res) => {
   }
 };
 
-{
-  /** await attendance.create({
-      admin: req.user._id,
-      name: req.user.name,
-      storedImage: req.user.photo,
-      liveImage: result.secure_url,
-      status: isMatched ? "Present" : "Absent",
-      matched: isMatched,
-      confidence:
-        response.data?.confidence || response.data?.match_percentage || null,
-      aiResponse: response.data,
-      date: now,
-    }); */
-}
+await attendance.create({
+  admin: req.user._id,
+  name: req.user.name,
+  storedImage: req.user.photo,
+  liveImage: result.secure_url,
+  status: isMatched ? "Present" : "Absent",
+  matched: isMatched,
+  aiResponse: response.data,
+  date: now,
+});

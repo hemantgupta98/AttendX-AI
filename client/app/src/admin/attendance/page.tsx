@@ -99,7 +99,7 @@ export default function AttendancePage() {
                 />
                 <InputField
                   label="Face Matched"
-                  value={attendance?.matched ? "No" : "Yes"}
+                  value={attendance?.matched ? "Yes" : "No"}
                 />
 
                 <InputField label="Attendance Date" value={attendance?.date} />
