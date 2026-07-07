@@ -3,28 +3,16 @@
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import axios from "axios";
-import {
-  CheckCircle2,
-  CalendarDays,
-  Clock3,
-  Camera,
-  MapPin,
-  Brain,
-} from "lucide-react";
+import { CheckCircle2, CalendarDays, Clock3, Camera } from "lucide-react";
 
 interface AttendanceData {
-  attendanceId: string;
   status: string;
   matched: boolean;
-  confidence: number;
+
   date: string;
   time: string;
   storedImage: string;
   liveImage: string;
-  location: {
-    latitude: number;
-    longitude: number;
-  };
 }
 
 export default function AttendancePage() {
@@ -94,11 +82,6 @@ export default function AttendancePage() {
             value={attendance?.time}
             icon={<Clock3 size={26} className="text-purple-600" />}
           />
-          <Card
-            title="Confidence"
-            value={`${attendance?.confidence}%`}
-            icon={<Brain size={26} className="text-orange-500" />}
-          />
         </div>
 
         <div className="grid lg:grid-cols-3 gap-6">
@@ -111,21 +94,14 @@ export default function AttendancePage() {
             >
               <Grid>
                 <InputField
-                  label="Attendance ID"
-                  value={attendance?.attendanceId}
-                />
-                <InputField
                   label="Attendance Status"
                   value={attendance?.status}
                 />
                 <InputField
                   label="Face Matched"
-                  value={attendance?.matched ? "Yes" : "No"}
+                  value={attendance?.matched ? "No" : "Yes"}
                 />
-                <InputField
-                  label="AI Confidence"
-                  value={`${attendance?.confidence}%`}
-                />
+
                 <InputField label="Attendance Date" value={attendance?.date} />
                 <InputField label="Check In Time" value={attendance?.time} />
               </Grid>
@@ -161,18 +137,6 @@ export default function AttendancePage() {
           {/* RIGHT SIDE */}
           <div className="space-y-6">
             {/* Location */}
-            <Section title="Location" icon={<MapPin size={18} />}>
-              <Grid>
-                <InputField
-                  label="Latitude"
-                  value={attendance?.location?.latitude}
-                />
-                <InputField
-                  label="Longitude"
-                  value={attendance?.location?.longitude}
-                />
-              </Grid>
-            </Section>
 
             {/* Quick Summary */}
             <div className="rounded-xl bg-white p-5 shadow-sm">
@@ -182,7 +146,7 @@ export default function AttendancePage() {
                 label="Face Match"
                 value={attendance?.matched ? "Successful" : "Failed"}
               />
-              <Stat label="Confidence" value={`${attendance?.confidence}%`} />
+
               <Stat label="Date" value={attendance?.date} />
               <Stat label="Time" value={attendance?.time} />
             </div>
