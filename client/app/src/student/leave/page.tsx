@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 
 type LeaveForm = {
+  id: string;
   leaveType: string;
   startDate: string;
   endDate: string;
@@ -33,7 +34,7 @@ export default function LeavePage() {
       setLoading(true);
 
       const formData = new FormData();
-
+      formData.append("id", data.id);
       formData.append("leaveType", data.leaveType);
       formData.append("startDate", data.startDate);
       formData.append("endDate", data.endDate);
