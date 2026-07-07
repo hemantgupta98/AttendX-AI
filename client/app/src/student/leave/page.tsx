@@ -219,20 +219,6 @@ export default function LeavePage() {
           {/* Right Side */}
           <div className="space-y-6">
             <div className="bg-gray-50 p-5 rounded-2xl border">
-              <p className="text-sm text-gray-500">Current Attendance</p>
-
-              <h2 className="text-3xl font-bold">84.2%</h2>
-
-              <div className="w-full h-2 bg-gray-200 rounded-full mt-3">
-                <div className="h-full w-[84%] bg-gray-800 rounded-full"></div>
-              </div>
-
-              <p className="text-xs text-gray-500 mt-2">
-                Attendance is above the required minimum.
-              </p>
-            </div>
-
-            <div className="bg-gray-50 p-5 rounded-2xl border">
               <h3 className="font-semibold mb-3">Leave Policy</h3>
 
               <ul className="space-y-2 text-sm text-gray-600">
