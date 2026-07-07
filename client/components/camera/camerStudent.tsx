@@ -105,11 +105,11 @@ export default function Dashboard() {
 
     const formData = new FormData();
     formData.append("image", image, "face.jpg");
-    formData.append("type", "employee");
+    formData.append("type", "student");
 
     try {
       const { data } = await axios.post(
-        "https://attendx-ai-n8uq.onrender.com/api/employee/live-image/upload",
+        "https://attendx-ai-n8uq.onrender.com/api/student/live-image/upload",
         formData,
         {
           withCredentials: true,
@@ -133,11 +133,11 @@ export default function Dashboard() {
 
       if (faceMatched && data?.attendanceDetails) {
         sessionStorage.setItem(
-          "adminAttendanceDetails",
+          "studentAttendanceDetails",
           JSON.stringify(data.attendanceDetails),
         );
 
-        router.push("/src/teacher/dashboard");
+        router.push("/src/student/dashboard");
       }
     } catch (err: any) {
       console.error(err);

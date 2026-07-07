@@ -69,7 +69,7 @@ const handleLiveImageUpload = async (req, res, role) => {
     const now = new Date();
     const isMatched = Boolean(response.data?.success);
     const attendanceDetails = {
-      name: req.user?.name || req.user?.adminName || "student",
+      name: req.user?.name || req.user?.studentName || "student",
       photo: req.user?.photo || result.secure_url,
       date: now.toLocaleDateString(),
       time: now.toLocaleTimeString(),

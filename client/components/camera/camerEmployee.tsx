@@ -131,7 +131,7 @@ export default function Dashboard() {
 
       if (faceMatched && data?.attendanceDetails) {
         sessionStorage.setItem(
-          "adminAttendanceDetails",
+          "employeeAttendanceDetails",
           JSON.stringify(data.attendanceDetails),
         );
 
