@@ -177,17 +177,11 @@ export default function AttendancePage() {
 
               {/* Details */}
 
-              <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-4">
+              <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
                 <InfoCard
                   icon={<BadgeCheck className="text-green-600" />}
                   title="Status"
                   value={attendance?.status}
-                />
-
-                <InfoCard
-                  icon={<Fingerprint className="text-blue-600" />}
-                  title="Matched"
-                  value={attendance?.matched ? "Yes" : "No"}
                 />
 
                 <InfoCard
