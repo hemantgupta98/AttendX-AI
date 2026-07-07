@@ -5,7 +5,7 @@ import path from "path";
 import { uploadImage as uploadToCloudinary } from "../media/cloudinary.js";
 
 const roleFolders = {
-  admin: "live-image/employee",
+  employee: "live-image/employee",
 };
 
 const handleLiveImageUpload = async (req, res, role) => {
