@@ -1,8 +1,10 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @next/next/no-img-element */
 "use client";
 
 import { useRef, useEffect, useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
+import axios from "axios";
 
 export default function Dashboard() {
   const videoRef = useRef<HTMLVideoElement | null>(null);
@@ -98,34 +100,33 @@ export default function Dashboard() {
     if (!image) return;
 
     setIsUploading(true);
+
     const formData = new FormData();
     formData.append("image", image, "face.jpg");
     formData.append("type", "employee");
 
     try {
-      const response = await fetch(
+      const { data } = await axios.post(
         "https://attendx-ai-n8uq.onrender.com/api/employee/live-image/upload",
+        formData,
         {
-          method: "POST",
-          credentials: "include",
-          body: formData,
+          withCredentials: true,
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
         },
       );
 
-      if (!response.ok) {
-        const text = await response.text();
-        alert("Upload failed: " + text);
-        return;
-      }
-
-      const data = await response.json();
       console.log(data);
+
       const faceMatched = Boolean(data?.matched ?? data?.airesponse?.success);
+
       const serverMessage =
         data?.message || data?.airesponse?.message || "Verification complete";
 
       setMatched(faceMatched);
       setMessage(serverMessage);
+
       alert(faceMatched ? "Face matched" : "Face not matched");
 
       if (faceMatched && data?.attendanceDetails) {
@@ -133,11 +134,26 @@ export default function Dashboard() {
           "adminAttendanceDetails",
           JSON.stringify(data.attendanceDetails),
         );
+
         router.push("/src/teacher/dashboard");
       }
-    } catch (err) {
+    } catch (err: any) {
       console.error(err);
-      alert("Upload error: " + (err as Error).message);
+
+      if (err.response) {
+        // Server responded with an error
+        alert(
+          `Upload failed (${err.response.status}): ${
+            err.response.data?.message || JSON.stringify(err.response.data)
+          }`,
+        );
+      } else if (err.request) {
+        // No response received
+        alert("No response received from server.");
+      } else {
+        // Something else went wrong
+        alert("Upload error: " + err.message);
+      }
     } finally {
       setIsUploading(false);
     }
