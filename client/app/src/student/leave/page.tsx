@@ -6,12 +6,12 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 
 type LeaveForm = {
-  _id: string;
+  id: string;
   leaveType: string;
   startDate: string;
   endDate: string;
   reason: string;
-  file: FileList;
+  file: string;
 };
 
 export default function LeavePage() {
@@ -34,7 +34,7 @@ export default function LeavePage() {
       setLoading(true);
 
       const formData = new FormData();
-      formData.append("id", data._id);
+
       formData.append("leaveType", data.leaveType);
       formData.append("startDate", data.startDate);
       formData.append("endDate", data.endDate);
@@ -90,7 +90,7 @@ export default function LeavePage() {
     try {
       const token = localStorage.getItem("studentToken");
 
-      await axios.delete(`${apiBaseUrl}/student/leave//delete/${id}`, {
+      await axios.delete(`${apiBaseUrl}/student/leave/delete/${id}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -362,8 +362,8 @@ export default function LeavePage() {
                     </td>
                     <td>
                       <button
-                        type="submit"
-                        onClick={() => handleDelete(leave._id)}
+                        type="button"
+                        onClick={() => handleDelete(leave.id)}
                         className="mt-2 w-full rounded-xl bg-red-600 py-3 text-white font-semibold hover:bg-red-700 transition cursor-pointer"
                       >
                         Delete
