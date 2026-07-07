@@ -41,14 +41,15 @@ export default function AttendancePage() {
           return;
         }
 
-        const token = localStorage.getItem(
+        const token = localStorage.getItem("auth_token");
+        const res = await axios.get(
           `${apiBaseUrl}/admin/live-image/getattendance`,
-        );
-        const res = await axios.get("", {
-          headers: {
-            Authorization: `Bearer ${token}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
           },
-        });
+        );
 
         setAttendance(res.data.data);
       } catch (err) {
