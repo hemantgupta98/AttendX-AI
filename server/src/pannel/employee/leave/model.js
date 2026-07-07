@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 
 const leaveSchema = new mongoose.Schema(
   {
-    EmployeeId: {
+    employeeId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "signup",
       required: true,
@@ -56,4 +56,4 @@ const leaveSchema = new mongoose.Schema(
   },
 );
 
-export const LeaveModel = mongoose.model("StudentLeave", leaveSchema);
+export const LeaveModel = mongoose.model("EmployeeLeave", leaveSchema);

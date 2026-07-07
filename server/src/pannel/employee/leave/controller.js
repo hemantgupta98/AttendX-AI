@@ -26,7 +26,7 @@ export const applyLeave = async (req, res) => {
     const lastDay = new Date(start.getFullYear(), start.getMonth() + 1, 1);
 
     const leaveCount = await LeaveModel.countDocuments({
-      studentId: req.user.id,
+      employeeId: req.user.id,
       createdAt: {
         $gte: firstDay,
         $lt: lastDay,
@@ -43,7 +43,7 @@ export const applyLeave = async (req, res) => {
     const totalDays = Math.floor((end - start) / (1000 * 60 * 60 * 24)) + 1;
 
     const leave = await LeaveModel.create({
-      studentId: req.user.id,
+      employeeId: req.user.id,
       leaveType,
       startDate,
       endDate,
@@ -77,7 +77,7 @@ export const applyLeave = async (req, res) => {
 export const getEmployeeLeaves = async (req, res) => {
   try {
     const leaves = await LeaveModel.find({
-      studentId: req.user.id,
+      employeeId: req.user.id,
     }).sort({ createdAt: -1 });
 
     return res.status(200).json({
@@ -99,7 +99,7 @@ export const deleteLeave = async (req, res) => {
 
     const leave = await LeaveModel.findOne({
       _id: id,
-      studentId: req.user.id,
+      employeeId: req.user.id,
     });
 
     if (!leave) {
@@ -120,8 +120,7 @@ export const deleteLeave = async (req, res) => {
 
     return res.status(500).json({
       success: false,
-      message: error.message,
-      error,
+      message: "Failed to delete leave request.",
     });
   }
 };

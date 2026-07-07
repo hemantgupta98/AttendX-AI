@@ -1,19 +1,24 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
-import { useState } from "react";
 import { useForm } from "react-hook-form";
+import { useEffect, useState } from "react";
+import axios from "axios";
 
 type LeaveForm = {
+  _id: string;
   leaveType: string;
   startDate: string;
   endDate: string;
   reason: string;
-  file: FileList;
+  file: string;
 };
 
 export default function LeavePage() {
   const [fileName, setFileName] = useState("");
-
+  const [leaveHistory, setLeaveHistory] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const apiBaseUrl = "https://attendx-ai-n8uq.onrender.com/api";
   const {
     register,
     handleSubmit,
@@ -24,15 +29,73 @@ export default function LeavePage() {
 
   const reason = watch("reason") || "";
 
-  const onSubmit = (data: LeaveForm) => {
-    console.log(data);
+  const onSubmit = async (data: LeaveForm) => {
+    try {
+      setLoading(true);
 
-    alert(
-      "✅ Your leave request has been sent to your assigned teacher for approval.\n\nPlease wait for the teacher's response.",
+      const res = await axios.post(
+        "https://attendx-ai-n8uq.onrender.com/api/employee/leave/apply",
+        {
+          leaveType: data.leaveType,
+          startDate: data.startDate,
+          endDate: data.endDate,
+          reason: data.reason,
+        },
+        {
+          withCredentials: true,
+        },
+      );
+
+      alert(res.data.message);
+
+      reset();
+      setFileName("");
+      fetchLeaves();
+    } catch (error: any) {
+      alert(error.response?.data?.message || "Something went wrong.");
+    } finally {
+      setLoading(false);
+    }
+  };
+  const fetchLeaves = async () => {
+    try {
+      const res = await axios.get(
+        "https://attendx-ai-n8uq.onrender.com/api/employee/leave/getLeaves",
+        {
+          withCredentials: true,
+        },
+      );
+
+      setLeaveHistory(res.data.leaves || []);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  useEffect(() => {
+    fetchLeaves();
+  }, []);
+
+  const deleteLeave = async (id: string) => {
+    try {
+      await axios.delete(`${apiBaseUrl}/employee/leave/delete/${id}`, {
+        withCredentials: true,
+      });
+
+      fetchLeaves();
+    } catch (error: any) {
+      console.log(error.response?.status);
+      console.log(error.response?.data);
+    }
+  };
+  const handleDelete = async (id: string) => {
+    const confirmDelete = window.confirm(
+      "Are you sure you want to delete this leave?",
     );
 
-    reset();
-    setFileName("");
+    if (!confirmDelete) return;
+
+    await deleteLeave(id);
   };
 
   return (
@@ -209,9 +272,10 @@ export default function LeavePage() {
 
               <button
                 type="submit"
-                className="bg-blue-600 text-white px-5 py-2 rounded-lg hover:bg-blue-700"
+                disabled={loading}
+                className="bg-blue-600 text-white px-5 py-2 rounded-lg hover:bg-blue-700 disabled:opacity-50"
               >
-                Submit Leave
+                {loading ? "Submitting..." : "Submit Leave"}
               </button>
             </div>
           </div>
@@ -231,6 +295,74 @@ export default function LeavePage() {
           </div>
         </div>
       </form>
+      <div className="mt-10">
+        <h2 className="text-2xl font-bold mb-5">My Leave History</h2>
+
+        <div className="overflow-x-auto rounded-xl border">
+          <table className="w-full text-sm">
+            <thead className="bg-gray-100">
+              <tr>
+                <th className="p-3 text-left">Type</th>
+                <th className="p-3 text-left">Start</th>
+                <th className="p-3 text-left">End</th>
+                <th className="p-3 text-left">Days</th>
+                <th className="p-3 text-left">Status</th>
+                <th className="p-3 text-left">Remove</th>
+              </tr>
+            </thead>
+
+            <tbody>
+              {leaveHistory.length === 0 ? (
+                <tr>
+                  <td colSpan={5} className="text-center p-6 text-gray-500">
+                    No leave requests found.
+                  </td>
+                </tr>
+              ) : (
+                leaveHistory.map((leave: any) => (
+                  <tr key={leave._id} className="border-t">
+                    <td className="p-3">{leave.leaveType}</td>
+
+                    <td className="p-3">
+                      {new Date(leave.startDate).toLocaleDateString()}
+                    </td>
+
+                    <td className="p-3">
+                      {new Date(leave.endDate).toLocaleDateString()}
+                    </td>
+
+                    <td className="p-3">{leave.totalDays}</td>
+
+                    <td className="p-3">
+                      <span
+                        className={`px-3 py-1 rounded-full text-xs font-semibold
+                  ${
+                    leave.status === "Approved"
+                      ? "bg-green-100 text-green-700"
+                      : leave.status === "Rejected"
+                        ? "bg-red-100 text-red-700"
+                        : "bg-yellow-100 text-yellow-700"
+                  }`}
+                      >
+                        {leave.status}
+                      </span>
+                    </td>
+                    <td>
+                      <button
+                        type="button"
+                        onClick={() => handleDelete(leave._id)}
+                        className="mt-2 w-full rounded-xl bg-red-600 py-3 text-white font-semibold hover:bg-red-700 transition cursor-pointer"
+                      >
+                        Delete
+                      </button>
+                    </td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
+        </div>
+      </div>
     </div>
   );
 }

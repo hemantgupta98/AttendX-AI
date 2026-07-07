@@ -3,6 +3,7 @@ import http from "http";
 import app from "./src/app.js";
 import connectDB from "./src/config/db.js";
 import "./src/pannel/student/leave/corn.js";
+import "./src/pannel/employee/leave/corn.js";
 
 const PORT = process.env.PORT || 5000;
 

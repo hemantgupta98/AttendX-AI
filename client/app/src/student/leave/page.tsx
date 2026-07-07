@@ -77,7 +77,6 @@ export default function LeavePage() {
   }, []);
 
   const deleteLeave = async (id: string) => {
-    console.log("Deleting ID:", id);
     try {
       await axios.delete(`${apiBaseUrl}/student/leave/delete/${id}`, {
         withCredentials: true,
