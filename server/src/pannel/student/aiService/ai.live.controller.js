@@ -2,14 +2,14 @@ import axios from "axios";
 import formData from "form-data";
 import fs from "fs";
 
-export const employeeVerify = async (req, res) => {
+export const studentVerify = async (req, res) => {
   try {
     const form = new formData();
 
     form.append("storedImage", fs.createReadStream(req.files.storedImage.path));
     form.append("liveImage", fs.createReadStream(req.files.liveImage.path));
     const response = await axios.post(
-      "https://attendx-ai-1.onrender.com/ai/employee/verify",
+      "https://attendx-ai-1.onrender.com/ai/student/verify",
       form,
       {
         headers: form.getHeaders(),
@@ -25,7 +25,7 @@ export const employeeVerify = async (req, res) => {
   } catch (error) {
     res.status(400).json({
       success: false,
-      message: "Failed to retirve message from employee verify Model.",
+      message: "Failed to retirve message from student verify Model.",
     });
   }
 };
