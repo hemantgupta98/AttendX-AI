@@ -131,3 +131,22 @@ export const getAttendance = async (req, res) => {
     });
   }
 };
+
+export const getAttendanceHistory = async (req, res) => {
+  try {
+    const attendanceHistory = await attendance
+      .find({ admin: req.user.id })
+      .sort({ createdAt: -1 });
+
+    return res.status(200).json({
+      success: true,
+      totalRecords: attendanceHistory.length,
+      data: attendanceHistory,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
