@@ -287,11 +287,7 @@ export default function Dashboard() {
               >
                 {isUploading ? "Uploading..." : "Submit Attendance"}
               </button>
-              {matched && (
-                <div>
-                  <p className=" text-emerald-600 text-2xl">{message}</p>
-                </div>
-              )}
+
               <button
                 onClick={deleteImage}
                 disabled={!image || isUploading}

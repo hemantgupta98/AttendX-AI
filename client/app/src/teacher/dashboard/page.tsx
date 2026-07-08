@@ -36,7 +36,6 @@ export default function TeacherDashboard() {
 
         <Button
           className="mt-6 bg-white text-indigo-700 hover:bg-gray-100"
-          asChild
           onClick={() => router.push("/src/teacher/profile")}
         >
           View Profile

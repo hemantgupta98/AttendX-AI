@@ -40,7 +40,7 @@ export default function AdminReportPage() {
   const getAttendanceHistory = async () => {
     try {
       const token = localStorage.getItem("token");
-      const res = await axios.get(`${apiBaseUrl}/student/live-image/history`, {
+      const res = await axios.get(`${apiBaseUrl}/employee/live-image/history`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -58,7 +58,7 @@ export default function AdminReportPage() {
     try {
       const token = localStorage.getItem("token");
       await axios.delete(
-        `${apiBaseUrl}/student/live-image/deleteattendance/${id}`,
+        `${apiBaseUrl}/employee/live-image/deleteattendance/${id}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
