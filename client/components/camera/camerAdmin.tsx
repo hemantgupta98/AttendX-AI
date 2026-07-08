@@ -328,34 +328,34 @@ export default function Dashboard() {
             )}
           </aside>
         </section>
-        {matched && (
-          <div className="mt-8 rounded-2xl border border-emerald-200 bg-emerald-50 p-6 text-center shadow-lg">
-            <div className="flex justify-center">
-              <CheckCircle2 className="h-16 w-16 text-emerald-600" />
-            </div>
-
-            <h2 className="mt-4 text-3xl font-bold text-emerald-700">
-              Face Verified Successfully
-            </h2>
-
-            <p className="mt-3 text-lg text-gray-700">{message}</p>
-
-            <p className="mt-2 text-gray-600">
-              Your attendance has been recorded successfully.
-              <br />
-              Click below to view your complete attendance report.
-            </p>
-
-            <button
-              onClick={() => router.push("/src/admin/reports")}
-              className="mt-6 inline-flex items-center gap-2 rounded-xl bg-emerald-600 px-6 py-3 text-lg font-semibold text-white transition hover:bg-emerald-700"
-            >
-              View Attendance Report
-              <ArrowRight size={20} />
-            </button>
-          </div>
-        )}
       </main>
+      {matched && (
+        <div className="mt-8 rounded-2xl border border-emerald-200 bg-emerald-50 p-6 text-center shadow-lg">
+          <div className="flex justify-center">
+            <CheckCircle2 className="h-16 w-16 text-emerald-600" />
+          </div>
+
+          <h2 className="mt-4 text-3xl font-bold text-emerald-700">
+            Face Verified Successfully
+          </h2>
+
+          <p className="mt-3 text-lg text-gray-700">{message}</p>
+
+          <p className="mt-2 text-gray-600">
+            Your attendance has been recorded successfully.
+            <br />
+            Click below to view your complete attendance report.
+          </p>
+
+          <button
+            onClick={() => router.push("/src/admin/reports")}
+            className="mt-6 inline-flex items-center gap-2 rounded-xl bg-emerald-600 px-6 py-3 text-lg font-semibold text-white transition hover:bg-emerald-700"
+          >
+            View Attendance Report
+            <ArrowRight size={20} />
+          </button>
+        </div>
+      )}
     </div>
   );
 }
