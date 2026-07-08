@@ -15,7 +15,7 @@ const RoleSelection = () => {
           Welcome to AttendX-AI <br /> Smart Attendance starts here
         </h1>
         <p className="text-gray-500 mb-6">
-          Continue as Admin, Teacher, or Student
+          Continue as Admin, Employee, or Student
         </p>
 
         {/* Buttons */}

@@ -23,6 +23,7 @@ export default function Home() {
     process.env.NEXT_PUBLIC_API_URL2 ||
     "https://attendx-ai-n8uq.onrender.com/api";
   const [isChatOpen, setIsChatOpen] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const {
     register,
@@ -37,6 +38,7 @@ export default function Home() {
   const router = useRouter();
 
   const onSubmit: SubmitHandler<StudentLogin> = async (data) => {
+    setIsSubmitting(true);
     try {
       const normalizedBaseUrl = apiBaseUrl.replace(/\/$/, "");
       const url = `${normalizedBaseUrl}/employee/auth/login`;
@@ -144,7 +146,7 @@ export default function Home() {
             onClick={handleSubmit(onSubmit)}
             className="ml-auto px-6 py-2 bg-green-600 text-white rounded-lg mt-10 text-left flex justify-end"
           >
-            Submit
+            {isSubmitting ? "Submitting..." : "Submit"}
           </button>
           <p className=" text-gray-400 text-sm text-center">
             Create a new Account?{" "}
