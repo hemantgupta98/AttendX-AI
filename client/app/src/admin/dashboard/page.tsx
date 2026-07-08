@@ -1,102 +1,139 @@
 "use client";
 
+import { useDashboardData } from "@/lib/hook/adminDas";
 import { AdminDashboard } from "@/components/graph/admiDasboard";
 import { AdminBarChart } from "@/components/graph/adminBarChart";
 import {
-  ShieldUserIcon,
-  Focus,
-  UserCheck2,
-  User,
-  UserStar,
+  GraduationCap,
+  Users,
+  CalendarDays,
+  Camera,
+  School,
+  Clock3,
+  ScanFace,
 } from "lucide-react";
 
 export default function Dashboard() {
+  const { data, loading } = useDashboardData();
+
+  if (loading) {
+    return (
+      <div className="flex h-screen items-center justify-center text-lg font-semibold">
+        Loading Dashboard...
+      </div>
+    );
+  }
+
   return (
-    <div className="min-h-screen flex bg-gray-100">
-      {/* MAIN */}
-      <main className="flex-1 p-4 lg:p-6">
-        {/* HEADER */}
-        <div className="mb-6">
-          <h2 className="text-2xl font-bold">Admin Dashboard</h2>
-          <p className="text-gray-500">
-            Welcome back, Admin. Here&apos;s a snapshot of today&apos;s
-            attendance metrics.
-          </p>
+    <div className="min-h-screen bg-slate-100">
+      <main className="p-6">
+        {/* ================= HEADER ================= */}
+
+        <div className="mb-8 rounded-3xl bg-gradient-to-r from-indigo-600 via-blue-600 to-cyan-500 p-8 text-white shadow-xl">
+          <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between">
+            <div>
+              <p className="text-sm uppercase tracking-widest text-blue-100">
+                AttendX AI Dashboard
+              </p>
+
+              <h1 className="mt-2 text-4xl font-bold">
+                {data.institutionName}
+              </h1>
+
+              <p className="mt-3 text-blue-100">
+                AI Powered Face Recognition Attendance System
+              </p>
+            </div>
+
+            <div className="mt-6 lg:mt-0 rounded-2xl bg-white/10 p-5 backdrop-blur">
+              <p className="text-sm text-blue-100">Attendance Type</p>
+
+              <h2 className="text-2xl font-bold">{data.attendanceType}</h2>
+            </div>
+          </div>
         </div>
 
-        {/* STATS */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 mb-6">
-          <Card icon={UserCheck2} title="Total Students" value="1,284" />
-          <Card icon={ShieldUserIcon} title="Total Teachers" value="96" />
-          <Card icon={User} title="Total Staff" value="42" />
-          <Card icon={UserStar} title="Attendance %" value="94.2%" />
-          <Card icon={Focus} title="Active Cameras" value="14/16" />
+        {/* ================= STATS ================= */}
+
+        <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-4">
+          <StatCard
+            title="Students"
+            value={data.student}
+            color="from-blue-500 to-indigo-600"
+            icon={<GraduationCap size={28} />}
+          />
+
+          <StatCard
+            title="Teachers"
+            value={data.teacher}
+            color="from-emerald-500 to-green-600"
+            icon={<Users size={28} />}
+          />
+
+          <StatCard
+            title="Working Days"
+            value={data.workingDays}
+            color="from-orange-500 to-red-500"
+            icon={<CalendarDays size={28} />}
+          />
+
+          <StatCard
+            title="Active Cameras"
+            value={3}
+            color="from-purple-500 to-pink-600"
+            icon={<Camera size={28} />}
+          />
         </div>
 
-        {/* MIDDLE */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          {/* CHART */}
-          <div className="lg:col-span-2 bg-white p-5 rounded-xl shadow">
-            <h3 className="font-semibold mb-2">Attendance Analysis</h3>
-            <p className="text-sm text-gray-400 mb-4">
-              Real-time attendance vs target threshold
-            </p>
+        {/* ================= MIDDLE ================= */}
 
-            {/*  Chart */}
+        <div className="mt-8 grid gap-6 lg:grid-cols-3">
+          {/* Attendance Graph */}
+          <div className="rounded-3xl bg-white p-6 shadow lg:col-span-2">
+            <h2 className="text-xl font-bold">Attendance Analytics</h2>
+
+            <p className="mb-5 text-gray-500">Daily attendance monitoring</p>
 
             <AdminDashboard />
           </div>
 
-          {/* RIGHT PANEL */}
-          <div className="flex flex-col gap-6 lg:self-start h-fit">
-            <div className="bg-white p-5 rounded-xl shadow">
-              <h3 className="font-semibold mb-4">Department Sync</h3>
-              <AdminBarChart />
-            </div>
+          {/* Institution Overview */}
+          <div className="rounded-3xl bg-white p-6 shadow">
+            <h2 className="mb-6 text-xl font-bold">Institution Overview</h2>
 
-            <div className="bg-white p-5 rounded-xl shadow">
-              <h3 className="font-semibold mb-4">Quick Hub</h3>
+            <OverviewItem
+              icon={<School size={20} />}
+              title="Institution"
+              value={data.institutionName}
+            />
 
-              <QuickBtn label="Start Live Attendance" primary />
-              <QuickBtn label="New Student" />
-              <QuickBtn label="Manage Teachers" />
-              <QuickBtn label="Generate Reports" />
-            </div>
+            <OverviewItem
+              icon={<ScanFace size={20} />}
+              title="Attendance"
+              value={data.attendanceType}
+            />
+
+            <OverviewItem
+              icon={<Clock3 size={20} />}
+              title="Class Timing"
+              value={`${data.classTiming} Hours`}
+            />
+
+            <OverviewItem
+              icon={<CalendarDays size={20} />}
+              title="Working Days"
+              value={`${data.workingDays} Days`}
+            />
           </div>
         </div>
 
-        {/* BOTTOM */}
-        <div className="mt-6">
-          {/* ACTIVITY */}
-          <div className="bg-white p-5 rounded-xl shadow">
-            <h3 className="font-semibold mb-4">Live Activity Feed</h3>
+        {/* ================= BOTTOM ================= */}
 
-            {[
-              "Sarah Jenkins - Student",
-              "Dr. Robert Fox - Teacher",
-              "Unknown Subject - Alert",
-              "System AI Update",
-              "James Wilson - Staff",
-            ].map((item, i) => (
-              <div
-                key={i}
-                className="flex justify-between border-b py-3 text-sm"
-              >
-                <span>{item}</span>
-                <span className="text-gray-400">2 min ago</span>
-              </div>
-            ))}
-          </div>
-        </div>
+        <div className="mt-8">
+          <div className="rounded-3xl bg-white p-6 shadow">
+            <h2 className="mb-5 text-xl font-bold">Department Performance</h2>
 
-        {/* SYSTEM HEALTH */}
-        <div className="bg-white p-5 rounded-xl shadow mt-6">
-          <h3 className="font-semibold mb-4">System Health</h3>
-
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-sm">
-            <Health label="Database Sync" status="Stable" />
-            <Health label="AI Engine v2.4" status="Optimal" />
-            <Health label="Storage Capacity" status="82% Full" />
+            <AdminBarChart />
           </div>
         </div>
       </main>
@@ -104,43 +141,56 @@ export default function Dashboard() {
   );
 }
 
-/* COMPONENTS */
-
-function Card({
+function StatCard({
   title,
   value,
-  icon: Icon,
+  color,
+  icon,
 }: {
   title: string;
-  value: string;
-  icon?: React.ComponentType<{ className?: string }>;
+  value: number | string;
+  color: string;
+  icon: React.ReactNode;
 }) {
   return (
-    <div className="bg-white p-4 rounded-xl shadow">
-      {Icon && <Icon className="w-6 h-6 mb-2" />}
-      <p className="text-sm text-gray-400">{title}</p>
-      <h3 className="text-xl font-bold">{value}</h3>
+    <div className="group relative overflow-hidden rounded-3xl bg-white p-6 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl">
+      {/* Background Glow */}
+      <div
+        className={`absolute right-0 top-0 h-28 w-28 rounded-full bg-gradient-to-br ${color} opacity-10 blur-3xl`}
+      />
+      <div className="relative flex items-center justify-between">
+        <div>
+          <p className="text-sm font-medium text-gray-500">{title}</p>
+          <h2 className="mt-2 text-4xl font-bold text-gray-900">{value}</h2>
+        </div>
+        <div
+          className={`flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br ${color} text-white shadow-lg`}
+        >
+          {icon}
+        </div>
+      </div>
     </div>
   );
 }
 
-function QuickBtn({ label, primary }: { label: string; primary?: boolean }) {
+function OverviewItem({
+  icon,
+  title,
+  value,
+}: {
+  icon: React.ReactNode;
+  title: string;
+  value: string | number;
+}) {
   return (
-    <button
-      className={`w-full text-left px-4 py-3 rounded-lg mb-3 ${
-        primary ? "bg-indigo-600 text-white" : "bg-gray-100 hover:bg-gray-200"
-      }`}
-    >
-      {label}
-    </button>
-  );
-}
-
-function Health({ label, status }: { label: string; status: string }) {
-  return (
-    <div className="flex justify-between">
-      <span>{label}</span>
-      <span className="font-semibold">{status}</span>
+    <div className="mb-4 flex items-center justify-between rounded-2xl bg-slate-50 p-4 transition hover:bg-blue-50">
+      <div className="flex items-center gap-3">
+        <div className="rounded-xl bg-blue-100 p-3 text-blue-600">{icon}</div>
+        <div>
+          <p className="text-sm text-gray-500">{title}</p>
+          <p className="font-semibold text-gray-800">{value}</p>
+        </div>
+      </div>
     </div>
   );
 }
