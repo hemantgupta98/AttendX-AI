@@ -72,8 +72,8 @@ const handleLiveImageUpload = async (req, res, role) => {
     let attendanceRecord = null;
     if (isMatched) {
       attendanceRecord = await attendance.create({
-        admin: req.user.id,
-        name: req.user.name || req.user.adminName,
+        student: req.user.id,
+        name: req.user.name || req.user.studentName,
         storedImage: req.user.photo,
         liveImage: result.secure_url,
         status: "Present",
