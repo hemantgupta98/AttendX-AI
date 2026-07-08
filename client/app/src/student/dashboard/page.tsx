@@ -21,8 +21,10 @@ import {
 } from "@/components/ui/card";
 
 import { Button } from "@/components/ui/button";
+import { useRouter } from "next/navigation";
 
 export default function StudentDashboard() {
+  const router = useRouter();
   return (
     <div className="space-y-8">
       {/* Header */}
@@ -38,11 +40,10 @@ export default function StudentDashboard() {
         <Button
           className="mt-6 bg-white text-indigo-700 hover:bg-gray-100"
           asChild
+          onClick={() => router.push("/src/student/profile")}
         >
-          <Link href="/student/profile">
-            View Profile
-            <ArrowRight className="ml-2 h-4 w-4" />
-          </Link>
+          View Profile
+          <ArrowRight className="ml-2 h-4 w-4" />
         </Button>
       </div>
 
@@ -51,7 +52,7 @@ export default function StudentDashboard() {
         <h2 className="mb-5 text-2xl font-bold">Quick Access</h2>
 
         <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
-          <Link href="/student/profile">
+          <div onClick={() => router.push("/src/student/profile")}>
             <Card className="cursor-pointer transition-all duration-300 hover:-translate-y-1 hover:border-indigo-500 hover:shadow-lg">
               <CardContent className="flex items-center gap-4 p-6">
                 <div className="rounded-xl bg-indigo-100 p-4">
@@ -67,9 +68,9 @@ export default function StudentDashboard() {
                 </div>
               </CardContent>
             </Card>
-          </Link>
+          </div>
 
-          <Link href="/student/attendance">
+          <div onClick={() => router.push("/src/student/attendance")}>
             <Card className="cursor-pointer transition-all duration-300 hover:-translate-y-1 hover:border-green-500 hover:shadow-lg">
               <CardContent className="flex items-center gap-4 p-6">
                 <div className="rounded-xl bg-green-100 p-4">
@@ -85,9 +86,9 @@ export default function StudentDashboard() {
                 </div>
               </CardContent>
             </Card>
-          </Link>
+          </div>
 
-          <Link href="/student/leave">
+          <div onClick={() => router.push("/src/student/leave")}>
             <Card className="cursor-pointer transition-all duration-300 hover:-translate-y-1 hover:border-orange-500 hover:shadow-lg">
               <CardContent className="flex items-center gap-4 p-6">
                 <div className="rounded-xl bg-orange-100 p-4">
@@ -103,27 +104,9 @@ export default function StudentDashboard() {
                 </div>
               </CardContent>
             </Card>
-          </Link>
+          </div>
 
-          <Link href="/student/notifications">
-            <Card className="cursor-pointer transition-all duration-300 hover:-translate-y-1 hover:border-pink-500 hover:shadow-lg">
-              <CardContent className="flex items-center gap-4 p-6">
-                <div className="rounded-xl bg-pink-100 p-4">
-                  <Bell className="h-7 w-7 text-pink-600" />
-                </div>
-
-                <div>
-                  <h3 className="font-semibold">Notifications</h3>
-
-                  <p className="text-sm text-muted-foreground">
-                    View latest announcements.
-                  </p>
-                </div>
-              </CardContent>
-            </Card>
-          </Link>
-
-          <Link href="/student/settings">
+          <div onClick={() => router.push("/src/student/setting")}>
             <Card className="cursor-pointer transition-all duration-300 hover:-translate-y-1 hover:border-gray-500 hover:shadow-lg">
               <CardContent className="flex items-center gap-4 p-6">
                 <div className="rounded-xl bg-gray-100 p-4">
@@ -139,7 +122,7 @@ export default function StudentDashboard() {
                 </div>
               </CardContent>
             </Card>
-          </Link>
+          </div>
 
           <Card className="border-dashed">
             <CardContent className="flex h-full flex-col items-center justify-center p-8 text-center">
