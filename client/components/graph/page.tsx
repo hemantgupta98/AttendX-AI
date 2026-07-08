@@ -1,10 +1,19 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Image from "next/image";
 import axios from "axios";
-import { CalendarDays, Clock3, CheckCircle2, XCircle } from "lucide-react";
-import Page from "@/components/graph/page";
+import {
+  CalendarDays,
+  Clock3,
+  CheckCircle2,
+  XCircle,
+  Users,
+  Gauge,
+  UserCheck,
+  UserX,
+} from "lucide-react";
+import { Cell, Pie, PieChart, ResponsiveContainer, Tooltip } from "recharts";
 
 interface AttendanceHistory {
   _id: string;
@@ -18,7 +27,13 @@ interface AttendanceHistory {
   time: string;
 }
 
-export default function AttendanceHistoryPage() {
+// Colors kept consistent with the rest of the UI (green/red status pills, indigo accents)
+const COLORS = {
+  present: "#16a34a", // green-600
+  absent: "#dc2626", // red-600
+};
+
+export default function AttendanceReportPage() {
   const apiBaseUrl = "https://attendx-ai-n8uq.onrender.com/api";
 
   const [history, setHistory] = useState<AttendanceHistory[]>([]);
@@ -65,6 +80,7 @@ export default function AttendanceHistoryPage() {
       console.error(error);
     }
   };
+
   const handleDelete = async (id: string) => {
     const confirmDelete = window.confirm(
       "Are you sure you want to delete this record?",
@@ -74,6 +90,43 @@ export default function AttendanceHistoryPage() {
 
     await deleteattendance(id);
   };
+
+  // ---------- Derived report stats ----------
+  const stats = useMemo(() => {
+    const total = history.length;
+
+    const presentCount = history.filter(
+      (item) => item.status === "Present",
+    ).length;
+    const absentCount = total - presentCount;
+
+    const matchedCount = history.filter((item) => item.matched).length;
+    const unmatchedCount = total - matchedCount;
+
+    const meanConfidence =
+      total === 0
+        ? 0
+        : (history.reduce((sum, item) => sum + item.confidence, 0) / total) *
+          100;
+
+    const matchRate = total === 0 ? 0 : (matchedCount / total) * 100;
+
+    return {
+      total,
+      presentCount,
+      absentCount,
+      matchedCount,
+      unmatchedCount,
+      meanConfidence,
+      matchRate,
+    };
+  }, [history]);
+
+  const chartData = [
+    { name: "Present", value: stats.presentCount, fill: COLORS.present },
+    { name: "Absent", value: stats.absentCount, fill: COLORS.absent },
+  ];
+
   if (loading) {
     return (
       <div className="flex h-screen items-center justify-center bg-slate-100">
@@ -91,7 +144,7 @@ export default function AttendanceHistoryPage() {
         <div className="mb-6 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
           <div>
             <h1 className="text-3xl font-bold md:text-4xl">
-              Attendance History
+              Attendance Report
             </h1>
 
             <p className="mt-1 text-gray-500">
@@ -100,7 +153,104 @@ export default function AttendanceHistoryPage() {
           </div>
 
           <div className="rounded-xl bg-indigo-600 px-5 py-3 text-center font-semibold text-white shadow">
-            Total Records : {history.length}
+            Total Records : {stats.total}
+          </div>
+        </div>
+
+        {/* ================= Report Summary ================= */}
+        <div className="mb-8 grid gap-5 lg:grid-cols-3">
+          {/* Stat cards */}
+          <div className="grid grid-cols-2 gap-5 lg:col-span-2 lg:grid-cols-2">
+            <StatCard
+              icon={<Users size={22} className="text-indigo-600" />}
+              label="Total Records"
+              value={stats.total.toString()}
+              accent="bg-indigo-100"
+            />
+            <StatCard
+              icon={<Gauge size={22} className="text-purple-600" />}
+              label="Mean Confidence"
+              value={`${stats.meanConfidence.toFixed(2)}%`}
+              accent="bg-purple-100"
+            />
+            <StatCard
+              icon={<UserCheck size={22} className="text-green-600" />}
+              label="Present"
+              value={stats.presentCount.toString()}
+              sub={
+                stats.total > 0
+                  ? `${((stats.presentCount / stats.total) * 100).toFixed(1)}% of total`
+                  : undefined
+              }
+              accent="bg-green-100"
+            />
+            <StatCard
+              icon={<UserX size={22} className="text-red-600" />}
+              label="Absent"
+              value={stats.absentCount.toString()}
+              sub={
+                stats.total > 0
+                  ? `${((stats.absentCount / stats.total) * 100).toFixed(1)}% of total`
+                  : undefined
+              }
+              accent="bg-red-100"
+            />
+          </div>
+
+          {/* Donut chart */}
+          <div className="rounded-3xl bg-white p-6 shadow-lg">
+            <h2 className="mb-1 text-lg font-bold">Present vs Absent</h2>
+            <p className="mb-2 text-sm text-gray-500">
+              Attendance status breakdown
+            </p>
+
+            {stats.total === 0 ? (
+              <div className="flex h-[220px] items-center justify-center text-gray-400">
+                No data to display
+              </div>
+            ) : (
+              <div className="h-[220px]">
+                <ResponsiveContainer width="100%" height="100%">
+                  <PieChart>
+                    <Pie
+                      data={chartData}
+                      dataKey="value"
+                      nameKey="name"
+                      innerRadius={55}
+                      outerRadius={80}
+                      paddingAngle={2}
+                    >
+                      {chartData.map((entry) => (
+                        <Cell key={entry.name} fill={entry.fill} />
+                      ))}
+                    </Pie>
+                    <Tooltip
+                      formatter={(value: number, name: string) => [
+                        `${value} (${stats.total > 0 ? ((value / stats.total) * 100).toFixed(1) : 0}%)`,
+                        name,
+                      ]}
+                    />
+                  </PieChart>
+                </ResponsiveContainer>
+              </div>
+            )}
+
+            <div className="mt-3 flex justify-center gap-6 text-sm">
+              <div className="flex items-center gap-2">
+                <span
+                  className="h-3 w-3 rounded-full"
+                  style={{ backgroundColor: COLORS.present }}
+                />
+                Present
+              </div>
+              <div className="flex items-center gap-2">
+                <span
+                  className="h-3 w-3 rounded-full"
+                  style={{ backgroundColor: COLORS.absent }}
+                />
+                Absent
+              </div>
+            </div>
           </div>
         </div>
 
@@ -203,7 +353,7 @@ export default function AttendanceHistoryPage() {
 
         {/* ================= Mobile Card View ================= */}
 
-        <div className="grid gap-5 lg:hidden">
+        <div className="mt-5 grid gap-5 lg:hidden">
           {history.map((item) => (
             <div key={item._id} className="rounded-2xl bg-white p-5 shadow-lg">
               <div className="flex items-center gap-4">
@@ -292,7 +442,30 @@ export default function AttendanceHistoryPage() {
           )}
         </div>
       </div>
-      <Page />
+    </div>
+  );
+}
+
+// ---------- Small presentational component for the summary cards ----------
+function StatCard({
+  icon,
+  label,
+  value,
+  sub,
+  accent,
+}: {
+  icon: React.ReactNode;
+  label: string;
+  value: string;
+  sub?: string;
+  accent: string;
+}) {
+  return (
+    <div className="rounded-3xl bg-white p-5 shadow-lg">
+      <div className={`mb-3 inline-flex rounded-xl p-2 ${accent}`}>{icon}</div>
+      <p className="text-sm text-gray-500">{label}</p>
+      <p className="text-2xl font-bold">{value}</p>
+      {sub && <p className="mt-1 text-xs text-gray-400">{sub}</p>}
     </div>
   );
 }
