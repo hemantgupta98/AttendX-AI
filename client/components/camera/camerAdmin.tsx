@@ -135,7 +135,7 @@ export default function Dashboard() {
           JSON.stringify(data.attendanceDetails),
         );
 
-        router.push("/src/admin/attendance");
+        router.push("/src/admin/dashboard");
       }
     } catch (err) {
       if (axios.isAxiosError(err)) {
