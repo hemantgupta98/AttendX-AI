@@ -1,10 +1,19 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import Image from "next/image";
 import axios from "axios";
-import { CalendarDays, Clock3, CheckCircle2, XCircle } from "lucide-react";
-import Page from "@/components/graph/page";
+import Image from "next/image";
+import {
+  CalendarDays,
+  Clock3,
+  Users,
+  CheckCircle2,
+  XCircle,
+  Brain,
+  Trash2,
+} from "lucide-react";
+import { Pie, PieChart, Cell, ResponsiveContainer } from "recharts";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 interface AttendanceHistory {
   _id: string;
@@ -18,7 +27,7 @@ interface AttendanceHistory {
   time: string;
 }
 
-export default function AttendanceHistoryPage() {
+export default function AdminReportPage() {
   const apiBaseUrl = "https://attendx-ai-n8uq.onrender.com/api";
 
   const [history, setHistory] = useState<AttendanceHistory[]>([]);
@@ -31,15 +40,13 @@ export default function AttendanceHistoryPage() {
   const getAttendanceHistory = async () => {
     try {
       const token = localStorage.getItem("token");
-
       const res = await axios.get(`${apiBaseUrl}/admin/live-image/history`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
         withCredentials: true,
       });
-
-      setHistory(res.data.data);
+      setHistory(res.data.data || []);
     } catch (error) {
       console.log(error);
     } finally {
@@ -47,10 +54,9 @@ export default function AttendanceHistoryPage() {
     }
   };
 
-  const deleteattendance = async (id: string) => {
+  const deleteAttendance = async (id: string) => {
     try {
       const token = localStorage.getItem("adminToken");
-
       await axios.delete(
         `${apiBaseUrl}/admin/live-image/deleteattendance/${id}`,
         {
@@ -59,240 +65,515 @@ export default function AttendanceHistoryPage() {
           },
         },
       );
-
       getAttendanceHistory();
     } catch (error) {
-      console.error(error);
+      console.log(error);
     }
   };
+
   const handleDelete = async (id: string) => {
-    const confirmDelete = window.confirm(
-      "Are you sure you want to delete this record?",
-    );
-
+    const confirmDelete = window.confirm("Delete this attendance?");
     if (!confirmDelete) return;
-
-    await deleteattendance(id);
+    deleteAttendance(id);
   };
+
+  const total = history.length;
+  const present = history.filter((item) => item.status === "Present").length;
+  const absent = history.filter((item) => item.status !== "Present").length;
+  const matched = history.filter((item) => item.matched).length;
+  const unmatched = total - matched;
+
+  const averageConfidence =
+    total === 0
+      ? 0
+      : Number(
+          (
+            (history.reduce((sum, item) => sum + item.confidence, 0) / total) *
+            100
+          ).toFixed(1),
+        );
+
+  const attendanceRate =
+    total === 0 ? 0 : Number(((present / total) * 100).toFixed(1));
+
+  const attendanceChart = [
+    {
+      name: "Present",
+      value: present,
+      color: "#22c55e",
+    },
+    {
+      name: "Absent",
+      value: absent,
+      color: "#ef4444",
+    },
+  ];
+
+  const matchChart = [
+    {
+      name: "Matched",
+      value: matched,
+      color: "#3b82f6",
+    },
+    {
+      name: "Failed",
+      value: unmatched,
+      color: "#f59e0b",
+    },
+  ];
+
   if (loading) {
     return (
-      <div className="flex h-screen items-center justify-center bg-slate-100">
-        <div className="rounded-xl bg-white px-8 py-6 shadow-lg">
-          <p className="text-lg font-semibold">Loading Attendance History...</p>
-        </div>
+      <div className="flex h-screen items-center justify-center">
+        <div className="text-xl font-semibold">Loading Reports...</div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-slate-100 p-4 md:p-6 lg:p-8">
+    <div className="min-h-screen bg-slate-100 p-6">
       <div className="mx-auto max-w-7xl">
-        {/* Header */}
-        <div className="mb-6 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-          <div>
-            <h1 className="text-3xl font-bold md:text-4xl">
-              Attendance History
-            </h1>
-
-            <p className="mt-1 text-gray-500">
-              AI Face Recognition Attendance Records
-            </p>
-          </div>
-
-          <div className="rounded-xl bg-indigo-600 px-5 py-3 text-center font-semibold text-white shadow">
-            Total Records : {history.length}
-          </div>
+        <div className="mb-8">
+          <h1 className="text-4xl font-bold">Attendance Analytics</h1>
+          <p className="text-slate-500 mt-2">AI Face Recognition Dashboard</p>
         </div>
 
-        {/* ================= Desktop Table ================= */}
+        {/* ================= Stat Cards ================= */}
+        <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-5">
+          <Card>
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm text-gray-500">Total Records</p>
+                  <h2 className="mt-2 text-3xl font-bold">{total}</h2>
+                </div>
+                <Users className="text-indigo-600" />
+              </div>
+            </CardContent>
+          </Card>
 
-        <div className="hidden overflow-x-auto rounded-3xl bg-white shadow-lg lg:block">
-          <table className="min-w-full">
-            <thead className="bg-slate-100">
-              <tr className="text-left text-gray-700">
-                <th className="px-6 py-4">Live Photo</th>
-                <th>Name</th>
-                <th>Date</th>
-                <th>Time</th>
-                <th>Status</th>
-                <th>Matched</th>
-                <th>Confidence</th>
-                <th className="text-center">Delete</th>
-              </tr>
-            </thead>
+          <Card>
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm text-gray-500">Present</p>
+                  <h2 className="mt-2 text-3xl font-bold text-green-600">
+                    {present}
+                  </h2>
+                </div>
+                <CheckCircle2 className="text-green-600" />
+              </div>
+            </CardContent>
+          </Card>
 
-            <tbody>
-              {history.map((item) => (
-                <tr
-                  key={item._id}
-                  className="border-t transition hover:bg-slate-50"
-                >
-                  <td className="px-6 py-4">
-                    <Image
-                      src={item.liveImage}
-                      alt={item.name}
-                      width={60}
-                      height={60}
-                      className="rounded-xl object-cover"
-                    />
-                  </td>
+          <Card>
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm text-gray-500">Absent</p>
+                  <h2 className="mt-2 text-3xl font-bold text-red-600">
+                    {absent}
+                  </h2>
+                </div>
+                <XCircle className="text-red-600" />
+              </div>
+            </CardContent>
+          </Card>
 
-                  <td className="font-semibold">{item.name}</td>
+          <Card>
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm text-gray-500">Attendance</p>
+                  <h2 className="mt-2 text-3xl font-bold">{attendanceRate}%</h2>
+                </div>
+                <Brain className="text-purple-600" />
+              </div>
+            </CardContent>
+          </Card>
 
-                  <td>
-                    <div className="flex items-center gap-2">
-                      <CalendarDays size={16} className="text-blue-600" />
-                      {new Date(item.date).toLocaleDateString()}
-                    </div>
-                  </td>
+          <Card>
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm text-gray-500">Avg Confidence</p>
+                  <h2 className="mt-2 text-3xl font-bold">
+                    {averageConfidence}%
+                  </h2>
+                </div>
+                <Brain className="text-blue-600" />
+              </div>
+            </CardContent>
+          </Card>
+        </div>
 
-                  <td>
-                    <div className="flex items-center gap-2">
-                      <Clock3 size={16} className="text-purple-600" />
-                      {item.time}
-                    </div>
-                  </td>
+        {/* ================= Charts ================= */}
+        <div className="mt-8 grid gap-6 lg:grid-cols-3">
+          {/* ================= Attendance Chart ================= */}
+          <Card className="shadow-lg rounded-2xl">
+            <CardHeader>
+              <CardTitle>Attendance Overview</CardTitle>
+            </CardHeader>
 
-                  <td>
-                    <span
-                      className={`rounded-full px-3 py-1 text-sm font-semibold ${
-                        item.status === "Present"
-                          ? "bg-green-100 text-green-700"
-                          : "bg-red-100 text-red-700"
-                      }`}
+            <CardContent>
+              <div className="h-[320px]">
+                <ResponsiveContainer width="100%" height="100%">
+                  <PieChart>
+                    <Pie
+                      data={attendanceChart}
+                      dataKey="value"
+                      nameKey="name"
+                      innerRadius={70}
+                      outerRadius={110}
+                      paddingAngle={4}
+                      label={({ name, percent }) =>
+                        `${name} ${(percent! * 100).toFixed(0)}%`
+                      }
                     >
-                      {item.status}
+                      {attendanceChart.map((entry, index) => (
+                        <Cell key={index} fill={entry.color} />
+                      ))}
+                    </Pie>
+                  </PieChart>
+                </ResponsiveContainer>
+              </div>
+
+              <div className="mt-5 flex justify-center gap-8">
+                <div className="flex items-center gap-2">
+                  <div className="h-4 w-4 rounded-full bg-green-500"></div>
+                  <span>Present ({present})</span>
+                </div>
+
+                <div className="flex items-center gap-2">
+                  <div className="h-4 w-4 rounded-full bg-red-500"></div>
+                  <span>Absent ({absent})</span>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* ================= Face Match Chart ================= */}
+          <Card className="shadow-lg rounded-2xl">
+            <CardHeader>
+              <CardTitle>Face Recognition</CardTitle>
+            </CardHeader>
+
+            <CardContent>
+              <div className="h-[320px]">
+                <ResponsiveContainer width="100%" height="100%">
+                  <PieChart>
+                    <Pie
+                      data={matchChart}
+                      dataKey="value"
+                      nameKey="name"
+                      innerRadius={70}
+                      outerRadius={110}
+                      paddingAngle={4}
+                      label={({ name, percent }) =>
+                        `${name} ${(percent! * 100).toFixed(0)}%`
+                      }
+                    >
+                      {matchChart.map((entry, index) => (
+                        <Cell key={index} fill={entry.color} />
+                      ))}
+                    </Pie>
+                  </PieChart>
+                </ResponsiveContainer>
+              </div>
+
+              <div className="mt-5 flex justify-center gap-8">
+                <div className="flex items-center gap-2">
+                  <div className="h-4 w-4 rounded-full bg-blue-500"></div>
+                  <span>Matched ({matched})</span>
+                </div>
+
+                <div className="flex items-center gap-2">
+                  <div className="h-4 w-4 rounded-full bg-yellow-500"></div>
+                  <span>Failed ({unmatched})</span>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* ================= Confidence ================= */}
+          <Card className="shadow-lg rounded-2xl">
+            <CardHeader>
+              <CardTitle>AI Confidence</CardTitle>
+            </CardHeader>
+
+            <CardContent>
+              <div className="flex flex-col items-center">
+                <div className="relative h-40 w-40">
+                  <svg viewBox="0 0 120 120" className="h-full w-full">
+                    <circle
+                      cx="60"
+                      cy="60"
+                      r="52"
+                      stroke="#e5e7eb"
+                      strokeWidth="10"
+                      fill="none"
+                    />
+
+                    <circle
+                      cx="60"
+                      cy="60"
+                      r="52"
+                      stroke="#3b82f6"
+                      strokeWidth="10"
+                      fill="none"
+                      strokeDasharray={327}
+                      strokeDashoffset={327 - (327 * averageConfidence) / 100}
+                      strokeLinecap="round"
+                      transform="rotate(-90 60 60)"
+                    />
+                  </svg>
+
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <span className="text-3xl font-bold">
+                      {averageConfidence}%
                     </span>
-                  </td>
+                  </div>
+                </div>
 
-                  <td>
-                    {item.matched ? (
-                      <span className="rounded-full bg-green-100 px-3 py-1 text-sm text-green-700">
-                        Yes
-                      </span>
-                    ) : (
-                      <span className="rounded-full bg-red-100 px-3 py-1 text-sm text-red-700">
-                        No
-                      </span>
-                    )}
-                  </td>
+                <p className="mt-6 text-center text-gray-500">
+                  Average confidence generated by AI Face Recognition.
+                </p>
+              </div>
 
-                  <td>{(item.confidence * 100).toFixed(2)}%</td>
+              <div className="mt-8 space-y-4">
+                <div>
+                  <div className="mb-1 flex justify-between">
+                    <span>Recognition Success</span>
+                    <span>{attendanceRate}%</span>
+                  </div>
+                  <div className="h-3 rounded-full bg-gray-200">
+                    <div
+                      className="h-3 rounded-full bg-green-500"
+                      style={{
+                        width: `${attendanceRate}%`,
+                      }}
+                    />
+                  </div>
+                </div>
 
-                  <td>
-                    <div className="flex justify-center">
-                      <button
-                        onClick={() => handleDelete(item._id)}
-                        className="rounded-lg bg-red-600 px-3 py-2 text-white hover:bg-red-700 cursor-pointer"
-                      >
-                        Delete
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-
-          {history.length === 0 && (
-            <div className="p-10 text-center text-gray-500">
-              No Attendance Records Found
-            </div>
-          )}
+                <div>
+                  <div className="mb-1 flex justify-between">
+                    <span>AI Confidence</span>
+                    <span>{averageConfidence}%</span>
+                  </div>
+                  <div className="h-3 rounded-full bg-gray-200">
+                    <div
+                      className="h-3 rounded-full bg-blue-600"
+                      style={{
+                        width: `${averageConfidence}%`,
+                      }}
+                    />
+                  </div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
         </div>
 
-        {/* ================= Mobile Card View ================= */}
+        {/* ================= Attendance History ================= */}
+        <div className="mt-10">
+          <Card className="rounded-2xl shadow-lg">
+            <CardHeader className="flex flex-row items-center justify-between">
+              <CardTitle className="text-2xl">Attendance History</CardTitle>
 
-        <div className="grid gap-5 lg:hidden">
-          {history.map((item) => (
-            <div key={item._id} className="rounded-2xl bg-white p-5 shadow-lg">
-              <div className="flex items-center gap-4">
-                <Image
-                  src={item.liveImage}
-                  alt={item.name}
-                  width={80}
-                  height={80}
-                  className="rounded-xl object-cover"
-                />
+              <span className="rounded-full bg-indigo-100 px-4 py-2 text-sm font-semibold text-indigo-700">
+                {history.length} Records
+              </span>
+            </CardHeader>
 
-                <div className="flex-1">
-                  <h2 className="text-lg font-bold">{item.name}</h2>
+            <CardContent>
+              {/* ================= Desktop Table ================= */}
+              <div className="hidden overflow-x-auto lg:block">
+                <table className="min-w-full">
+                  <thead className="border-b bg-slate-100">
+                    <tr className="text-left text-sm font-semibold text-slate-700">
+                      <th className="px-5 py-4">Photo</th>
+                      <th>Name</th>
+                      <th>Date</th>
+                      <th>Time</th>
+                      <th>Status</th>
+                      <th>Matched</th>
+                      <th>Confidence</th>
+                      <th className="text-center">Action</th>
+                    </tr>
+                  </thead>
 
-                  <div className="mt-2 flex items-center gap-2 text-sm text-gray-600">
-                    <CalendarDays size={15} className="text-blue-600" />
+                  <tbody>
+                    {history.map((item) => (
+                      <tr
+                        key={item._id}
+                        className="border-b transition hover:bg-slate-50"
+                      >
+                        <td className="px-5 py-4">
+                          <Image
+                            src={item.liveImage}
+                            alt={item.name}
+                            width={55}
+                            height={55}
+                            className="rounded-xl object-cover"
+                          />
+                        </td>
 
-                    {new Date(item.date).toLocaleDateString()}
+                        <td className="font-semibold">{item.name}</td>
+
+                        <td>
+                          <div className="flex items-center gap-2">
+                            <CalendarDays size={16} className="text-blue-600" />
+                            {new Date(item.date).toLocaleDateString()}
+                          </div>
+                        </td>
+
+                        <td>
+                          <div className="flex items-center gap-2">
+                            <Clock3 size={16} className="text-purple-600" />
+                            {item.time}
+                          </div>
+                        </td>
+
+                        <td>
+                          <span
+                            className={`rounded-full px-3 py-1 text-sm font-semibold ${
+                              item.status === "Present"
+                                ? "bg-green-100 text-green-700"
+                                : "bg-red-100 text-red-700"
+                            }`}
+                          >
+                            {item.status}
+                          </span>
+                        </td>
+
+                        <td>
+                          {item.matched ? (
+                            <span className="rounded-full bg-blue-100 px-3 py-1 text-blue-700 text-sm">
+                              Matched
+                            </span>
+                          ) : (
+                            <span className="rounded-full bg-yellow-100 px-3 py-1 text-yellow-700 text-sm">
+                              Failed
+                            </span>
+                          )}
+                        </td>
+
+                        <td>
+                          <span className="font-semibold text-indigo-600">
+                            {(item.confidence * 100).toFixed(2)}%
+                          </span>
+                        </td>
+
+                        <td>
+                          <div className="flex justify-center">
+                            <button
+                              onClick={() => handleDelete(item._id)}
+                              className="rounded-lg bg-red-600 p-2 text-white transition hover:bg-red-700"
+                            >
+                              <Trash2 size={18} />
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+
+                {history.length === 0 && (
+                  <div className="py-10 text-center text-gray-500">
+                    No attendance records found.
                   </div>
-
-                  <div className="mt-1 flex items-center gap-2 text-sm text-gray-600">
-                    <Clock3 size={15} className="text-purple-600" />
-
-                    {item.time}
-                  </div>
-                </div>
+                )}
               </div>
 
-              <div className="mt-5 grid grid-cols-2 gap-4">
-                <div>
-                  <p className="text-xs text-gray-500">Status</p>
-
-                  <span
-                    className={`mt-1 inline-block rounded-full px-3 py-1 text-sm font-semibold ${
-                      item.status === "Present"
-                        ? "bg-green-100 text-green-700"
-                        : "bg-red-100 text-red-700"
-                    }`}
+              {/* ================= Mobile Cards ================= */}
+              <div className="grid gap-5 lg:hidden">
+                {history.map((item) => (
+                  <Card
+                    key={item._id}
+                    className="rounded-2xl border-0 shadow-md"
                   >
-                    {item.status}
-                  </span>
-                </div>
+                    <CardContent className="p-5">
+                      <div className="flex gap-4">
+                        <Image
+                          src={item.liveImage}
+                          alt={item.name}
+                          width={90}
+                          height={90}
+                          className="rounded-xl object-cover"
+                        />
 
-                <div>
-                  <p className="text-xs text-gray-500">Confidence</p>
+                        <div className="flex-1">
+                          <h2 className="text-lg font-bold">{item.name}</h2>
 
-                  <p className="mt-1 font-semibold text-indigo-600">
-                    {(item.confidence * 100).toFixed(2)}%
-                  </p>
-                </div>
+                          <div className="mt-3 space-y-2 text-sm">
+                            <div className="flex items-center gap-2">
+                              <CalendarDays
+                                size={15}
+                                className="text-blue-600"
+                              />
+                              {new Date(item.date).toLocaleDateString()}
+                            </div>
+                            <div className="flex items-center gap-2">
+                              <Clock3 size={15} className="text-purple-600" />
+                              {item.time}
+                            </div>
+                          </div>
+                        </div>
+                      </div>
 
-                <div>
-                  <p className="text-xs text-gray-500">Matched</p>
+                      <div className="mt-5 grid grid-cols-2 gap-4">
+                        <div>
+                          <p className="text-xs text-gray-500">Status</p>
+                          <span
+                            className={`mt-1 inline-block rounded-full px-3 py-1 text-sm font-semibold ${
+                              item.status === "Present"
+                                ? "bg-green-100 text-green-700"
+                                : "bg-red-100 text-red-700"
+                            }`}
+                          >
+                            {item.status}
+                          </span>
+                        </div>
 
-                  <div className="mt-1 flex items-center gap-2">
-                    {item.matched ? (
-                      <>
-                        <CheckCircle2 size={18} className="text-green-600" />
-                        <span className="text-green-700 font-medium">Yes</span>
-                      </>
-                    ) : (
-                      <>
-                        <XCircle size={18} className="text-red-600" />
-                        <span className="text-red-700 font-medium">No</span>
-                      </>
-                    )}
-                  </div>
-                </div>
+                        <div>
+                          <p className="text-xs text-gray-500">Confidence</p>
+                          <p className="mt-1 font-bold text-indigo-600">
+                            {(item.confidence * 100).toFixed(2)}%
+                          </p>
+                        </div>
 
-                <div className="flex items-end justify-end">
-                  <button
-                    onClick={() => handleDelete(item._id)}
-                    className="rounded-lg bg-red-600 px-3 py-2 text-white hover:bg-red-700 cursor-pointer"
-                  >
-                    Delete
-                  </button>
-                </div>
+                        <div>
+                          <p className="text-xs text-gray-500">Face Match</p>
+                          <p
+                            className={`mt-1 font-semibold ${
+                              item.matched
+                                ? "text-green-600"
+                                : "text-yellow-600"
+                            }`}
+                          >
+                            {item.matched ? "Matched" : "Failed"}
+                          </p>
+                        </div>
+
+                        <div className="flex justify-end">
+                          <button
+                            onClick={() => handleDelete(item._id)}
+                            className="rounded-lg bg-red-600 p-3 text-white transition hover:bg-red-700"
+                          >
+                            <Trash2 size={18} />
+                          </button>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))}
               </div>
-            </div>
-          ))}
-
-          {history.length === 0 && (
-            <div className="rounded-2xl bg-white p-10 text-center text-gray-500 shadow">
-              No Attendance Records Found
-            </div>
-          )}
+            </CardContent>
+          </Card>
         </div>
       </div>
-      <Page />
     </div>
   );
 }
