@@ -91,7 +91,6 @@ export default function TeacherStudentReportPage() {
         <div className="flex flex-col gap-6 lg:self-start h-fit">
           <div className="bg-white p-5 rounded-xl shadow">
             <h3 className="font-semibold mb-4">Subject-wise Performance</h3>
-            <AdminBarChart />
           </div>
 
           {/* Export */}
