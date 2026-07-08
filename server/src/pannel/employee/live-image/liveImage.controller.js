@@ -3,6 +3,7 @@ import FormData from "form-data";
 import fs from "fs";
 import path from "path";
 import { uploadImage as uploadToCloudinary } from "../media/cloudinary.js";
+import { attendance } from "../database/attendance.js";
 
 const roleFolders = {
   employee: "live-image/employee",
@@ -68,24 +69,23 @@ const handleLiveImageUpload = async (req, res, role) => {
 
     const now = new Date();
     const isMatched = Boolean(response.data?.success);
-    const attendanceDetails = {
-      name: req.user?.name || req.user?.adminName || "employee",
-      photo: req.user?.photo || result.secure_url,
-      date: now.toLocaleDateString(),
-      time: now.toLocaleTimeString(),
-      status: isMatched ? "Present" : "Not Matched",
-    };
-
+    const attendanceRecord = await attendance.create({
+      employee: req.user.id,
+      name: req.user.name || req.user.employeeName,
+      storedImage: req.user.photo,
+      liveImage: result.secure_url,
+      status: isMatched ? "Present" : "Absent",
+      matched: isMatched,
+      confidence: response.data?.confidence || 0,
+      aiResponse: response.data,
+    });
     return res.status(200).json({
       success: true,
-      imageUrl: result.secure_url,
-      publicId: result.public_id,
-      message: isMatched ? "Face matched" : "Face not matched",
+      message: isMatched ? "Face matched successfully" : "Face not matched",
       matched: isMatched,
-      attendanceDetails,
-      airesponse: response.data,
-      folder,
-      type: role,
+      attendanceId: attendanceRecord._id,
+      confidence: attendanceRecord.confidence,
+      data: attendanceRecord,
     });
   } catch (error) {
     return res.status(500).json({
@@ -105,42 +105,28 @@ export const uploadEmployeeImage = async (req, res) => {
 
 export const getAttendance = async (req, res) => {
   try {
-    const attendanceData = await attendance
-      .findById(req.params.id)
-      .populate({
-        path: "user",
-        select:
-          "name email photo employeeID teacherNumber parentNumber gender dob address city state pincode institutionName class subject department course designation joiningYear",
-      })
-      .populate({
-        path: "admin",
-        select: "name email institutionName",
-      });
+    const { id } = req.params;
+
+    const attendanceData = await attendance.findOne({
+      _id: id,
+      employee: req.user.id,
+    });
+
+    {
+      /** console.log("Attendance ID:", req.params.id);
+    console.log("Student ID:", req.user.id); */
+    }
 
     if (!attendanceData) {
       return res.status(404).json({
         success: false,
-        message: "Attendance not found",
+        message: "Attendance Not Found",
       });
     }
 
     return res.status(200).json({
       success: true,
-      data: {
-        attendanceId: attendanceData._id,
-        user: attendanceData.user,
-        admin: attendanceData.admin,
-        storedImage: attendanceData.storedImage,
-        liveImage: attendanceData.liveImage,
-        status: attendanceData.status,
-        matched: attendanceData.matched,
-        confidence: attendanceData.confidence,
-        location: attendanceData.location,
-        date: attendanceData.date,
-        time: attendanceData.time,
-        createdAt: attendanceData.createdAt,
-        updatedAt: attendanceData.updatedAt,
-      },
+      data: attendanceData,
     });
   } catch (error) {
     return res.status(500).json({
@@ -150,17 +136,49 @@ export const getAttendance = async (req, res) => {
   }
 };
 
-{
-  /** await attendance.create({
-      admin: req.user._id,
-      name: req.user.name,
-      storedImage: req.user.photo,
-      liveImage: result.secure_url,
-      status: isMatched ? "Present" : "Absent",
-      matched: isMatched,
-      confidence:
-        response.data?.confidence || response.data?.match_percentage || null,
-      aiResponse: response.data,
-      date: now,
-    }); */
-}
+export const getAttendanceHistory = async (req, res) => {
+  try {
+    const attendanceHistory = await attendance
+      .find({ employee: req.user.id })
+      .sort({ createdAt: -1 });
+
+    return res.status(200).json({
+      success: true,
+      totalRecords: attendanceHistory.length,
+      data: attendanceHistory,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
+export const deleteAttendanceHistory = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const deletedAttendance = await attendance.findOneAndDelete({
+      _id: id,
+      employee: req.user.id,
+    });
+
+    if (!deletedAttendance) {
+      return res.status(404).json({
+        success: false,
+        message: "Attendance not found.",
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: "Attendance deleted successfully.",
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
