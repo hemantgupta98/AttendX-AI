@@ -69,26 +69,24 @@ const handleLiveImageUpload = async (req, res, role) => {
 
     const now = new Date();
     const isMatched = Boolean(response.data?.success);
-    let attendanceRecord = null;
-    if (isMatched) {
-      attendanceRecord = await attendance.create({
-        admin: req.user.id,
-        name: req.user.name || req.user.adminName,
-        storedImage: req.user.photo,
-        liveImage: result.secure_url,
-        status: "Present",
-        matched: true,
-        confidence: response.data.confidence,
-        aiResponse: response.data,
-      });
-    }
+    const attendanceRecord = await attendance.create({
+      admin: req.user.id,
+      name: req.user.name || req.user.adminName,
+      storedImage: req.user.photo,
+      liveImage: result.secure_url,
+      status: isMatched ? "Present" : "Absent",
+      matched: isMatched,
+      confidence: response.data?.confidence || 0,
+      aiResponse: response.data,
+    });
 
     return res.status(200).json({
       success: true,
-      message: isMatched ? "Face matched" : "Face not matched",
+      message: isMatched ? "Face matched successfully" : "Face not matched",
       matched: isMatched,
-      attendanceId: attendanceRecord?._id || null,
-      confidence: response.data.confidence || null,
+      attendanceId: attendanceRecord._id,
+      confidence: attendanceRecord.confidence,
+      data: attendanceRecord,
     });
   } catch (error) {
     return res.status(500).json({
