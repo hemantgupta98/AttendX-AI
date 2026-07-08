@@ -166,6 +166,33 @@ export default function Dashboard() {
       <main className="mx-auto flex min-h-screen w-full max-w-7xl items-center px-4 py-6 sm:px-6 lg:px-8">
         <section className="grid w-full gap-6 lg:grid-cols-[1.1fr_0.9fr]">
           <div className="rounded-3xl border border-white/70 bg-white/80 p-6 shadow-[0_20px_60px_rgba(15,23,42,0.08)] backdrop-blur xl:p-8">
+            {matched && (
+              <div className="mt-8 rounded-2xl border border-emerald-200 bg-emerald-50 p-6 text-center shadow-lg">
+                <div className="flex justify-center">
+                  <CheckCircle2 className="h-16 w-16 text-emerald-600" />
+                </div>
+
+                <h2 className="mt-4 text-3xl font-bold text-emerald-700">
+                  Face Verified Successfully
+                </h2>
+
+                <p className="mt-3 text-lg text-gray-700">{message}</p>
+
+                <p className="mt-2 text-gray-600">
+                  Your attendance has been recorded successfully.
+                  <br />
+                  Click below to view your complete attendance report.
+                </p>
+
+                <button
+                  onClick={() => router.push("/src/admin/reports")}
+                  className="mt-6 inline-flex items-center gap-2 rounded-xl bg-emerald-600 px-6 py-3 text-lg font-semibold text-white transition hover:bg-emerald-700"
+                >
+                  View Attendance Report
+                  <ArrowRight size={20} />
+                </button>
+              </div>
+            )}
             <div className="mb-6 space-y-4">
               <div className="flex flex-wrap items-center gap-3 text-xs font-semibold uppercase tracking-[0.28em] text-indigo-600">
                 <span className="rounded-full bg-indigo-50 px-3 py-1 text-indigo-900">
@@ -329,33 +356,6 @@ export default function Dashboard() {
           </aside>
         </section>
       </main>
-      {matched && (
-        <div className="mt-8 rounded-2xl border border-emerald-200 bg-emerald-50 p-6 text-center shadow-lg">
-          <div className="flex justify-center">
-            <CheckCircle2 className="h-16 w-16 text-emerald-600" />
-          </div>
-
-          <h2 className="mt-4 text-3xl font-bold text-emerald-700">
-            Face Verified Successfully
-          </h2>
-
-          <p className="mt-3 text-lg text-gray-700">{message}</p>
-
-          <p className="mt-2 text-gray-600">
-            Your attendance has been recorded successfully.
-            <br />
-            Click below to view your complete attendance report.
-          </p>
-
-          <button
-            onClick={() => router.push("/src/admin/reports")}
-            className="mt-6 inline-flex items-center gap-2 rounded-xl bg-emerald-600 px-6 py-3 text-lg font-semibold text-white transition hover:bg-emerald-700"
-          >
-            View Attendance Report
-            <ArrowRight size={20} />
-          </button>
-        </div>
-      )}
     </div>
   );
 }
