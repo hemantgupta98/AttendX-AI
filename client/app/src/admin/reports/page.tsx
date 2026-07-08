@@ -180,8 +180,11 @@ export default function AttendanceHistoryPage() {
 
                   <td>
                     <div className="flex justify-center">
-                      <button className="rounded-lg bg-indigo-600 p-2 text-white transition hover:bg-indigo-700">
-                        <Eye size={18} />
+                      <button
+                        onClick={() => handleDelete(item._id)}
+                        className="rounded-lg bg-red-600 px-3 py-2 text-white hover:bg-red-700 cursor-pointer"
+                      >
+                        Delete
                       </button>
                     </div>
                   </td>
