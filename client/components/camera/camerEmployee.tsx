@@ -221,7 +221,7 @@ export default function Dashboard() {
                 </p>
 
                 <button
-                  onClick={() => router.push("/src/admin/reports")}
+                  onClick={() => router.push("/src/teacher/attendance")}
                   className={`mt-6 inline-flex items-center gap-2 rounded-xl px-6 py-3 text-lg font-semibold text-white transition ${
                     matched
                       ? "bg-emerald-600 hover:bg-emerald-700"
