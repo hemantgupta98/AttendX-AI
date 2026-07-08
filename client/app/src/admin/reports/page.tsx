@@ -17,6 +17,20 @@ interface AttendanceHistory {
   time: string;
 }
 
+{
+  /**const initialAttendanceState: AttendanceHistory = {
+  _id: "",
+  name: "",
+  storedImage: "",
+  liveImage: "",
+  status: "",
+  matched: false,
+  confidence: 0,
+  date: "",
+  time: "",
+}; */
+}
+
 export default function AttendanceHistoryPage() {
   const apiBaseUrl = "https://attendx-ai-n8uq.onrender.com/api";
 
@@ -35,7 +49,11 @@ export default function AttendanceHistoryPage() {
         headers: {
           Authorization: `Bearer ${token}`,
         },
+        withCredentials: true,
       });
+
+      console.log("Response:", res.data);
+      console.log("History:", res.data.data);
 
       setHistory(res.data.data);
     } catch (error) {
