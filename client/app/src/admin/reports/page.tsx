@@ -29,7 +29,7 @@ export default function AttendanceHistoryPage() {
 
   const getAttendanceHistory = async () => {
     try {
-      const token = localStorage.getItem("auth_token");
+      const token = localStorage.getItem("token");
       console.log(token);
 
       const res = await axios.get(`${apiBaseUrl}/admin/live-image/history`, {
