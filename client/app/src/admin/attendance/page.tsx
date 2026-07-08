@@ -12,7 +12,6 @@ import {
   User,
   ShieldCheck,
   CalendarClock,
-  Fingerprint,
   BadgeCheck,
 } from "lucide-react";
 
@@ -42,7 +41,7 @@ export default function AttendancePage() {
   useEffect(() => {
     const getAttendance = async () => {
       try {
-        const stored = sessionStorage.getItem("adminAttendanceDetails");
+        const stored = sessionStorage.getItem("token");
         if (stored) {
           setAttendance(JSON.parse(stored));
           return;

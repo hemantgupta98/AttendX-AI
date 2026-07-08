@@ -109,9 +109,11 @@ export const uploadAdminImage = async (req, res) => {
 
 export const getAttendance = async (req, res) => {
   try {
-    const attendanceData = await attendance.findById(req.params.id).populate({
-      path: "admin",
-      select: "name adminEmail photo",
+    const { id } = req.params;
+
+    const attendanceData = await attendance.findOne({
+      _id: id,
+      admin: req.user.id,
     });
 
     if (!attendanceData) {
