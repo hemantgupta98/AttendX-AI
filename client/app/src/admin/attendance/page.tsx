@@ -48,7 +48,7 @@ export default function AttendancePage() {
           return;
         }
 
-        const token = localStorage.getItem("auth_token");
+        const token = localStorage.getItem("token");
         const res = await axios.get(
           `${apiBaseUrl}/admin/live-image/getattendance`,
           {
