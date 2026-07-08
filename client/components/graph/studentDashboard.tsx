@@ -1,6 +1,6 @@
 "use client";
 
-import { TrendingUp } from "lucide-react";
+import { TrendingUp, TrendingDown } from "lucide-react";
 import { Area, AreaChart, CartesianGrid, XAxis } from "recharts";
 
 import {
@@ -11,6 +11,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+
 import {
   ChartContainer,
   ChartTooltip,
@@ -18,77 +19,116 @@ import {
   type ChartConfig,
 } from "@/components/ui/chart";
 
-export const description = "A simple area chart";
-
-const chartData = [
-  { month: "January", desktop: 186 },
-  { month: "February", desktop: 305 },
-  { month: "March", desktop: 237 },
-  { month: "April", desktop: 73 },
-  { month: "May", desktop: 209 },
-  { month: "June", desktop: 214 },
-];
+import type { AttendanceTrendPoint } from "@/lib/hook/studentDas";
 
 const chartConfig = {
-  desktop: {
-    label: "Desktop",
-    color: "var(--chart-1)",
+  attendance: {
+    label: "Attendance %",
+    color: "#4f46e5",
   },
 } satisfies ChartConfig;
 
-export function StudentDashboard() {
+interface StudentAttendanceChartProps {
+  data: AttendanceTrendPoint[];
+}
+
+export function StudentAttendanceChart({ data }: StudentAttendanceChartProps) {
+  const hasData = data.length > 0;
+
+  const last = data[data.length - 1]?.attendance ?? 0;
+  const prev = data[data.length - 2]?.attendance ?? last;
+
+  const delta = prev ? (((last - prev) / prev) * 100).toFixed(1) : "0.0";
+
+  const isUp = last >= prev;
+
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Attendance Analysis Chart</CardTitle>
+    <Card className="border-0 shadow-none">
+      <CardHeader className="px-0 pt-0">
+        <CardTitle className="text-xl font-semibold">
+          Monthly Attendance
+        </CardTitle>
+
         <CardDescription>
-          Showing total average attendance for the last 6 months
+          Your attendance performance over the last {data.length || 6} months.
         </CardDescription>
       </CardHeader>
-      <CardContent>
-        <ChartContainer config={chartConfig}>
-          <AreaChart
-            accessibilityLayer
-            data={chartData}
-            margin={{
-              left: 12,
-              right: 12,
-            }}
-          >
-            <CartesianGrid vertical={false} />
-            <XAxis
-              dataKey="month"
-              tickLine={false}
-              axisLine={false}
-              tickMargin={8}
-              tickFormatter={(value) => value.slice(0, 3)}
-            />
-            <ChartTooltip
-              cursor={false}
-              content={<ChartTooltipContent indicator="line" />}
-            />
-            <Area
-              dataKey="desktop"
-              type="natural"
-              fill="#60a5fa"
-              fillOpacity={0.4}
-              stroke="#60a5fa"
-            />
-          </AreaChart>
-        </ChartContainer>
-      </CardContent>
-      <CardFooter>
-        <div className="flex w-full items-start gap-2 text-sm">
-          <div className="grid gap-2">
-            <div className="flex items-center gap-2 leading-none font-medium">
-              Trending up by 5.2% this month <TrendingUp className="h-4 w-4" />
-            </div>
-            <div className="flex items-center gap-2 leading-none text-muted-foreground">
-              January - June 2024
-            </div>
+
+      <CardContent className="px-0">
+        {hasData ? (
+          <ChartContainer config={chartConfig} className="h-72 w-full">
+            <AreaChart
+              accessibilityLayer
+              data={data}
+              margin={{
+                top: 10,
+                left: 12,
+                right: 12,
+                bottom: 0,
+              }}
+            >
+              <defs>
+                <linearGradient id="attendanceFill" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="5%" stopColor="#4f46e5" stopOpacity={0.35} />
+
+                  <stop offset="95%" stopColor="#4f46e5" stopOpacity={0.02} />
+                </linearGradient>
+              </defs>
+
+              <CartesianGrid vertical={false} strokeDasharray="3 3" />
+
+              <XAxis
+                dataKey="month"
+                tickLine={false}
+                axisLine={false}
+                tickMargin={8}
+                tickFormatter={(value: string) => value.slice(0, 3)}
+              />
+
+              <ChartTooltip
+                cursor={false}
+                content={<ChartTooltipContent indicator="line" />}
+              />
+
+              <Area
+                type="natural"
+                dataKey="attendance"
+                stroke="#4f46e5"
+                strokeWidth={3}
+                fill="url(#attendanceFill)"
+              />
+            </AreaChart>
+          </ChartContainer>
+        ) : (
+          <div className="flex h-72 items-center justify-center rounded-2xl border border-dashed border-slate-300 bg-slate-50 text-sm text-slate-500">
+            No attendance history available.
           </div>
-        </div>
-      </CardFooter>
+        )}
+      </CardContent>
+
+      {hasData && (
+        <CardFooter className="px-0 pb-0">
+          <div className="grid gap-1 text-sm">
+            <div className="flex items-center gap-2 font-medium">
+              {isUp ? (
+                <>
+                  Trending Up by {Math.abs(Number(delta))}%
+                  <TrendingUp className="h-4 w-4 text-emerald-500" />
+                </>
+              ) : (
+                <>
+                  Trending Down by {Math.abs(Number(delta))}%
+                  <TrendingDown className="h-4 w-4 text-red-500" />
+                </>
+              )}
+            </div>
+
+            <p className="text-muted-foreground">
+              Compared with your previous month&apos;s attendance.
+            </p>
+          </div>
+        </CardFooter>
+      )}
     </Card>
   );
 }

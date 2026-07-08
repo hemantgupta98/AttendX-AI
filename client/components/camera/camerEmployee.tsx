@@ -5,6 +5,7 @@
 import { useRef, useEffect, useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import axios from "axios";
+import { CheckCircle2, ArrowRight, XCircle } from "lucide-react";
 
 export default function Dashboard() {
   const videoRef = useRef<HTMLVideoElement | null>(null);
@@ -173,6 +174,67 @@ export default function Dashboard() {
       <main className="mx-auto flex min-h-screen w-full max-w-7xl items-center px-4 py-6 sm:px-6 lg:px-8">
         <section className="grid w-full gap-6 lg:grid-cols-[1.1fr_0.9fr]">
           <div className="rounded-3xl border border-white/70 bg-white/80 p-6 shadow-[0_20px_60px_rgba(15,23,42,0.08)] backdrop-blur xl:p-8">
+            {message && (
+              <div
+                className={`mt-8 mb-8 rounded-2xl border p-6 text-center shadow-lg ${
+                  matched
+                    ? "border-emerald-200 bg-emerald-50"
+                    : "border-red-200 bg-red-50"
+                }`}
+              >
+                <div className="flex justify-center">
+                  {matched ? (
+                    <CheckCircle2 className="h-16 w-16 text-emerald-600" />
+                  ) : (
+                    <XCircle className="h-16 w-16 text-red-600" />
+                  )}
+                </div>
+
+                <h2
+                  className={`mt-4 text-3xl font-bold ${
+                    matched ? "text-emerald-700" : "text-red-700"
+                  }`}
+                >
+                  {matched
+                    ? "Face Verified Successfully"
+                    : "Face Verification Failed"}
+                </h2>
+
+                <p className="mt-3 text-lg text-gray-700">{message}</p>
+
+                <p className="mt-2 text-gray-600">
+                  {matched ? (
+                    <>
+                      Your attendance has been recorded successfully.
+                      <br />
+                      Click below to view your complete attendance report.
+                    </>
+                  ) : (
+                    <>
+                      Your face could not be verified.
+                      <br />
+                      This attendance attempt has been recorded as <b>Absent</b>
+                      . Please try again with proper lighting and ensure your
+                      face is clearly visible.
+                    </>
+                  )}
+                </p>
+
+                <button
+                  onClick={() => router.push("/src/admin/reports")}
+                  className={`mt-6 inline-flex items-center gap-2 rounded-xl px-6 py-3 text-lg font-semibold text-white transition ${
+                    matched
+                      ? "bg-emerald-600 hover:bg-emerald-700"
+                      : "bg-red-600 hover:bg-red-700"
+                  }`}
+                >
+                  {matched
+                    ? "View Attendance Report"
+                    : "View Attendance History"}
+                  <ArrowRight size={20} />
+                </button>
+              </div>
+            )}
             <div className="mb-6 space-y-4">
               <div className="flex flex-wrap items-center gap-3 text-xs font-semibold uppercase tracking-[0.28em] text-indigo-600">
                 <span className="rounded-full bg-indigo-50 px-3 py-1 text-indigo-700">

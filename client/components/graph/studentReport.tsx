@@ -1,16 +1,23 @@
 "use client";
 
-import { TrendingUp } from "lucide-react";
-import { Pie, PieChart } from "recharts";
+import {
+  Bar,
+  BarChart,
+  CartesianGrid,
+  LabelList,
+  ResponsiveContainer,
+  XAxis,
+  YAxis,
+} from "recharts";
 
 import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+
 import {
   ChartContainer,
   ChartTooltip,
@@ -18,76 +25,102 @@ import {
   type ChartConfig,
 } from "@/components/ui/chart";
 
-export const description = "A donut chart";
-
-const chartData = [
-  { browser: "chrome", visitors: 275, fill: "var(--color-chrome)" },
-  { browser: "safari", visitors: 200, fill: "var(--color-safari)" },
-  { browser: "firefox", visitors: 187, fill: "var(--color-firefox)" },
-  { browser: "edge", visitors: 173, fill: "var(--color-edge)" },
-  { browser: "other", visitors: 90, fill: "var(--color-other)" },
-];
+import type { WeeklyAttendance } from "@/lib/hook/studentDas";
 
 const chartConfig = {
-  visitors: {
-    label: "Visitors",
-  },
-  chrome: {
-    label: "Chrome",
-    color: "var(--chart-1)",
-  },
-  safari: {
-    label: "Safari",
-    color: "var(--chart-2)",
-  },
-  firefox: {
-    label: "Firefox",
-    color: "var(--chart-3)",
-  },
-  edge: {
-    label: "Edge",
-    color: "var(--chart-4)",
-  },
-  other: {
-    label: "Other",
-    color: "var(--chart-5)",
+  percentage: {
+    label: "Attendance %",
+    color: "#4f46e5",
   },
 } satisfies ChartConfig;
 
-export function StudentReport() {
+interface StudentWeeklyChartProps {
+  data: WeeklyAttendance[];
+}
+
+export function StudentWeeklyChart({ data }: StudentWeeklyChartProps) {
+  if (!data.length) {
+    return (
+      <Card className="border-0 shadow-none">
+        <CardHeader className="px-0 pt-0">
+          <CardTitle>Weekly Attendance</CardTitle>
+          <CardDescription>
+            Your attendance performance throughout the week.
+          </CardDescription>
+        </CardHeader>
+
+        <CardContent className="px-0">
+          <div className="flex h-56 items-center justify-center rounded-2xl border border-dashed border-slate-300 bg-slate-50 text-sm text-slate-500">
+            No attendance history available.
+          </div>
+        </CardContent>
+      </Card>
+    );
+  }
+
   return (
-    <Card className="flex flex-col">
-      <CardHeader className="items-center pb-0">
-        <CardTitle>Pie Chart - Donut</CardTitle>
-        <CardDescription>January - June 2024</CardDescription>
+    <Card className="border-0 shadow-none">
+      <CardHeader className="px-0 pt-0">
+        <CardTitle>Weekly Attendance</CardTitle>
+
+        <CardDescription>Attendance percentage by weekday.</CardDescription>
       </CardHeader>
-      <CardContent className="flex-1 pb-0">
-        <ChartContainer
-          config={chartConfig}
-          className="mx-auto aspect-square max-h-[250px]"
-        >
-          <PieChart>
-            <ChartTooltip
-              cursor={false}
-              content={<ChartTooltipContent hideLabel />}
-            />
-            <Pie
-              data={chartData}
-              dataKey="visitors"
-              nameKey="browser"
-              innerRadius={60}
-            />
-          </PieChart>
+
+      <CardContent className="px-0">
+        <ChartContainer config={chartConfig} className="h-72 w-full">
+          <ResponsiveContainer width="100%" height="100%">
+            <BarChart
+              accessibilityLayer
+              data={data}
+              layout="vertical"
+              margin={{
+                top: 10,
+                right: 25,
+                left: 10,
+                bottom: 10,
+              }}
+              barCategoryGap="28%"
+              barSize={18}
+            >
+              <CartesianGrid horizontal={false} strokeDasharray="3 3" />
+
+              <YAxis
+                dataKey="day"
+                type="category"
+                axisLine={false}
+                tickLine={false}
+                tickMargin={10}
+                width={55}
+              />
+
+              <XAxis
+                dataKey="percentage"
+                type="number"
+                domain={[0, 100]}
+                hide
+              />
+
+              <ChartTooltip
+                cursor={false}
+                content={<ChartTooltipContent indicator="line" />}
+              />
+
+              <Bar dataKey="percentage" fill="#4f46e5" radius={8}>
+                <LabelList
+                  dataKey="percentage"
+                  position="right"
+                  className="fill-foreground font-medium"
+                  fontSize={12}
+                />
+              </Bar>
+            </BarChart>
+          </ResponsiveContainer>
         </ChartContainer>
       </CardContent>
-      <CardFooter className="flex-col gap-2 text-sm">
-        <div className="flex items-center gap-2 leading-none font-medium">
-          Trending up by 5.2% this month <TrendingUp className="h-4 w-4" />
-        </div>
-        <div className="leading-none text-muted-foreground">
-          Showing total visitors for the last 6 months
-        </div>
-      </CardFooter>
     </Card>
   );
+}
+
+{
+  /** formatter={(value: number) => `${value}%`} */
 }

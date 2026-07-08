@@ -17,7 +17,6 @@ const links = [
   { name: "Dashboard", href: "/src/student/dashboard", icon: LayoutDashboard },
   { name: "Live Attendance", href: "/src/student/liveattendance", icon: Focus },
   { name: "Attendance", href: "/src/student/attendance", icon: ShieldUserIcon },
-  { name: "Subject", href: "/src/student/subject", icon: UserCheck2 },
   { name: "Leave", href: "/src/student/leave", icon: ChartColumn },
   { name: "Profile", href: "/src/student/profile", icon: CircleUserIcon },
   { name: "Setting", href: "/src/student/setting", icon: Settings },
