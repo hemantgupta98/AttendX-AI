@@ -26,7 +26,7 @@ export default function TeacherDashboard() {
   return (
     <div className="space-y-8">
       {/* Header */}
-      <div className="rounded-3xl bg-gradient-to-r from-indigo-600 via-violet-600 to-purple-600 p-8 text-white shadow-xl">
+      <div className="rounded-3xl bg-linear-to-r from-indigo-600 via-violet-600 to-purple-600 p-8 text-white shadow-xl">
         <h1 className="text-4xl font-bold">Welcome Teacher 👋</h1>
 
         <p className="mt-3 max-w-2xl text-indigo-100">
