@@ -3,14 +3,11 @@
 import {
   GraduationCap,
   User,
-  Bell,
   BookOpen,
   CalendarDays,
   Settings,
   ArrowRight,
 } from "lucide-react";
-
-import Link from "next/link";
 
 import {
   Card,
