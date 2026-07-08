@@ -4,6 +4,7 @@ import fs from "fs";
 import path from "path";
 import { uploadImage as uploadToCloudinary } from "../media/uploadCloudinary.js";
 import { attendance } from "../database/attendance.model.js";
+import { truncates } from "bcryptjs";
 
 const roleFolders = {
   admin: "live-image/admin",
@@ -142,6 +143,34 @@ export const getAttendanceHistory = async (req, res) => {
       success: true,
       totalRecords: attendanceHistory.length,
       data: attendanceHistory,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
+export const deleteAttendanceHistory = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const deletedAttendance = await attendance.findOneAndDelete({
+      _id: id,
+      admin: req.user.id,
+    });
+
+    if (!deletedAttendance) {
+      return res.status(404).json({
+        success: false,
+        message: "Attendance not found.",
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: "Attendance deleted successfully.",
     });
   } catch (error) {
     return res.status(500).json({

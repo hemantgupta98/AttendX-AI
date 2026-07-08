@@ -30,7 +30,6 @@ export default function AttendanceHistoryPage() {
   const getAttendanceHistory = async () => {
     try {
       const token = localStorage.getItem("token");
-      console.log(token);
 
       const res = await axios.get(`${apiBaseUrl}/admin/live-image/history`, {
         headers: {
@@ -47,6 +46,33 @@ export default function AttendanceHistoryPage() {
     }
   };
 
+  const deleteattendance = async (id: string) => {
+    try {
+      const token = localStorage.getItem("adminToken");
+
+      await axios.delete(
+        `${apiBaseUrl}/admin/live-image/deleteattendance/${id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        },
+      );
+
+      getAttendanceHistory();
+    } catch (error) {
+      console.error(error);
+    }
+  };
+  const handleDelete = async (id: string) => {
+    const confirmDelete = window.confirm(
+      "Are you sure you want to delete this record?",
+    );
+
+    if (!confirmDelete) return;
+
+    await deleteattendance(id);
+  };
   if (loading) {
     return (
       <div className="flex h-screen items-center justify-center bg-slate-100">
@@ -90,7 +116,7 @@ export default function AttendanceHistoryPage() {
                 <th>Status</th>
                 <th>Matched</th>
                 <th>Confidence</th>
-                <th className="text-center">Action</th>
+                <th className="text-center">Delete</th>
               </tr>
             </thead>
 
@@ -244,8 +270,11 @@ export default function AttendanceHistoryPage() {
                 </div>
 
                 <div className="flex items-end justify-end">
-                  <button className="rounded-lg bg-indigo-600 p-3 text-white transition hover:bg-indigo-700">
-                    <Eye size={18} />
+                  <button
+                    onClick={() => handleDelete(item._id)}
+                    className="rounded-lg bg-red-600 px-3 py-2 text-white hover:bg-red-700 cursor-pointer"
+                  >
+                    Delete
                   </button>
                 </div>
               </div>
