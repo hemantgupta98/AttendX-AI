@@ -49,7 +49,7 @@ export default function Dashboard() {
                 {data.institutionName || "Your Institution"}
               </h1>
               <p className="mt-2 text-sm text-blue-100/90">
-                AI-powered face recognition attendance, monitored in real time
+                AI-powered face recognition attendance, monitored in real time.
               </p>
             </div>
 
@@ -110,7 +110,7 @@ export default function Dashboard() {
 
           <div className="rounded-3xl bg-white p-6 shadow-sm ring-1 ring-slate-100">
             <h2 className="mb-5 text-lg font-bold text-slate-900">
-              Institution Overview
+              Institution Overviews
             </h2>
             <OverviewItem
               icon={<School size={18} />}
