@@ -4,7 +4,6 @@ import fs from "fs";
 import path from "path";
 import { uploadImage as uploadToCloudinary } from "../media/uploadCloudinary.js";
 import { attendance } from "../database/attendance.model.js";
-import { truncates } from "bcryptjs";
 
 const roleFolders = {
   admin: "live-image/admin",
