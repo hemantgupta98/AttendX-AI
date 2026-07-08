@@ -115,11 +115,12 @@ export const getAttendance = async (req, res) => {
       _id: id,
       admin: req.user.id,
     });
-
+    console.log("Attendance ID:", req.params.id);
+    console.log("Admin ID:", req.user.id);
     if (!attendanceData) {
       return res.status(404).json({
         success: false,
-        message: "Attendance not found",
+        message: error.message,
       });
     }
 
