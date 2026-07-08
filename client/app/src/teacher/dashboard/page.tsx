@@ -1,7 +1,5 @@
 "use client";
 
-import { AdminDashboard } from "@/components/graph/admiDasboard";
-import { AdminBarChart } from "@/components/graph/adminBarChart";
 import {
   ShieldUserIcon,
   Focus,
@@ -43,15 +41,12 @@ export default function Dashboard() {
             </p>
 
             {/*  Chart */}
-
-            <AdminDashboard />
           </div>
 
           {/* RIGHT PANEL */}
           <div className="flex flex-col gap-6 lg:self-start h-fit">
             <div className="bg-white p-5 rounded-xl shadow">
               <h3 className="font-semibold mb-4">Department Sync</h3>
-              <AdminBarChart />
             </div>
 
             <div className="bg-white p-5 rounded-xl shadow">
