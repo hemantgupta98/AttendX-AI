@@ -1,6 +1,6 @@
 "use client";
 
-import { TrendingUp } from "lucide-react";
+import { TrendingUp, TrendingDown } from "lucide-react";
 import { Area, AreaChart, CartesianGrid, XAxis } from "recharts";
 
 import {
@@ -17,78 +17,86 @@ import {
   ChartTooltipContent,
   type ChartConfig,
 } from "@/components/ui/chart";
-
-export const description = "A simple area chart";
-
-const chartData = [
-  { month: "January", desktop: 186 },
-  { month: "February", desktop: 305 },
-  { month: "March", desktop: 237 },
-  { month: "April", desktop: 73 },
-  { month: "May", desktop: 209 },
-  { month: "June", desktop: 214 },
-];
+import type { AttendanceTrendPoint } from "@/lib/hook/adminDas";
 
 const chartConfig = {
-  desktop: {
-    label: "Desktop",
-    color: "var(--chart-1)",
-  },
+  attendance: { label: "Attendance", color: "#4f46e5" },
 } satisfies ChartConfig;
 
-export function AdminDashboard() {
+export function AdminDashboard({ data }: { data: AttendanceTrendPoint[] }) {
+  const hasData = data.length > 0;
+  const last = data[data.length - 1]?.attendance ?? 0;
+  const prev = data[data.length - 2]?.attendance ?? last;
+  const delta = prev ? (((last - prev) / prev) * 100).toFixed(1) : "0.0";
+  const isUp = last >= prev;
+
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Attendance Analysis Chart</CardTitle>
+    <Card className="border-0 shadow-none">
+      <CardHeader className="px-0 pt-0">
+        <CardTitle>Attendance Trend</CardTitle>
         <CardDescription>
-          Showing total average attendance for the last 6 months
+          Institution-wide daily average, last {data.length || 6} months
         </CardDescription>
       </CardHeader>
-      <CardContent>
-        <ChartContainer config={chartConfig}>
-          <AreaChart
-            accessibilityLayer
-            data={chartData}
-            margin={{
-              left: 12,
-              right: 12,
-            }}
-          >
-            <CartesianGrid vertical={false} />
-            <XAxis
-              dataKey="month"
-              tickLine={false}
-              axisLine={false}
-              tickMargin={8}
-              tickFormatter={(value) => value.slice(0, 3)}
-            />
-            <ChartTooltip
-              cursor={false}
-              content={<ChartTooltipContent indicator="line" />}
-            />
-            <Area
-              dataKey="desktop"
-              type="natural"
-              fill="#60a5fa"
-              fillOpacity={0.4}
-              stroke="#60a5fa"
-            />
-          </AreaChart>
-        </ChartContainer>
+      <CardContent className="px-0">
+        {hasData ? (
+          <ChartContainer config={chartConfig} className="h-72 w-full">
+            <AreaChart
+              accessibilityLayer
+              data={data}
+              margin={{ left: 12, right: 12 }}
+            >
+              <defs>
+                <linearGradient id="attendanceFill" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="5%" stopColor="#4f46e5" stopOpacity={0.35} />
+                  <stop offset="95%" stopColor="#4f46e5" stopOpacity={0.02} />
+                </linearGradient>
+              </defs>
+              <CartesianGrid vertical={false} strokeDasharray="3 3" />
+              <XAxis
+                dataKey="month"
+                tickLine={false}
+                axisLine={false}
+                tickMargin={8}
+                tickFormatter={(value) => value.slice(0, 3)}
+              />
+              <ChartTooltip
+                cursor={false}
+                content={<ChartTooltipContent indicator="line" />}
+              />
+              <Area
+                dataKey="attendance"
+                type="natural"
+                fill="url(#attendanceFill)"
+                stroke="#4f46e5"
+                strokeWidth={2.5}
+              />
+            </AreaChart>
+          </ChartContainer>
+        ) : (
+          <div className="flex h-72 items-center justify-center rounded-2xl border border-dashed border-slate-200 text-sm text-slate-400">
+            No attendance data yet
+          </div>
+        )}
       </CardContent>
-      <CardFooter>
-        <div className="flex w-full items-start gap-2 text-sm">
-          <div className="grid gap-2">
-            <div className="flex items-center gap-2 leading-none font-medium">
-              Trending up by 5.2% this month <TrendingUp className="h-4 w-4" />
+      {hasData && (
+        <CardFooter className="px-0 pb-0">
+          <div className="grid gap-1 text-sm">
+            <div className="flex items-center gap-2 font-medium leading-none">
+              {isUp ? "Trending up" : "Trending down"} by{" "}
+              {Math.abs(Number(delta))}%
+              {isUp ? (
+                <TrendingUp className="h-4 w-4 text-emerald-500" />
+              ) : (
+                <TrendingDown className="h-4 w-4 text-red-500" />
+              )}
             </div>
-            <div className="flex items-center gap-2 leading-none text-muted-foreground">
-              January - June 2024
+            <div className="leading-none text-muted-foreground">
+              Compared to previous month
             </div>
           </div>
-        </div>
-      </CardFooter>
+        </CardFooter>
+      )}
     </Card>
   );
 }

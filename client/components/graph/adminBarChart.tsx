@@ -16,66 +16,55 @@ import {
   ChartTooltipContent,
   type ChartConfig,
 } from "@/components/ui/chart";
-
-export const description = "A bar chart with a custom label";
-
-const chartData = [
-  { department: "Engineering", sync: 94 },
-  { department: "Medical", sync: 87 },
-  { department: "Arts", sync: 79 },
-  { department: "Business", sync: 91 },
-];
+import type { DepartmentStat } from "@/lib/hook/adminDas";
 
 const chartConfig = {
-  sync: {
-    label: "Sync",
-    color: "#60a5fa",
-  },
-  label: {
-    color: "var(--background)",
-  },
+  percentage: { label: "Attendance", color: "#4f46e5" },
+  label: { color: "var(--background)" },
 } satisfies ChartConfig;
 
-export function AdminBarChart() {
+export function AdminBarChart({ data }: { data: DepartmentStat[] }) {
+  if (!data.length) {
+    return (
+      <div className="flex h-44 items-center justify-center rounded-2xl border border-dashed border-slate-200 text-sm text-slate-400">
+        No department data yet
+      </div>
+    );
+  }
+
   return (
     <Card className="border-0 shadow-none">
       <CardContent className="px-2 pb-1 pt-0">
-        <ChartContainer config={chartConfig} className="h-44 w-full">
+        <ChartContainer config={chartConfig} className="h-56 w-full">
           <BarChart
             accessibilityLayer
-            data={chartData}
+            data={data}
             layout="vertical"
             barCategoryGap="28%"
             barSize={16}
-            margin={{
-              top: 6,
-              right: 22,
-              bottom: 6,
-              left: 6,
-            }}
+            margin={{ top: 6, right: 28, bottom: 6, left: 6 }}
           >
-            <CartesianGrid horizontal={false} />
+            <CartesianGrid horizontal={false} strokeDasharray="3 3" />
             <YAxis
               dataKey="department"
               type="category"
               tickLine={false}
               tickMargin={10}
               axisLine={false}
-              width={90}
+              width={100}
             />
-            <XAxis dataKey="sync" type="number" domain={[0, 100]} hide />
+            <XAxis dataKey="percentage" type="number" domain={[0, 100]} hide />
             <ChartTooltip
               cursor={false}
               content={<ChartTooltipContent indicator="line" />}
             />
-            <Bar dataKey="sync" fill="var(--color-sync)" radius={4}>
+            <Bar dataKey="percentage" fill="#4f46e5" radius={6}>
               <LabelList
-                dataKey="sync"
+                dataKey="percentage"
                 position="right"
                 offset={8}
                 className="fill-foreground"
                 fontSize={12}
-                formatter={(value) => `${value}%`}
               />
             </Bar>
           </BarChart>
