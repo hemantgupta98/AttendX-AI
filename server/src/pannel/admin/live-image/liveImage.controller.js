@@ -120,7 +120,7 @@ export const getAttendance = async (req, res) => {
     if (!attendanceData) {
       return res.status(404).json({
         success: false,
-        message: error.message,
+        message: "Attendance Not Found",
       });
     }
 

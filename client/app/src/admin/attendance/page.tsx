@@ -16,6 +16,7 @@ import {
 } from "lucide-react";
 
 interface AttendanceData {
+  _id: string;
   attendanceId: string;
   name: string;
   status: string;
