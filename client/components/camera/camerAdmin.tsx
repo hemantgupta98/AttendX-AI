@@ -167,7 +167,7 @@ export default function Dashboard() {
         <section className="grid w-full gap-6 lg:grid-cols-[1.1fr_0.9fr]">
           <div className="rounded-3xl border border-white/70 bg-white/80 p-6 shadow-[0_20px_60px_rgba(15,23,42,0.08)] backdrop-blur xl:p-8">
             {matched && (
-              <div className="mt-8 rounded-2xl border border-emerald-200 bg-emerald-50 p-6 text-center shadow-lg">
+              <div className="mt-8 mb-8 rounded-2xl border border-emerald-200 bg-emerald-50 p-6 text-center shadow-lg">
                 <div className="flex justify-center">
                   <CheckCircle2 className="h-16 w-16 text-emerald-600" />
                 </div>
