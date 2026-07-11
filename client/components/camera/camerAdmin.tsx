@@ -5,6 +5,7 @@ import { useRef, useEffect, useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import axios from "axios";
 import { CheckCircle2, ArrowRight, XCircle } from "lucide-react";
+import Alert from "@/components/ui/alert";
 
 export default function Dashboard() {
   const videoRef = useRef<HTMLVideoElement | null>(null);
@@ -164,6 +165,7 @@ export default function Dashboard() {
   return (
     <div className="min-h-screen bg-[radial-gradient(circle_at_top,#eef4ff_0%,#f8fafc_35%,#eef2f7_100%)] text-slate-900">
       <main className="mx-auto flex min-h-screen w-full max-w-7xl items-center px-4 py-6 sm:px-6 lg:px-8">
+        <Alert />
         <section className="grid w-full gap-6 lg:grid-cols-[1.1fr_0.9fr]">
           <div className="rounded-3xl border border-white/70 bg-white/80 p-6 shadow-[0_20px_60px_rgba(15,23,42,0.08)] backdrop-blur xl:p-8">
             {message && (
