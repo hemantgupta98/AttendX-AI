@@ -16,7 +16,8 @@ export default function LogoutPage() {
 
     try {
       const API_URL =
-        process.env.NEXT_PUBLIC_API_URL ?? "https://attendx-ai-1.onrender.com";
+        process.env.NEXT_PUBLIC_API_URL ??
+        "https://attendx-ai-n8uq.onrender.com";
 
       await fetch(`${API_URL}/api/employee/auth/logout`, {
         method: "POST",
