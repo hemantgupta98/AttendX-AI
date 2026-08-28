@@ -11,12 +11,14 @@ export default function TeacherSettingsPage() {
 
   return (
     <div className="min-h-screen bg-gray-50 p-6">
+      <h1 className="text-xl font-bold text-red-500">This is just a UI page</h1>
       {/* Header */}
       <div className="flex justify-between items-center mb-6">
         <div>
           <h1 className="text-2xl font-semibold text-gray-800">
             Teacher Settings & AI Attendance Controls
           </h1>
+
           <p className="text-sm text-gray-500">
             Configure face recognition, attendance automation, and classroom
             monitoring.

@@ -21,7 +21,9 @@ export default function AISettingsPage() {
             Configure model sensitivity and retrain the engine.
           </p>
         </div>
-
+        <h1 className="text-xl font-bold text-red-500">
+          This is just a UI page
+        </h1>
         <button className="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-xl shadow">
           Save Parameters
         </button>
