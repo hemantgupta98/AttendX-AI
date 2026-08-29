@@ -56,7 +56,7 @@ export const sendStudentMail = async (req, res) => {
       studentCode: normalizedStudentCode,
     });
 
-    console.log("[sendStudentMail] Nodemailer result:", mailResult);
+    console.log("[sendStudentMail] Brevo result:", mailResult);
 
     return res.status(200).json({
       success: true,

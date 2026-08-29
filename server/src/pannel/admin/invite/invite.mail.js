@@ -1,14 +1,8 @@
-import nodemailer from "nodemailer";
-import dns from "dns";
-dns.setDefaultResultOrder("ipv4first");
+import brevo from "../../../config/brevo.js";
 
 async function sendStudentInvite({ studentName, studentEmail, studentCode }) {
-  if (!process.env.EMAIL_USER) {
-    throw new Error("EMAIL_USER must be set in environment");
-  }
-
-  if (!process.env.EMAIL_APP_PASSWORD) {
-    throw new Error("EMAIL_APP_PASSWORD must be set in environment");
+  if (!process.env.BREVO_API_KEY) {
+    throw new Error("BREVO_API_KEY must be set in environment");
   }
 
   console.log("[sendStudentInvite] Raw input:", {
@@ -48,26 +42,14 @@ async function sendStudentInvite({ studentName, studentEmail, studentCode }) {
     normalizedStudentEmail,
   );
 
-  const transporter = nodemailer.createTransport({
-    host: "smtp.gmail.com",
-    port: 587,
-    service: "gmail",
-    auth: {
-      user: process.env.EMAIL_USER,
-      pass: process.env.EMAIL_APP_PASSWORD,
-    },
-  });
+  const senderEmail =
+    process.env.BREVO_SENDER_EMAIL || "guptaanshu9868@gmail.com";
+  const senderName =
+    process.env.BREVO_SENDER_NAME || "Attendance Management System";
 
   const signupUrl = "https://attendx-ai.vercel.app/src/student/auth/signup";
 
-  const emailData = {
-    from: `Attendance Management System <${process.env.EMAIL_USER}>`,
-
-    to: normalizedStudentEmail,
-
-    subject: "🎓 You're Invited to Join Our Attendance Management System",
-
-    html: `
+  const htmlContent = `
       <div style="
         font-family: Arial, sans-serif;
         background-color: #f4f6f8;
@@ -258,18 +240,34 @@ async function sendStudentInvite({ studentName, studentEmail, studentCode }) {
         </div>
 
       </div>
-    `,
-  };
+    `;
 
   console.log("[sendStudentInvite] Sending email with payload:", {
-    from: emailData.from,
-    to: emailData.to,
-    subject: emailData.subject,
+    from: senderEmail,
+    to: normalizedStudentEmail,
+    subject: "🎓 You're Invited to Join Our Attendance Management System",
   });
 
-  const result = await transporter.sendMail(emailData);
+  const result = await brevo.transactionalEmails.sendTransacEmail({
+    sender: {
+      name: senderName,
+      email: senderEmail,
+    },
+    to: [
+      {
+        email: normalizedStudentEmail,
+        name: normalizedStudentName,
+      },
+    ],
+    replyTo: {
+      email: senderEmail,
+      name: senderName,
+    },
+    subject: "🎓 You're Invited to Join Our Attendance Management System",
+    htmlContent,
+  });
 
-  console.log("[sendStudentInvite] Raw Nodemailer response:", result);
+  console.log("[sendStudentInvite] Raw Brevo response:", result);
 
   return result;
 }
