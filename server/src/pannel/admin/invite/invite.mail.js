@@ -1,4 +1,6 @@
 import nodemailer from "nodemailer";
+import dns from "dns";
+dns.setDefaultResultOrder("ipv4first");
 
 async function sendStudentInvite({ studentName, studentEmail, studentCode }) {
   if (!process.env.EMAIL_USER) {
