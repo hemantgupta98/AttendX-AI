@@ -16,9 +16,9 @@ import {
 } from "lucide-react";
 
 type Student = {
-  name: string;
-  email: string;
-  code: string;
+  studentName: string;
+  studentEmail: string;
+  studentCode: string;
 };
 
 export default function StudentInviteForm() {
@@ -119,21 +119,21 @@ export default function StudentInviteForm() {
                 <input
                   type="text"
                   placeholder="Enter student name"
-                  {...register("name", {
+                  {...register("studentName", {
                     required: "Student name is required",
                   })}
                   className={`w-full rounded-xl border bg-white py-3 pl-11 pr-4 text-sm outline-none transition
                     ${
-                      errors.name
+                      errors.studentName
                         ? "border-red-400 focus:ring-4 focus:ring-red-100"
                         : "border-slate-200 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-100"
                     }`}
                 />
               </div>
 
-              {errors.name && (
+              {errors.studentName && (
                 <p className="mt-2 text-sm text-red-500">
-                  {errors.name.message}
+                  {errors.studentName.message}
                 </p>
               )}
             </div>
@@ -153,7 +153,7 @@ export default function StudentInviteForm() {
                 <input
                   type="email"
                   placeholder="student@example.com"
-                  {...register("email", {
+                  {...register("studentEmail", {
                     required: "Student email is required",
                     pattern: {
                       value: /^\S+@\S+$/i,
@@ -162,16 +162,16 @@ export default function StudentInviteForm() {
                   })}
                   className={`w-full rounded-xl border bg-white py-3 pl-11 pr-4 text-sm outline-none transition
                     ${
-                      errors.email
+                      errors.studentEmail
                         ? "border-red-400 focus:ring-4 focus:ring-red-100"
                         : "border-slate-200 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-100"
                     }`}
                 />
               </div>
 
-              {errors.email && (
+              {errors.studentEmail && (
                 <p className="mt-2 text-sm text-red-500">
-                  {errors.email.message}
+                  {errors.studentEmail.message}
                 </p>
               )}
             </div>
@@ -191,7 +191,7 @@ export default function StudentInviteForm() {
                 <input
                   type="text"
                   placeholder="Example: SCH-9ZT2AAAA"
-                  {...register("code", {
+                  {...register("studentCode", {
                     required: "Invitation code is required",
                     minLength: {
                       value: 6,
@@ -200,16 +200,16 @@ export default function StudentInviteForm() {
                   })}
                   className={`w-full rounded-xl border bg-white py-3 pl-11 pr-4 text-sm outline-none transition
                     ${
-                      errors.code
+                      errors.studentCode
                         ? "border-red-400 focus:ring-4 focus:ring-red-100"
                         : "border-slate-200 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-100"
                     }`}
                 />
               </div>
 
-              {errors.code && (
+              {errors.studentCode && (
                 <p className="mt-2 text-sm text-red-500">
-                  {errors.code.message}
+                  {errors.studentCode.message}
                 </p>
               )}
 
