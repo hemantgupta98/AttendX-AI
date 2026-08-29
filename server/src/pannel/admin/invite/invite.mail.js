@@ -1,18 +1,13 @@
-import { Resend } from "resend";
+import nodemailer from "nodemailer";
 
 async function sendStudentInvite({ studentName, studentEmail, studentCode }) {
-  if (!process.env.RESEND_API_KEY) {
-    throw new Error("RESEND_API_KEY must be set in environment");
+  if (!process.env.EMAIL_USER) {
+    throw new Error("EMAIL_USER must be set in environment");
   }
 
-  const resend = new Resend(process.env.RESEND_API_KEY);
-
-  const senderEmail = process.env.RESEND_FROM_EMAIL;
-  if (typeof senderEmail !== "string" || !senderEmail.trim()) {
-    throw new Error("RESEND_FROM_EMAIL must be set in environment");
+  if (!process.env.EMAIL_APP_PASSWORD) {
+    throw new Error("EMAIL_APP_PASSWORD must be set in environment");
   }
-
-  const signupUrl = "https://attendx-ai.vercel.app/src/student/auth/signup";
 
   console.log("[sendStudentInvite] Raw input:", {
     studentName,
@@ -20,13 +15,30 @@ async function sendStudentInvite({ studentName, studentEmail, studentCode }) {
     studentCode,
   });
 
-  if (typeof studentEmail !== "string") {
-    throw new Error("studentEmail must be a string before calling Resend");
+  if (typeof studentName !== "string") {
+    throw new Error("studentName must be a string");
   }
 
+  if (typeof studentEmail !== "string") {
+    throw new Error("studentEmail must be a string before sending mail");
+  }
+
+  if (typeof studentCode !== "string") {
+    throw new Error("studentCode must be a string");
+  }
+
+  const normalizedStudentName = studentName.trim();
   const normalizedStudentEmail = studentEmail.trim();
-  if (!normalizedStudentEmail) {
-    throw new Error("studentEmail cannot be empty before calling Resend");
+  const normalizedStudentCode = studentCode.trim();
+
+  if (
+    !normalizedStudentName ||
+    !normalizedStudentEmail ||
+    !normalizedStudentCode
+  ) {
+    throw new Error(
+      "studentName, studentEmail, and studentCode cannot be empty",
+    );
   }
 
   console.log(
@@ -34,8 +46,18 @@ async function sendStudentInvite({ studentName, studentEmail, studentCode }) {
     normalizedStudentEmail,
   );
 
+  const transporter = nodemailer.createTransport({
+    service: "gmail",
+    auth: {
+      user: process.env.EMAIL_USER,
+      pass: process.env.EMAIL_APP_PASSWORD,
+    },
+  });
+
+  const signupUrl = "https://attendx-ai.vercel.app/src/student/auth/signup";
+
   const emailData = {
-    from: `Attendance Management System <${senderEmail.trim()}>`,
+    from: `Attendance Management System <${process.env.EMAIL_USER}>`,
 
     to: normalizedStudentEmail,
 
@@ -84,7 +106,7 @@ async function sendStudentInvite({ studentName, studentEmail, studentCode }) {
               margin-top: 0;
               color: #1f2937;
             ">
-              Hello ${studentName} 👋
+              Hello ${normalizedStudentName} 👋
             </h2>
 
             <p style="
@@ -130,7 +152,7 @@ async function sendStudentInvite({ studentName, studentEmail, studentCode }) {
                 letter-spacing: 3px;
                 color: #4f46e5;
               ">
-                ${studentCode}
+                ${normalizedStudentCode}
               </div>
 
             </div>
@@ -241,23 +263,9 @@ async function sendStudentInvite({ studentName, studentEmail, studentCode }) {
     subject: emailData.subject,
   });
 
-  const result = await resend.emails.send(emailData);
+  const result = await transporter.sendMail(emailData);
 
-  console.log("[sendStudentInvite] Raw Resend response:", result);
-
-  if (result?.error) {
-    console.error(
-      "[sendStudentInvite] Resend returned an error:",
-      result.error,
-    );
-    const resendError = new Error(
-      result.error.message || "Resend failed to send invitation email",
-    );
-    resendError.name = result.error.name || "ResendError";
-    resendError.statusCode = result.error.statusCode || 502;
-    resendError.resendError = result.error;
-    throw resendError;
-  }
+  console.log("[sendStudentInvite] Raw Nodemailer response:", result);
 
   return result;
 }

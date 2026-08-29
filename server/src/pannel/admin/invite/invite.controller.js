@@ -50,18 +50,18 @@ export const sendStudentMail = async (req, res) => {
       });
     }
 
-    const resendResult = await sendStudentInvite({
+    const mailResult = await sendStudentInvite({
       studentName: normalizedStudentName,
       studentEmail: normalizedStudentEmail,
       studentCode: normalizedStudentCode,
     });
 
-    console.log("[sendStudentMail] Resend result:", resendResult);
+    console.log("[sendStudentMail] Nodemailer result:", mailResult);
 
     return res.status(200).json({
       success: true,
       message: "Student invitation email sent successfully",
-      data: resendResult,
+      data: mailResult,
     });
   } catch (error) {
     console.error("[sendStudentMail] Failed to send student invite:", error);

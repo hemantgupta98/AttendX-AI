@@ -26,6 +26,7 @@
     "mongoose": "^9.6.2",
     "multer": "^2.1.1",
     "node-cron": "^4.6.0",
+    "nodemailer": "^9.0.6",
     "resend": "^6.24.0",
     "streamifier": "^0.1.1",
     "uuid": "^14.0.1"
