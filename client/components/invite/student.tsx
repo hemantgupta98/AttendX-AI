@@ -37,7 +37,7 @@ export default function StudentInviteForm() {
       setStatus("idle");
 
       const res = await axios.post(
-        "https://attendx-ai-1.onrender.com/api/admin/invite/student/mail",
+        "https://attendx-ai-n8uq.onrender.com/api/admin/invite/student/mail",
         data,
         {
           withCredentials: true,
