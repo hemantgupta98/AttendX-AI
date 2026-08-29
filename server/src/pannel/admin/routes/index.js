@@ -3,7 +3,7 @@ import auth from "../auth/auth.routes.js";
 import liveImage from "../live-image/liveImage.routes.js";
 import verified from "../aiService/ai.live-route.js";
 import getTeacher from "../connection/route.js";
-import inviteMail from "../invite/invite.mail.js";
+import inviteMail from "../invite/invite.routes.js";
 
 const router = express.Router();
 

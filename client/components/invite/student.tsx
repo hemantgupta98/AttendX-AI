@@ -33,7 +33,8 @@ export default function StudentInviteForm() {
   } = useForm<Student>();
 
   const onSubmit: SubmitHandler<Student> = async (data) => {
-    console.log("Sending frontend data:", data);
+    console.log("[StudentInviteForm] Submitting payload:", data);
+    console.log("[StudentInviteForm] studentEmail:", data.studentEmail);
     try {
       setStatus("idle");
 
@@ -45,7 +46,7 @@ export default function StudentInviteForm() {
         },
       );
 
-      console.log("Invitation sent:", res.data);
+      console.log("[StudentInviteForm] Invitation response:", res.data);
 
       setStatus("success");
 
@@ -56,7 +57,13 @@ export default function StudentInviteForm() {
         setStatus("idle");
       }, 4000);
     } catch (error) {
-      console.error("Failed to send invitation:", error);
+      console.error("[StudentInviteForm] Failed to send invitation:", error);
+      if (axios.isAxiosError(error)) {
+        console.error(
+          "[StudentInviteForm] Backend error response:",
+          error.response?.data,
+        );
+      }
 
       setStatus("error");
 

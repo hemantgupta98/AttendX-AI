@@ -7,16 +7,37 @@ async function sendStudentInvite({ studentName, studentEmail, studentCode }) {
 
   const resend = new Resend(process.env.RESEND_API_KEY);
 
-  // Your verified Resend sender email
   const senderEmail = process.env.RESEND_FROM_EMAIL;
+  if (typeof senderEmail !== "string" || !senderEmail.trim()) {
+    throw new Error("RESEND_FROM_EMAIL must be set in environment");
+  }
 
-  // Dummy signup URL — replace this with your real URL
   const signupUrl = "https://attendx-ai.vercel.app/src/student/auth/signup";
 
-  const emailData = {
-    from: `Attendance Management System <${senderEmail}>`,
+  console.log("[sendStudentInvite] Raw input:", {
+    studentName,
+    studentEmail,
+    studentCode,
+  });
 
-    to: studentEmail,
+  if (typeof studentEmail !== "string") {
+    throw new Error("studentEmail must be a string before calling Resend");
+  }
+
+  const normalizedStudentEmail = studentEmail.trim();
+  if (!normalizedStudentEmail) {
+    throw new Error("studentEmail cannot be empty before calling Resend");
+  }
+
+  console.log(
+    "[sendStudentInvite] Normalized recipient:",
+    normalizedStudentEmail,
+  );
+
+  const emailData = {
+    from: `Attendance Management System <${senderEmail.trim()}>`,
+
+    to: normalizedStudentEmail,
 
     subject: "🎓 You're Invited to Join Our Attendance Management System",
 
@@ -214,9 +235,29 @@ async function sendStudentInvite({ studentName, studentEmail, studentCode }) {
     `,
   };
 
+  console.log("[sendStudentInvite] Sending email with payload:", {
+    from: emailData.from,
+    to: emailData.to,
+    subject: emailData.subject,
+  });
+
   const result = await resend.emails.send(emailData);
 
-  console.log("Student invitation email sent:", result);
+  console.log("[sendStudentInvite] Raw Resend response:", result);
+
+  if (result?.error) {
+    console.error(
+      "[sendStudentInvite] Resend returned an error:",
+      result.error,
+    );
+    const resendError = new Error(
+      result.error.message || "Resend failed to send invitation email",
+    );
+    resendError.name = result.error.name || "ResendError";
+    resendError.statusCode = result.error.statusCode || 502;
+    resendError.resendError = result.error;
+    throw resendError;
+  }
 
   return result;
 }
