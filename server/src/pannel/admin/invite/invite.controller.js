@@ -2,7 +2,11 @@ import sendStudentInvite from "./invite.mail.js";
 
 export const sendStudentMail = async (req, res) => {
   try {
+    console.log("FULL REQ BODY:", req.body);
     const { studentName, studentEmail, studentCode } = req.body;
+    console.log("studentName:", studentName);
+    console.log("studentEmail:", studentEmail);
+    console.log("studentCode:", studentCode);
 
     if (!studentName || !studentEmail || !studentCode) {
       return res.status(400).json({
