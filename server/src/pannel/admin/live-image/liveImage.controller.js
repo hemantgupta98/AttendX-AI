@@ -89,7 +89,7 @@ const handleLiveImageUpload = async (req, res, role) => {
       data: attendanceRecord,
     });
   } catch (error) {
-    return res.status(500).json({
+    return res.status(error?.response?.status || 500).json({
       success: false,
       message: error?.response?.data?.message || error.message,
     });
