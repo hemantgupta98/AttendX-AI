@@ -15,7 +15,7 @@ import {
   XIcon,
 } from "lucide-react";
 
-type Student = {
+type Teacher = {
   name: string;
   email: string;
   code: string;
@@ -30,14 +30,14 @@ export default function StudentInviteForm() {
     handleSubmit,
     reset,
     formState: { errors, isSubmitting },
-  } = useForm<Student>();
+  } = useForm<Teacher>();
 
-  const onSubmit: SubmitHandler<Student> = async (data) => {
+  const onSubmit: SubmitHandler<Teacher> = async (data) => {
     try {
       setStatus("idle");
 
       const res = await axios.post(
-        "https://attendx-ai-1.onrender.com/api/admin/invite/student/mail",
+        "https://attendx-ai-1.onrender.com/api/admin/invite/teacher/mail",
         data,
         {
           withCredentials: true,
@@ -81,11 +81,11 @@ export default function StudentInviteForm() {
           </div>
 
           <h1 className="text-3xl font-bold text-slate-900">
-            Invite a Student
+            Invite a Teacher
           </h1>
 
           <p className="mt-2 text-slate-500">
-            Send an invitation email to allow a student to join your attendance
+            Send an invitation email to allow a teacher to join your attendance
             management system.
           </p>
         </div>
@@ -95,11 +95,11 @@ export default function StudentInviteForm() {
           {/* Card Header */}
           <div className="border-b border-slate-100 p-6">
             <h2 className="text-lg font-semibold text-slate-900">
-              Student Details
+              Teacher Details
             </h2>
 
             <p className="mt-1 text-sm text-slate-500">
-              Enter the student&apos;s information and invitation code.
+              Enter the teacher information and invitation code.
             </p>
           </div>
 
@@ -107,7 +107,7 @@ export default function StudentInviteForm() {
             {/* Student Name */}
             <div>
               <label className="mb-2 block text-sm font-medium text-slate-700">
-                Student Name
+                Teacher Name
               </label>
 
               <div className="relative">
@@ -118,9 +118,9 @@ export default function StudentInviteForm() {
 
                 <input
                   type="text"
-                  placeholder="Enter student name"
+                  placeholder="Enter Teacher name"
                   {...register("name", {
-                    required: "Student name is required",
+                    required: "Teacher name is required",
                   })}
                   className={`w-full rounded-xl border bg-white py-3 pl-11 pr-4 text-sm outline-none transition
                     ${
@@ -141,7 +141,7 @@ export default function StudentInviteForm() {
             {/* Email */}
             <div>
               <label className="mb-2 block text-sm font-medium text-slate-700">
-                Student Email
+                Teacher Email
               </label>
 
               <div className="relative">
@@ -152,9 +152,9 @@ export default function StudentInviteForm() {
 
                 <input
                   type="email"
-                  placeholder="student@example.com"
+                  placeholder="teacher@example.com"
                   {...register("email", {
-                    required: "Student email is required",
+                    required: "Teacher email is required",
                     pattern: {
                       value: /^\S+@\S+$/i,
                       message: "Please enter a valid email address",
@@ -179,7 +179,7 @@ export default function StudentInviteForm() {
             {/* Invitation Code */}
             <div>
               <label className="mb-2 block text-sm font-medium text-slate-700">
-                Student Invitation Code
+                Teacher Invitation Code
               </label>
 
               <div className="relative">
@@ -190,7 +190,7 @@ export default function StudentInviteForm() {
 
                 <input
                   type="text"
-                  placeholder="Example: SCH-9ZT2AAAA"
+                  placeholder="Example: SCH-8ZT2BBBB"
                   {...register("code", {
                     required: "Invitation code is required",
                     minLength: {
@@ -229,7 +229,7 @@ export default function StudentInviteForm() {
                   </p>
 
                   <p className="text-xs text-green-600">
-                    The student will receive the invitation email shortly.
+                    The Teacher will receive the invitation email shortly.
                   </p>
                 </div>
               </div>
@@ -275,7 +275,7 @@ export default function StudentInviteForm() {
 
         {/* Bottom Note */}
         <p className="mt-5 text-center text-xs text-slate-400">
-          An invitation email containing the signup link and student code will
+          An invitation email containing the signup link and teacher code will
           be sent to the provided email address.
         </p>
       </div>
