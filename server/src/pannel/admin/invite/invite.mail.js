@@ -16,8 +16,7 @@ async function sendStudentInvite({ studentName, studentEmail, studentCode }) {
   const emailData = {
     from: `Attendance Management System <${senderEmail}>`,
 
-    // Student receives the email
-    to: [studentEmail],
+    to: studentEmail,
 
     subject: "🎓 You're Invited to Join Our Attendance Management System",
 
