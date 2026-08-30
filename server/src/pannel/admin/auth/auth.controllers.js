@@ -16,20 +16,19 @@ export const authToken = (res, userId, expiresIn = "24h") => {
   if (!jwtToken) {
     throw new Error("JWT Token is missing");
   }
+
   const token = jwt.sign({ id: userId }, jwtToken, { expiresIn });
-  const isProduction = process.env.NODE_ENV === "production";
-  res.cookie("admin_auth_token", token, {
+
+  const cookieOptions = {
     httpOnly: true,
-    sameSite: isProduction ? "none" : "lax",
-    secure: isProduction,
+    secure: true,
+    sameSite: "none",
     maxAge: 24 * 60 * 60 * 1000,
-  });
-  res.cookie("auth_token", token, {
-    httpOnly: true,
-    sameSite: isProduction ? "none" : "lax",
-    secure: isProduction,
-    maxAge: 24 * 60 * 60 * 1000,
-  });
+    path: "/",
+  };
+
+  res.cookie("admin_auth_token", token, cookieOptions);
+  res.cookie("auth_token", token, cookieOptions);
 
   return token;
 };
