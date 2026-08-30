@@ -2,34 +2,40 @@ import { sendStudentInvite, sendTeacherInvite } from "./invite.mail.js";
 
 export const sendStudentMail = async (req, res) => {
   try {
-    const { studentName, studentEmail, studentCode } = req.body;
+    const { studentName, studentEmail } = req.body;
 
-    if (
-      typeof studentName !== "string" ||
-      typeof studentEmail !== "string" ||
-      typeof studentCode !== "string"
-    ) {
+    // Prefer admin's code from authenticated profile; fall back to body.studentCode
+    const providedCode = req.user?.adminCode || req.body?.studentCode || "";
+
+    if (typeof studentName !== "string" || typeof studentEmail !== "string") {
       console.log("[sendStudentMail] Invalid payload types detected");
       return res.status(400).json({
         success: false,
-        message:
-          "studentName, studentEmail, and studentCode must all be strings",
+        message: "studentName and studentEmail must be strings",
       });
     }
 
     const normalizedStudentName = studentName.trim();
     const normalizedStudentEmail = studentEmail.trim();
-    const normalizedStudentCode = studentCode.trim();
+    const normalizedStudentCode = String(providedCode || "").trim();
 
-    if (
-      !normalizedStudentName ||
-      !normalizedStudentEmail ||
-      !normalizedStudentCode
-    ) {
+    if (!normalizedStudentName || !normalizedStudentEmail) {
       console.log("[sendStudentMail] Missing required fields after trim");
       return res.status(400).json({
         success: false,
-        message: "Name, email and invitation code are required",
+        message: "Name and email are required",
+      });
+    }
+
+    // If no code is available server-side, warn but continue if you prefer to fail
+    if (!normalizedStudentCode) {
+      console.log(
+        "[sendStudentMail] No student code available from admin profile or request body",
+      );
+      return res.status(400).json({
+        success: false,
+        message:
+          "Invitation code not available. Ensure admin is authenticated and has an adminCode",
       });
     }
 

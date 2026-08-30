@@ -1,6 +1,7 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
 import axios from "axios";
 import { useRouter } from "next/navigation";
@@ -19,11 +20,20 @@ type Student = {
   studentName: string;
   studentEmail: string;
   studentCode: string;
+  adminCode: string;
 };
 
+const code: Student = {
+  studentName: "",
+  studentEmail: "",
+  studentCode: "",
+  adminCode: "",
+};
 export default function StudentInviteForm() {
   const [status, setStatus] = useState<"idle" | "success" | "error">("idle");
   const router = useRouter();
+  const [profile, setProfile] = useState<Student>(code);
+  const [error, setError] = useState("");
 
   const {
     register,
@@ -31,6 +41,7 @@ export default function StudentInviteForm() {
     reset,
     formState: { errors, isSubmitting },
   } = useForm<Student>();
+  const apiBaseUrl = "https://attendx-ai-n8uq.onrender.com/api";
 
   const onSubmit: SubmitHandler<Student> = async (data) => {
     try {
@@ -70,6 +81,38 @@ export default function StudentInviteForm() {
       }, 4000);
     }
   };
+  const fetchProfile = async () => {
+    try {
+      const token = localStorage.getItem("adminToken");
+
+      const res = await axios.get(`${apiBaseUrl}/admin/auth/getprofile`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        withCredentials: true,
+      });
+
+      const profile: Student = {
+        studentName: "",
+        studentEmail: "",
+        studentCode: "",
+        adminCode: res.data?.data?.adminCode ?? "",
+      };
+      setProfile(profile);
+      // prefill the studentCode form field with admin's code so user only fills name and email
+      reset({ studentCode: profile.adminCode });
+
+      setError("");
+    } catch (error: any) {
+      console.error(error);
+      setError(error.response?.data?.message || "Failed to fetch profile");
+    }
+  };
+
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    fetchProfile();
+  }, []);
 
   return (
     <div className="min-h-45 rounded-2xl shadow-2xl bg-slate-50 flex items-center justify-center p-4">
@@ -197,13 +240,9 @@ export default function StudentInviteForm() {
                 <input
                   type="text"
                   placeholder="Example: SCH-9ZT2AAAA"
-                  {...register("studentCode", {
-                    required: "Invitation code is required",
-                    minLength: {
-                      value: 6,
-                      message: "Code must contain at least 6 characters",
-                    },
-                  })}
+                  {...register("studentCode")}
+                  readOnly
+                  defaultValue={profile.adminCode}
                   className={`w-full rounded-xl border bg-white py-3 pl-11 pr-4 text-sm outline-none transition
                     ${
                       errors.studentCode
@@ -220,7 +259,7 @@ export default function StudentInviteForm() {
               )}
 
               <p className="mt-2 text-xs text-slate-400">
-                Get this invitation code from your Profile section.
+                Invitation code is auto-filled from your Profile.
               </p>
             </div>
 
