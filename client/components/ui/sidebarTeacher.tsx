@@ -12,13 +12,19 @@ import {
   UserCheck2,
   CircleUserIcon,
   ChartColumn,
+  FileText,
 } from "lucide-react";
 const links = [
   { name: "Dashboard", href: "/src/teacher/dashboard", icon: LayoutDashboard },
   { name: "Live Attendance", href: "/src/teacher/liveattendance", icon: Focus },
   { name: "Student List", href: "/src/teacher/student", icon: UserCheck2 },
   { name: "Attendance", href: "/src/teacher/attendance", icon: ShieldUserIcon },
-  { name: "Leave", href: "/src/teacher/leave", icon: ChartColumn },
+  { name: "Apply Leave", href: "/src/teacher/leave", icon: ChartColumn },
+  {
+    name: "Leave & Reports",
+    href: "/src/teacher/studentleave",
+    icon: FileText,
+  },
   { name: "Profile", href: "/src/teacher/profile", icon: CircleUserIcon },
   { name: "Setting", href: "/src/teacher/setting", icon: Settings },
   { name: "Help", href: "/src/teacher/help", icon: HelpCircle },
