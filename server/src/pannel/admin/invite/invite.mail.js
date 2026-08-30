@@ -232,7 +232,7 @@ async function sendStudentInvite({ studentName, studentEmail, studentCode }) {
             </p>
 
             <p style="margin: 8px 0 0;">
-              © ${new Date().getFullYear()} Attendance Management System
+              © ${new Date().getFullYear()} AttendX-AI Inc. All rights reserved.
             </p>
 
           </div>
@@ -508,7 +508,7 @@ async function sendTeacherInvite({ teacherName, teacherEmail, teacherCode }) {
 
           <p style="margin: 8px 0 0;">
             © ${new Date().getFullYear()}
-            Attendance Management System
+           AttendX-AI Inc. All rights reserved.
           </p>
 
         </div>
