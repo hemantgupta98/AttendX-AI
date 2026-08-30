@@ -244,7 +244,7 @@ export default function StudentInviteForm() {
                   {...register("teacherCode")}
                   readOnly
                   defaultValue={profile.adminCode}
-                  className={`w-full rounded-xl border bg-white py-3 pl-11 pr-4 text-sm outline-none transition
+                  className={`w-full rounded-xl border bg-white py-3 pl-11 pr-4 text-red-600 text-md outline-none transition 
                     ${
                       errors.teacherCode
                         ? "border-red-400 focus:ring-4 focus:ring-red-100"
