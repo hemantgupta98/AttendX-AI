@@ -212,7 +212,7 @@ async function sendStudentInvite({ studentName, studentEmail, studentCode }) {
               color: #4b5563;
             ">
               Best regards,<br />
-              <strong>Attendance Management System</strong>
+              <strong>AttendX-AI</strong>
             </p>
 
           </div>
@@ -227,9 +227,7 @@ async function sendStudentInvite({ studentName, studentEmail, studentCode }) {
             color: #6b7280;
           ">
 
-            <p style="margin: 0;">
-              This is an automated invitation email.
-            </p>
+         
 
             <p style="margin: 8px 0 0;">
               © ${new Date().getFullYear()} AttendX-AI Inc. All rights reserved.
@@ -487,7 +485,7 @@ async function sendTeacherInvite({ teacherName, teacherEmail, teacherCode }) {
             color: #4b5563;
           ">
             Best regards,<br />
-            <strong>Attendance Management System</strong>
+            <strong>AttendX-AI</strong>
           </p>
 
         </div>
@@ -502,10 +500,7 @@ async function sendTeacherInvite({ teacherName, teacherEmail, teacherCode }) {
           color: #6b7280;
         ">
 
-          <p style="margin: 0;">
-            This is an automated invitation email.
-          </p>
-
+         
           <p style="margin: 8px 0 0;">
             © ${new Date().getFullYear()}
            AttendX-AI Inc. All rights reserved.
