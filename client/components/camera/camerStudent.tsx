@@ -20,6 +20,15 @@ export default function Dashboard() {
   const [message, setMessage] = useState("");
 
   const router = useRouter();
+
+  const getAuthHeader = () => {
+    const token =
+      typeof window !== "undefined"
+        ? localStorage.getItem("token") || localStorage.getItem("studentToken")
+        : null;
+
+    return token ? { Authorization: `Bearer ${token}` } : {};
+  };
   const stopCamera = useCallback(() => {
     const stream = videoRef.current?.srcObject;
 
@@ -116,6 +125,7 @@ export default function Dashboard() {
         {
           withCredentials: true,
           headers: {
+            ...getAuthHeader(),
             "Content-Type": "multipart/form-data",
           },
         },
