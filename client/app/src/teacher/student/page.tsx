@@ -3,7 +3,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Search, Plus, X } from "lucide-react";
+import { Search, X } from "lucide-react";
 import axios from "axios";
 import Image from "next/image";
 
@@ -32,7 +32,7 @@ type Students = {
 export default function TeachersPage() {
   const apiBaseUrl = "https://attendx-ai-n8uq.onrender.com/api";
   const [search, setSearch] = useState("");
-  const [showPopup, setShowPopup] = useState(false);
+
   const [profile, setProfile] = useState<Students[]>([]);
   const [error, setError] = useState("");
   const [selectedStudent, setSelectedStudent] = useState<Students | null>(null);
@@ -111,41 +111,7 @@ export default function TeachersPage() {
             profile updates from one place.
           </p>
         </div>
-
-        <button
-          className="flex items-center justify-center gap-2 rounded-xl bg-indigo-600 px-5 py-3 font-semibold text-white shadow hover:bg-indigo-700 transition"
-          onClick={() => setShowPopup(true)}
-        >
-          <Plus size={18} />
-          Add Student
-        </button>
       </div>
-      {showPopup && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
-          <div className="w-[90%] max-w-md rounded-2xl bg-white p-6 shadow-2xl">
-            <h2 className="mb-3 text-xl font-bold text-gray-800">
-              Institution Code Required
-            </h2>
-
-            <p className="text-gray-600">
-              Please share your{" "}
-              <span className="font-semibold">Institution Code</span> from the{" "}
-              <span className="font-semibold">Profile</span> section with the
-              student. They will need this code during registration to join your
-              institution.
-            </p>
-
-            <div className="mt-6 flex justify-end">
-              <button
-                onClick={() => setShowPopup(false)}
-                className="rounded-lg bg-purple-600 cursor-pointer px-5 py-2 text-white hover:bg-purple-700"
-              >
-                OK
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
 
       <div className="mb-6 flex flex-col gap-4 md:flex-row">
         {/* Search */}
