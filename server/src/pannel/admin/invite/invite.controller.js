@@ -1,12 +1,8 @@
-import sendStudentInvite from "./invite.mail.js";
+import { sendStudentInvite, sendTeacherInvite } from "./invite.mail.js";
 
 export const sendStudentMail = async (req, res) => {
   try {
-    console.log("[sendStudentMail] Incoming request body:", req.body);
     const { studentName, studentEmail, studentCode } = req.body;
-    console.log("[sendStudentMail] studentName:", studentName);
-    console.log("[sendStudentMail] studentEmail:", studentEmail);
-    console.log("[sendStudentMail] studentCode:", studentCode);
 
     if (
       typeof studentName !== "string" ||
@@ -24,19 +20,6 @@ export const sendStudentMail = async (req, res) => {
     const normalizedStudentName = studentName.trim();
     const normalizedStudentEmail = studentEmail.trim();
     const normalizedStudentCode = studentCode.trim();
-
-    console.log(
-      "[sendStudentMail] normalizedStudentName:",
-      normalizedStudentName,
-    );
-    console.log(
-      "[sendStudentMail] normalizedStudentEmail:",
-      normalizedStudentEmail,
-    );
-    console.log(
-      "[sendStudentMail] normalizedStudentCode:",
-      normalizedStudentCode,
-    );
 
     if (
       !normalizedStudentName ||
@@ -65,6 +48,63 @@ export const sendStudentMail = async (req, res) => {
     });
   } catch (error) {
     console.error("[sendStudentMail] Failed to send student invite:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Failed to send invitation email",
+      error: error.message,
+    });
+  }
+};
+
+export const sendTeacherMail = async (req, res) => {
+  try {
+    console.log("[sendTeacherMail] Incoming request body:", req.body);
+    const { teacherName, teacherEmail, teacherCode } = req.body;
+
+    if (
+      typeof teacherName !== "string" ||
+      typeof teacherEmail !== "string" ||
+      typeof teacherCode !== "string"
+    ) {
+      console.log("[sendTeacherMail] Invalid payload types detected");
+      return res.status(400).json({
+        success: false,
+        message:
+          "teacherName, teacherEmail, and teacherCode must all be strings",
+      });
+    }
+
+    const normalizedTeacherName = teacherName.trim();
+    const normalizedTeacherEmail = teacherEmail.trim();
+    const normalizedTeacherCode = teacherCode.trim();
+
+    if (
+      !normalizedTeacherName ||
+      !normalizedTeacherEmail ||
+      !normalizedTeacherCode
+    ) {
+      console.log("[sendTeacherMail] Missing required fields after trim");
+      return res.status(400).json({
+        success: false,
+        message: "Name, email and invitation code are required",
+      });
+    }
+
+    const mailResult = await sendTeacherInvite({
+      teacherName: normalizedTeacherName,
+      teacherEmail: normalizedTeacherEmail,
+      teacherCode: normalizedTeacherCode,
+    });
+
+    console.log("[sendTeacherMail] Brevo result:", mailResult);
+
+    return res.status(200).json({
+      success: true,
+      message: "Teacher invitation email sent successfully",
+      data: mailResult,
+    });
+  } catch (error) {
+    console.error("[sendTeacherMail] Failed to send teacher invite:", error);
     return res.status(500).json({
       success: false,
       message: "Failed to send invitation email",

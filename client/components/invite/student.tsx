@@ -33,8 +33,6 @@ export default function StudentInviteForm() {
   } = useForm<Student>();
 
   const onSubmit: SubmitHandler<Student> = async (data) => {
-    console.log("[StudentInviteForm] Submitting payload:", data);
-    console.log("[StudentInviteForm] studentEmail:", data.studentEmail);
     try {
       setStatus("idle");
 

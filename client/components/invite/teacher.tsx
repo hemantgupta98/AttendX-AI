@@ -16,9 +16,9 @@ import {
 } from "lucide-react";
 
 type Teacher = {
-  name: string;
-  email: string;
-  code: string;
+  teacherName: string;
+  teacherEmail: string;
+  teacherCode: string;
 };
 
 export default function StudentInviteForm() {
@@ -44,7 +44,7 @@ export default function StudentInviteForm() {
         },
       );
 
-      console.log("Invitation sent:", res.data);
+      console.log("[StudentInviteForm] Invitation response:", res.data);
 
       setStatus("success");
 
@@ -55,7 +55,13 @@ export default function StudentInviteForm() {
         setStatus("idle");
       }, 4000);
     } catch (error) {
-      console.error("Failed to send invitation:", error);
+      console.error("[StudentInviteForm] Failed to send invitation:", error);
+      if (axios.isAxiosError(error)) {
+        console.error(
+          "[StudentInviteForm] Backend error response:",
+          error.response?.data,
+        );
+      }
 
       setStatus("error");
 
@@ -119,21 +125,21 @@ export default function StudentInviteForm() {
                 <input
                   type="text"
                   placeholder="Enter Teacher name"
-                  {...register("name", {
+                  {...register("teacherName", {
                     required: "Teacher name is required",
                   })}
                   className={`w-full rounded-xl border bg-white py-3 pl-11 pr-4 text-sm outline-none transition
                     ${
-                      errors.name
+                      errors.teacherName
                         ? "border-red-400 focus:ring-4 focus:ring-red-100"
                         : "border-slate-200 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-100"
                     }`}
                 />
               </div>
 
-              {errors.name && (
+              {errors.teacherName && (
                 <p className="mt-2 text-sm text-red-500">
-                  {errors.name.message}
+                  {errors.teacherName.message}
                 </p>
               )}
             </div>
@@ -153,7 +159,7 @@ export default function StudentInviteForm() {
                 <input
                   type="email"
                   placeholder="teacher@example.com"
-                  {...register("email", {
+                  {...register("teacherEmail", {
                     required: "Teacher email is required",
                     pattern: {
                       value: /^\S+@\S+$/i,
@@ -162,16 +168,16 @@ export default function StudentInviteForm() {
                   })}
                   className={`w-full rounded-xl border bg-white py-3 pl-11 pr-4 text-sm outline-none transition
                     ${
-                      errors.email
+                      errors.teacherEmail
                         ? "border-red-400 focus:ring-4 focus:ring-red-100"
                         : "border-slate-200 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-100"
                     }`}
                 />
               </div>
 
-              {errors.email && (
+              {errors.teacherEmail && (
                 <p className="mt-2 text-sm text-red-500">
-                  {errors.email.message}
+                  {errors.teacherEmail.message}
                 </p>
               )}
             </div>
@@ -191,7 +197,7 @@ export default function StudentInviteForm() {
                 <input
                   type="text"
                   placeholder="Example: SCH-8ZT2BBBB"
-                  {...register("code", {
+                  {...register("teacherCode", {
                     required: "Invitation code is required",
                     minLength: {
                       value: 6,
@@ -200,16 +206,16 @@ export default function StudentInviteForm() {
                   })}
                   className={`w-full rounded-xl border bg-white py-3 pl-11 pr-4 text-sm outline-none transition
                     ${
-                      errors.code
+                      errors.teacherCode
                         ? "border-red-400 focus:ring-4 focus:ring-red-100"
                         : "border-slate-200 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-100"
                     }`}
                 />
               </div>
 
-              {errors.code && (
+              {errors.teacherCode && (
                 <p className="mt-2 text-sm text-red-500">
-                  {errors.code.message}
+                  {errors.teacherCode.message}
                 </p>
               )}
 
