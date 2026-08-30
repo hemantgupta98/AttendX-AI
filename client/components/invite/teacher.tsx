@@ -1,6 +1,7 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
 import axios from "axios";
 import { useRouter } from "next/navigation";
@@ -19,11 +20,21 @@ type Teacher = {
   teacherName: string;
   teacherEmail: string;
   teacherCode: string;
+  adminCode: string;
+};
+const code: Teacher = {
+  teacherName: "",
+  teacherEmail: "",
+  teacherCode: "",
+  adminCode: "",
 };
 
 export default function StudentInviteForm() {
   const [status, setStatus] = useState<"idle" | "success" | "error">("idle");
   const router = useRouter();
+  const [profile, setProfile] = useState<Teacher>(code);
+  const [error, setError] = useState("");
+  const apiBaseUrl = "https://attendx-ai-n8uq.onrender.com/api";
 
   const {
     register,
@@ -70,6 +81,39 @@ export default function StudentInviteForm() {
       }, 4000);
     }
   };
+
+  const fetchProfile = async () => {
+    try {
+      const token = localStorage.getItem("adminToken");
+
+      const res = await axios.get(`${apiBaseUrl}/admin/auth/getprofile`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        withCredentials: true,
+      });
+
+      const profile: Teacher = {
+        teacherName: "",
+        teacherEmail: "",
+        teacherCode: "",
+        adminCode: res.data?.data?.adminCode ?? "",
+      };
+      setProfile(profile);
+
+      reset({ teacherCode: profile.adminCode });
+
+      setError("");
+    } catch (error: any) {
+      console.error(error);
+      setError(error.response?.data?.message || "Failed to fetch profile");
+    }
+  };
+
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    fetchProfile();
+  }, []);
 
   return (
     <div className="min-h-45 rounded-2xl shadow-2xl bg-slate-50 flex items-center justify-center p-4">
@@ -197,13 +241,9 @@ export default function StudentInviteForm() {
                 <input
                   type="text"
                   placeholder="Example: SCH-8ZT2BBBB"
-                  {...register("teacherCode", {
-                    required: "Invitation code is required",
-                    minLength: {
-                      value: 6,
-                      message: "Code must contain at least 6 characters",
-                    },
-                  })}
+                  {...register("teacherCode")}
+                  readOnly
+                  defaultValue={profile.adminCode}
                   className={`w-full rounded-xl border bg-white py-3 pl-11 pr-4 text-sm outline-none transition
                     ${
                       errors.teacherCode

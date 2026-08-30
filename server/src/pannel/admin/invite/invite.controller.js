@@ -3,8 +3,6 @@ import { sendStudentInvite, sendTeacherInvite } from "./invite.mail.js";
 export const sendStudentMail = async (req, res) => {
   try {
     const { studentName, studentEmail } = req.body;
-
-    // Prefer admin's code from authenticated profile; fall back to body.studentCode
     const providedCode = req.user?.adminCode || req.body?.studentCode || "";
 
     if (typeof studentName !== "string" || typeof studentEmail !== "string") {
@@ -27,7 +25,6 @@ export const sendStudentMail = async (req, res) => {
       });
     }
 
-    // If no code is available server-side, warn but continue if you prefer to fail
     if (!normalizedStudentCode) {
       console.log(
         "[sendStudentMail] No student code available from admin profile or request body",
@@ -64,14 +61,10 @@ export const sendStudentMail = async (req, res) => {
 
 export const sendTeacherMail = async (req, res) => {
   try {
-    console.log("[sendTeacherMail] Incoming request body:", req.body);
-    const { teacherName, teacherEmail, teacherCode } = req.body;
+    const { teacherName, teacherEmail } = req.body;
+    const providedCode = req.user?.adminCode || req.body?.teacherCode || "";
 
-    if (
-      typeof teacherName !== "string" ||
-      typeof teacherEmail !== "string" ||
-      typeof teacherCode !== "string"
-    ) {
+    if (typeof teacherName !== "string" || typeof teacherEmail !== "string") {
       console.log("[sendTeacherMail] Invalid payload types detected");
       return res.status(400).json({
         success: false,
@@ -82,7 +75,7 @@ export const sendTeacherMail = async (req, res) => {
 
     const normalizedTeacherName = teacherName.trim();
     const normalizedTeacherEmail = teacherEmail.trim();
-    const normalizedTeacherCode = teacherCode.trim();
+    const normalizedTeacherCode = String(providedCode || "").trim();
 
     if (
       !normalizedTeacherName ||
@@ -93,6 +86,17 @@ export const sendTeacherMail = async (req, res) => {
       return res.status(400).json({
         success: false,
         message: "Name, email and invitation code are required",
+      });
+    }
+
+    if (!normalizedTeacherCode) {
+      console.log(
+        "[sendTeacherMail] No student code available from admin profile or request body",
+      );
+      return res.status(400).json({
+        success: false,
+        message:
+          "Invitation code not available. Ensure admin is authenticated and has an adminCode",
       });
     }
 
