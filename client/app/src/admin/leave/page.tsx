@@ -89,11 +89,11 @@ const StudentLeaveRequests = () => {
       {/* Header */}
       <div className="mb-8">
         <h1 className="text-2xl font-bold text-slate-800">
-          Student Leave Requests
+          Teacher Leave Requests
         </h1>
 
         <p className="mt-2 text-sm text-slate-500">
-          View, search, and manage all student leave requests and leave records.
+          View, search, and manage all teacher leave requests and leave records.
         </p>
       </div>
 
@@ -142,7 +142,7 @@ const StudentLeaveRequests = () => {
             <thead className="border-b border-slate-200 bg-slate-50/70">
               <tr className="text-left">
                 <th className="px-6 py-4 text-xs font-bold uppercase tracking-wider text-slate-500">
-                  Student
+                  Teacher
                 </th>
 
                 <th className="px-5 py-4 text-xs font-bold uppercase tracking-wider text-slate-500">
@@ -176,16 +176,16 @@ const StudentLeaveRequests = () => {
             </thead>
 
             <tbody>
-              {filteredRequests.map((student) => (
+              {filteredRequests.map((teacher) => (
                 <tr
-                  key={student.id}
+                  key={teacher.id}
                   className="border-b border-slate-100 transition last:border-0 hover:bg-slate-50/70"
                 >
                   {/* Student */}
                   <td className="px-6 py-4">
                     <div className="flex items-center gap-3">
                       <div className="flex h-11 w-11 items-center justify-center rounded-full bg-slate-100 text-sm font-bold text-slate-500">
-                        {student.name
+                        {teacher.name
                           .split(" ")
                           .map((word) => word[0])
                           .join("")
@@ -194,11 +194,11 @@ const StudentLeaveRequests = () => {
 
                       <div>
                         <p className="text-sm font-semibold text-slate-700">
-                          {student.name}
+                          {teacher.name}
                         </p>
 
                         <p className="mt-1 text-xs text-slate-500">
-                          {student.email}
+                          {teacher.email}
                         </p>
                       </div>
                     </div>
@@ -209,30 +209,30 @@ const StudentLeaveRequests = () => {
                     <div className="flex items-center gap-2 text-sm text-slate-600">
                       <Clock3 size={16} className="text-sky-500" />
 
-                      <span>{student.leaveType}</span>
+                      <span>{teacher.leaveType}</span>
                     </div>
                   </td>
 
                   {/* Start Date */}
                   <td className="whitespace-nowrap px-5 py-4 text-sm text-slate-600">
-                    {student.startDate}
+                    {teacher.startDate}
                   </td>
 
                   {/* End Date */}
                   <td className="whitespace-nowrap px-5 py-4 text-sm text-slate-600">
-                    {student.endDate}
+                    {teacher.endDate}
                   </td>
 
                   {/* Days */}
                   <td className="px-5 py-4">
                     <span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-600">
-                      {student.days} {student.days === 1 ? "Day" : "Days"}
+                      {teacher.days} {teacher.days === 1 ? "Day" : "Days"}
                     </span>
                   </td>
 
                   {/* Reason */}
                   <td className="max-w-42.5 truncate px-5 py-4 text-sm text-slate-500">
-                    {student.reason}
+                    {teacher.reason}
                   </td>
 
                   {/* Files */}
@@ -240,18 +240,18 @@ const StudentLeaveRequests = () => {
                     <button className="flex items-center gap-1.5 text-sm font-medium text-sky-600 hover:text-sky-700">
                       <Paperclip size={15} />
 
-                      <span>{student.files || "No"} Files</span>
+                      <span>{teacher.files || "No"} Files</span>
                     </button>
                   </td>
 
                   {/* Status */}
                   {/* Action */}
                   <td className="px-5 py-4">
-                    {student.status === "Pending" ? (
+                    {teacher.status === "Pending" ? (
                       <div className="flex items-center gap-2">
                         <button
                           onClick={() =>
-                            handleStatusChange(student.id, "Approved")
+                            handleStatusChange(teacher.id, "Approved")
                           }
                           className="rounded-lg bg-emerald-500 px-3 py-1.5 text-xs font-medium text-white transition hover:bg-emerald-600"
                         >
@@ -260,7 +260,7 @@ const StudentLeaveRequests = () => {
 
                         <button
                           onClick={() =>
-                            handleStatusChange(student.id, "Rejected")
+                            handleStatusChange(teacher.id, "Rejected")
                           }
                           className="rounded-lg bg-red-500 px-3 py-1.5 text-xs font-medium text-white transition hover:bg-red-600"
                         >
@@ -270,12 +270,12 @@ const StudentLeaveRequests = () => {
                     ) : (
                       <span
                         className={`inline-flex rounded-full px-3 py-1 text-xs font-medium ${
-                          student.status === "Approved"
+                          teacher.status === "Approved"
                             ? "border border-emerald-200 bg-emerald-50 text-emerald-600"
                             : "border border-red-200 bg-red-50 text-red-600"
                         }`}
                       >
-                        {student.status === "Approved"
+                        {teacher.status === "Approved"
                           ? "Accepted"
                           : "Rejected"}
                       </span>

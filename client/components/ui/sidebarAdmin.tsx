@@ -20,7 +20,7 @@ const links = [
   { name: "Teacher", href: "/src/admin/teacher", icon: ShieldUserIcon },
   { name: "Student", href: "/src/admin/student", icon: UserCheck2 },
   { name: "Reports", href: "/src/admin/reports", icon: ChartColumn },
-  { name: "Leave & Reports", href: "/src/admin/teacherleave", icon: FileText },
+  { name: "Leave & Reports", href: "/src/admin/leave", icon: FileText },
   { name: "Profile", href: "/src/admin/profile", icon: CircleUserIcon },
   { name: "Setting", href: "/src/admin/setting", icon: Settings },
   { name: "Help", href: "/src/admin/help", icon: HelpCircle },
