@@ -305,15 +305,13 @@ export const adminProfiole = async (req, res) => {
     await res.status(200).json({
       success: true,
       message: "Get admin profile",
-      admin: {
-        email: admin.admin,
-      },
-      institution: {
-        name: admin.name,
-        designation: admin.designation,
-        city: admin.city,
-        state: admin.state,
-        pincode: admin.pincode,
+      data: {
+        name: admin.name || "",
+        email: admin.adminEmail || "",
+        designation: admin.designation || "",
+        city: admin.city || "",
+        state: admin.state || "",
+        pincode: admin.pincode || "",
       },
     });
   } catch (error) {

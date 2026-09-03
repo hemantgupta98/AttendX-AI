@@ -13,6 +13,7 @@ import {
   CircleUserIcon,
   ChartColumn,
   FileText,
+  CircleUserRound,
 } from "lucide-react";
 const links = [
   { name: "Dashboard", href: "/src/teacher/dashboard", icon: LayoutDashboard },
@@ -25,6 +26,7 @@ const links = [
     href: "/src/teacher/studentleave",
     icon: FileText,
   },
+  { name: "Admin Profile", href: "/src/teacher/admin", icon: CircleUserRound },
   { name: "Profile", href: "/src/teacher/profile", icon: CircleUserIcon },
   { name: "Setting", href: "/src/teacher/setting", icon: Settings },
   { name: "Help", href: "/src/teacher/help", icon: HelpCircle },
