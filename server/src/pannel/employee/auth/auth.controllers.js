@@ -273,3 +273,55 @@ export const logout = async (req, res) => {
     });
   }
 };
+
+export const adminProfiole = async (req, res) => {
+  try {
+    const teacher = await signupModel.findById(req.user.id);
+
+    if (!teacher) {
+      return res.status(404).json({
+        success: false,
+        message: "Teacher not found",
+      });
+    }
+
+    if (!teacher.institutionId) {
+      return res.status(404).json({
+        success: false,
+        message: "No admin assinged through this code",
+      });
+    }
+
+    const admin = await adminModel
+      .findById(admin.adminCode)
+      .select(" name email designation ");
+
+    if (!admin) {
+      return res.status(404).json({
+        success: false,
+        message: "No admin assigned",
+      });
+    }
+    await res.status(200).json({
+      success: true,
+      message: "Get admin profile",
+      admin: {
+        email: admin.admin,
+      },
+      institution: {
+        name: admin.name,
+        designation: admin.designation,
+        city: admin.city,
+        state: admin.state,
+        pincode: admin.pincode,
+      },
+    });
+  } catch (error) {
+    console.error("Admin profile error:", error);
+
+    return res.status(500).json({
+      success: false,
+      message: error.message || "Failed to get admin profile",
+    });
+  }
+};
