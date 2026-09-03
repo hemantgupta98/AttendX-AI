@@ -293,8 +293,8 @@ export const adminProfiole = async (req, res) => {
     }
 
     const admin = await adminModel
-      .findById(admin.adminCode)
-      .select(" name email designation ");
+      .findById(teacher.institutionId)
+      .select("name email adminEmail designation city state pincode");
 
     if (!admin) {
       return res.status(404).json({
@@ -302,12 +302,12 @@ export const adminProfiole = async (req, res) => {
         message: "No admin assigned",
       });
     }
-    await res.status(200).json({
+    return res.status(200).json({
       success: true,
       message: "Get admin profile",
       data: {
         name: admin.name || "",
-        email: admin.adminEmail || "",
+        email: admin.adminEmail || admin.email || "",
         designation: admin.designation || "",
         city: admin.city || "",
         state: admin.state || "",
