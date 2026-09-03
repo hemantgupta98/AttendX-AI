@@ -257,3 +257,53 @@ export const logout = async (req, res) => {
     });
   }
 };
+
+export const adminProfiole = async (req, res) => {
+  try {
+    const student = await signupModel.findById(req.user.id);
+
+    if (!student) {
+      return res.status(404).json({
+        success: false,
+        message: "Student not found",
+      });
+    }
+
+    if (!student.institutionId) {
+      return res.status(404).json({
+        success: false,
+        message: "No admin assinged through this code",
+      });
+    }
+
+    const admin = await adminModel
+      .findById(student.institutionId)
+      .select("name email adminEmail designation city state pincode");
+
+    if (!admin) {
+      return res.status(404).json({
+        success: false,
+        message: "No admin assigned",
+      });
+    }
+    return res.status(200).json({
+      success: true,
+      message: "Get admin profile",
+      data: {
+        name: admin.name || "",
+        email: admin.adminEmail || admin.email || "",
+        designation: admin.designation || "",
+        city: admin.city || "",
+        state: admin.state || "",
+        pincode: admin.pincode || "",
+      },
+    });
+  } catch (error) {
+    console.error("Admin profile error:", error);
+
+    return res.status(500).json({
+      success: false,
+      message: error.message || "Failed to get admin profile..",
+    });
+  }
+};
