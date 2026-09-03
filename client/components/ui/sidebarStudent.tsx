@@ -9,7 +9,7 @@ import {
   HelpCircle,
   LogOut,
   Focus,
-  UserCheck2,
+  CircleUserRound,
   CircleUserIcon,
   ChartColumn,
 } from "lucide-react";
@@ -18,6 +18,11 @@ const links = [
   { name: "Live Attendance", href: "/src/student/liveattendance", icon: Focus },
   { name: "Attendance", href: "/src/student/attendance", icon: ShieldUserIcon },
   { name: "Leave", href: "/src/student/leave", icon: ChartColumn },
+  {
+    name: "Instution Detials",
+    href: "/src/teacher/admin",
+    icon: CircleUserRound,
+  },
   { name: "Profile", href: "/src/student/profile", icon: CircleUserIcon },
   { name: "Setting", href: "/src/student/setting", icon: Settings },
   { name: "Help", href: "/src/student/help", icon: HelpCircle },

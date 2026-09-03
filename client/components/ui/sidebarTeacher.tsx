@@ -26,7 +26,11 @@ const links = [
     href: "/src/teacher/studentleave",
     icon: FileText,
   },
-  { name: "Admin Profile", href: "/src/teacher/admin", icon: CircleUserRound },
+  {
+    name: "Instution Detials",
+    href: "/src/teacher/admin",
+    icon: CircleUserRound,
+  },
   { name: "Profile", href: "/src/teacher/profile", icon: CircleUserIcon },
   { name: "Setting", href: "/src/teacher/setting", icon: Settings },
   { name: "Help", href: "/src/teacher/help", icon: HelpCircle },
