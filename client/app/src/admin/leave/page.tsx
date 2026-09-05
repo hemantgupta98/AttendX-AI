@@ -1,6 +1,5 @@
 /* eslint-disable react-hooks/set-state-in-effect */
 "use client";
-
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import {
@@ -25,11 +24,24 @@ type LeaveForm = {
   file: string;
 };
 
+type LeaveRequest = {
+  id: number;
+  name: string;
+  email: string;
+  leaveType: string;
+  startDate: string;
+  endDate: string;
+  days: number;
+  reason: string;
+  files?: number;
+  status: LeaveStatus;
+};
+
 const StudentLeaveRequests = () => {
   const [activeTab, setActiveTab] = useState("All");
   const [search, setSearch] = useState("");
-  const [leaveHistory, setLeaveHistory] = useState([]);
-  const filteredRequests = requests.filter((item) => {
+  const [leaveHistory, setLeaveHistory] = useState<LeaveRequest[]>([]);
+  const filteredRequests = leaveHistory.filter((item) => {
     const matchesTab = activeTab === "All" ? true : item.status === activeTab;
 
     const searchValue = search.toLowerCase();
@@ -53,7 +65,7 @@ const StudentLeaveRequests = () => {
 
     if (!confirmed) return;
 
-    setRequests((prevRequests) =>
+    setLeaveHistory((prevRequests) =>
       prevRequests.map((request) =>
         request.id === id ? { ...request, status } : request,
       ),
