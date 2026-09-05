@@ -1,5 +1,4 @@
 import PDFDocument from "pdfkit";
-import "pdfkit-table";
 import { attendance } from "../database/attendance.model.js";
 
 export const downloadAttendancePdf = async (req, res) => {
@@ -72,22 +71,57 @@ export const downloadAttendancePdf = async (req, res) => {
       `${((item.confidence || 0) * 100).toFixed(2)}%`,
     ]);
 
-    await doc.table({
-      headers: ["Name", "Date", "Time", "Status", "Matched", "Confidence"],
+    const columns = [
+      { label: "Name", width: 150 },
+      { label: "Date", width: 75 },
+      { label: "Time", width: 65 },
+      { label: "Status", width: 75 },
+      { label: "Matched", width: 85 },
+      { label: "Confidence", width: 85 },
+    ];
+    const rowHeight = 18;
+    const tableLeft = 30;
 
-      rows,
+    const drawTableHeader = () => {
+      let x = tableLeft;
+      doc.font("Helvetica-Bold").fontSize(8);
+      for (const column of columns) {
+        doc.text(column.label, x, doc.y, {
+          width: column.width,
+          height: rowHeight,
+          lineBreak: false,
+        });
+        x += column.width;
+      }
+      doc
+        .moveTo(tableLeft, doc.y + 2)
+        .lineTo(565, doc.y + 2)
+        .stroke();
+      doc.moveDown(0.5);
+    };
 
-      options: {
-        width: 535,
-        padding: 5,
-        prepareHeader: () => {
-          doc.font("Helvetica-Bold").fontSize(8);
-        },
-        prepareRow: () => {
-          doc.font("Helvetica").fontSize(8);
-        },
-      },
-    });
+    drawTableHeader();
+    doc.font("Helvetica").fontSize(8);
+    for (const row of rows) {
+      if (doc.y + rowHeight > 760) {
+        doc.addPage();
+        drawTableHeader();
+        doc.font("Helvetica").fontSize(8);
+      }
+
+      const rowTop = doc.y;
+      let x = tableLeft;
+      row.forEach((value, index) => {
+        doc.text(String(value), x, rowTop, {
+          width: columns[index].width,
+          height: rowHeight,
+          lineBreak: false,
+          ellipsis: true,
+        });
+        x += columns[index].width;
+      });
+      doc.y = rowTop + rowHeight;
+    }
 
     doc.moveDown();
 
