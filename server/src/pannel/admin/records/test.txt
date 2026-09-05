@@ -21,7 +21,7 @@ export const downloadAttendancePdf = async (req, res) => {
         .json({ success: false, message: "No attendance record found" });
     }
 
-    const doc = new PDFDocument({
+    const doc = PDFDocument({
       size: "A4",
       margin: 30,
     });
