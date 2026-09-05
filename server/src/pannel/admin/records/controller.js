@@ -54,7 +54,6 @@ export const downloadAttendancePdf = async (req, res) => {
     const formattedGeneratedTime = generatedDate.toLocaleTimeString("en-IN", {
       hour: "2-digit",
       minute: "2-digit",
-      second: "2-digit",
     });
 
     const total = attendanceRecords.length;
@@ -414,15 +413,6 @@ export const downloadAttendancePdf = async (req, res) => {
 
     doc.moveDown(0.3);
 
-    doc
-      .fontSize(7)
-      .text(
-        "The information contained in this report is based on recorded attendance and face-matching results.",
-        {
-          align: "center",
-        },
-      );
-
     const range = doc.bufferedPageRange();
 
     for (let i = range.start; i < range.start + range.count; i++) {
@@ -466,3 +456,14 @@ export const downloadAttendancePdf = async (req, res) => {
     }
   }
 };
+
+{
+  /** doc
+      .fontSize(7)
+      .text(
+        "The information contained in this report is based on recorded attendance and face-matching results.",
+        {
+          align: "left",
+        },
+      ); */
+}
