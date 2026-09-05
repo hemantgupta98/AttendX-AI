@@ -3,8 +3,16 @@ import { attendance } from "../database/attendance.model.js";
 
 export const downloadAttendancePdf = async (req, res) => {
   try {
+    const adminId = req.user?.id;
+    if (!adminId) {
+      return res.status(401).json({
+        success: false,
+        message: "Admin authentication required",
+      });
+    }
+
     const attendanceRecords = await attendance
-      .find({ admin: req.user.id })
+      .find({ admin: adminId })
       .sort({ date: -1 });
 
     if (!attendanceRecords.length) {
@@ -18,13 +26,13 @@ export const downloadAttendancePdf = async (req, res) => {
       margin: 30,
     });
 
-    res.setHeader("Content-Type", "application/pdf");
-    res.setHeader(
-      "Content-Disposition",
-      `attachment; filename="Attendance_Report.pdf"`,
-    );
+    const pdfChunks = [];
+    const pdfReady = new Promise((resolve, reject) => {
+      doc.on("data", (chunk) => pdfChunks.push(chunk));
+      doc.once("end", resolve);
+      doc.once("error", reject);
+    });
 
-    doc.pipe(res);
     doc.fontSize(20).font("Helvetica-Bold").text("ATTENDANCE REPORT", {
       align: "center",
     });
@@ -130,13 +138,21 @@ export const downloadAttendancePdf = async (req, res) => {
     });
 
     doc.end();
+    await pdfReady;
+
+    res.setHeader("Content-Type", "application/pdf");
+    res.setHeader(
+      "Content-Disposition",
+      `attachment; filename="Attendance_Report.pdf"`,
+    );
+    res.end(Buffer.concat(pdfChunks));
   } catch (error) {
     console.error("PDF Error:", error);
 
     if (!res.headersSent) {
       return res.status(500).json({
         success: false,
-        message: "Failed to generate PDF",
+        message: `Failed to generate PDF: ${error.message}`,
       });
     }
   }
