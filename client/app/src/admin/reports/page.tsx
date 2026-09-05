@@ -35,7 +35,6 @@ export default function AdminReportPage() {
 
   useEffect(() => {
     getAttendanceHistory();
-    handleDownloadPDF();
   }, []);
 
   const getAttendanceHistory = async () => {
