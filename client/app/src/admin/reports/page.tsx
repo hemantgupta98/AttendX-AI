@@ -132,7 +132,7 @@ export default function AdminReportPage() {
 
   const handleDownloadPDF = async () => {
     try {
-      const token = localStorage.getItem("token");
+      const token = localStorage.getItem("adminToken");
 
       const res = await axios.get(
         `${apiBaseUrl}/admin/report/attendance-report`,

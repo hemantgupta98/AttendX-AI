@@ -4,9 +4,11 @@ import { attendance } from "../database/attendance.model.js";
 
 export const downloadAttendancePdf = async (req, res) => {
   try {
-    const Attendance = await attendance.find({}).sort({ Date: -1 });
+    const attendanceRecords = await attendance
+      .find({ admin: req.user.id })
+      .sort({ date: -1 });
 
-    if (!Attendance.length) {
+    if (!attendanceRecords.length) {
       return res
         .status(404)
         .json({ success: false, message: "No attendance record found" });
@@ -37,21 +39,19 @@ export const downloadAttendancePdf = async (req, res) => {
       });
 
     doc.moveDown(2);
-    const total = attendance.length;
+    const total = attendanceRecords.length;
 
-    const present = attendance.filter(
+    const present = attendanceRecords.filter(
       (item) => item.status === "Present",
     ).length;
 
-    const absent = attendance.filter((item) => item.status === "Absent").length;
-
-    const matched = attendance.filter(
-      (item) => item.matched === "Matched",
+    const absent = attendanceRecords.filter(
+      (item) => item.status === "Absent",
     ).length;
 
-    const failed = attendance.filter(
-      (item) => item.matched === "Failed",
-    ).length;
+    const matched = attendanceRecords.filter((item) => item.matched).length;
+
+    const failed = attendanceRecords.filter((item) => !item.matched).length;
 
     doc.fontSize(12).font("Helvetica-Bold");
 
@@ -63,13 +63,13 @@ export const downloadAttendancePdf = async (req, res) => {
 
     doc.moveDown(2);
 
-    const rows = attendance.map((item) => [
-      item.name || item.studentName || "Unknown",
+    const rows = attendanceRecords.map((item) => [
+      item.name || "Unknown",
       item.date ? new Date(item.date).toLocaleDateString("en-IN") : "-",
       item.time || "-",
       item.status || "-",
-      item.matched || "-",
-      `${item.confidence || 0}%`,
+      item.matched ? "Matched" : "Failed",
+      `${((item.confidence || 0) * 100).toFixed(2)}%`,
     ]);
 
     await doc.table({
