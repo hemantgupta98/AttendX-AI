@@ -1,6 +1,8 @@
+/* eslint-disable react-hooks/set-state-in-effect */
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 import {
   Search,
   Clock3,
@@ -11,43 +13,22 @@ import {
   CheckCircle2,
   CalendarDays,
 } from "lucide-react";
-
+import { useForm } from "react-hook-form";
 type LeaveStatus = "Pending" | "Approved" | "Rejected";
 
-interface LeaveRequest {
-  id: number;
-  name: string;
-  email: string;
-  image?: string;
+type LeaveForm = {
+  _id: string;
   leaveType: string;
   startDate: string;
   endDate: string;
-  days: number;
   reason: string;
-  files: number;
-  status: LeaveStatus;
-}
-
-const leaveRequests: LeaveRequest[] = [
-  {
-    id: 1,
-    name: "Rahul Kumar",
-    email: "rahul.kumar@school.edu",
-    leaveType: "Sick Leave",
-    startDate: "20 Aug 2026",
-    endDate: "22 Aug 2026",
-    days: 3,
-    reason: "Suffering",
-    files: 4,
-    status: "Pending",
-  },
-];
+  file: string;
+};
 
 const StudentLeaveRequests = () => {
   const [activeTab, setActiveTab] = useState("All");
   const [search, setSearch] = useState("");
-  const [requests, setRequests] = useState<LeaveRequest[]>(leaveRequests);
-
+  const [leaveHistory, setLeaveHistory] = useState([]);
   const filteredRequests = requests.filter((item) => {
     const matchesTab = activeTab === "All" ? true : item.status === activeTab;
 
@@ -83,6 +64,25 @@ const StudentLeaveRequests = () => {
     Approved: "bg-emerald-50 text-emerald-600 border border-emerald-200",
     Rejected: "bg-red-50 text-red-600 border border-red-200",
   };
+
+  const fetchLeaves = async () => {
+    try {
+      const res = await axios.get(
+        "https://attendx-ai-n8uq.onrender.com/api/employee/leave/getLeaves",
+        {
+          withCredentials: true,
+        },
+      );
+
+      setLeaveHistory(res.data.leaves || []);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  useEffect(() => {
+    fetchLeaves();
+  }, []);
 
   return (
     <main className="min-h-screen bg-[#f6f8fc] p-6 lg:p-8">

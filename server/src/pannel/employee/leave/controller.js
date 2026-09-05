@@ -1,4 +1,5 @@
 import { LeaveModel } from "./model.js";
+import { signupModel as adminModel } from "../../admin/auth/auth.model.js";
 
 export const applyLeave = async (req, res) => {
   try {
@@ -18,6 +19,22 @@ export const applyLeave = async (req, res) => {
       return res.status(400).json({
         success: false,
         message: "Start date cannot be after end date.",
+      });
+    }
+
+    const admin = await adminModel.findById(req.user.id);
+
+    if (!admin) {
+      res.status(404).json({
+        success: false,
+        message: "Admin not found",
+      });
+    }
+
+    if (!admin.adminCode) {
+      res.status(402).json({
+        success: false,
+        message: "You are not assingend to any instution ",
       });
     }
 
@@ -50,6 +67,8 @@ export const applyLeave = async (req, res) => {
       totalDays,
       reason,
       attachment: req.file?.path || "",
+      adminId: admin.adminCode,
+      status: "Pending",
     });
 
     return res.status(201).json({
