@@ -3,10 +3,6 @@ import { attendance } from "../database/attendance.model.js";
 
 export const downloadAttendancePdf = async (req, res) => {
   try {
-    // =========================================================
-    // 1. ADMIN AUTHENTICATION
-    // =========================================================
-
     const adminId = req.user?.id;
 
     if (!adminId) {
@@ -15,10 +11,6 @@ export const downloadAttendancePdf = async (req, res) => {
         message: "Admin authentication required",
       });
     }
-
-    // =========================================================
-    // 2. GET ATTENDANCE RECORDS
-    // =========================================================
 
     const attendanceRecords = await attendance
       .find({ admin: adminId })
@@ -30,10 +22,6 @@ export const downloadAttendancePdf = async (req, res) => {
         message: "No attendance record found",
       });
     }
-
-    // =========================================================
-    // 3. CREATE PDF
-    // =========================================================
 
     const doc = new PDFDocument({
       size: "A4",
@@ -52,10 +40,6 @@ export const downloadAttendancePdf = async (req, res) => {
       doc.once("error", reject);
     });
 
-    // =========================================================
-    // 4. REPORT INFORMATION
-    // =========================================================
-
     const institutionName =
       req.user?.institutionName || req.user?.institution || "Institution";
 
@@ -72,10 +56,6 @@ export const downloadAttendancePdf = async (req, res) => {
       minute: "2-digit",
       second: "2-digit",
     });
-
-    // =========================================================
-    // 5. CALCULATE SUMMARY
-    // =========================================================
 
     const total = attendanceRecords.length;
 
@@ -114,10 +94,6 @@ export const downloadAttendancePdf = async (req, res) => {
           ).toFixed(2)
         : "0.00";
 
-    // =========================================================
-    // 6. GET REPORT PERIOD
-    // =========================================================
-
     const dates = attendanceRecords
       .map((item) => item.date)
       .filter(Boolean)
@@ -136,10 +112,6 @@ export const downloadAttendancePdf = async (req, res) => {
         year: "numeric",
       });
     };
-
-    // =========================================================
-    // 7. HEADER
-    // =========================================================
 
     doc.font("Helvetica-Bold").fontSize(22).text("ATTENDANCE REPORT", {
       align: "center",
@@ -171,10 +143,6 @@ export const downloadAttendancePdf = async (req, res) => {
 
     doc.moveDown(1);
 
-    // =========================================================
-    // 8. REPORT DETAILS
-    // =========================================================
-
     doc.font("Helvetica-Bold").fontSize(11).text("REPORT DETAILS");
 
     doc.moveDown(0.5);
@@ -196,10 +164,6 @@ export const downloadAttendancePdf = async (req, res) => {
     doc.text(`Match Rate: ${matchPercentage}%`, 300, detailsY + 18);
 
     doc.moveDown(3);
-
-    // =========================================================
-    // 9. SUMMARY SECTION
-    // =========================================================
 
     doc.font("Helvetica-Bold").fontSize(11).text("ATTENDANCE SUMMARY");
 
@@ -264,10 +228,6 @@ export const downloadAttendancePdf = async (req, res) => {
 
     doc.y = summaryY + boxHeight + 20;
 
-    // =========================================================
-    // 10. ADDITIONAL STATISTICS
-    // =========================================================
-
     doc.font("Helvetica-Bold").fontSize(11).text("PERFORMANCE OVERVIEW");
 
     doc.moveDown(0.6);
@@ -281,10 +241,6 @@ export const downloadAttendancePdf = async (req, res) => {
     doc.text(`Average Face Confidence: ${averageConfidence}%`);
 
     doc.moveDown(1.5);
-
-    // =========================================================
-    // 11. TABLE CONFIGURATION
-    // =========================================================
 
     const columns = [
       {
@@ -316,10 +272,6 @@ export const downloadAttendancePdf = async (req, res) => {
     const tableLeft = 30;
     const tableWidth = 535;
     const rowHeight = 20;
-
-    // =========================================================
-    // 12. TABLE HEADER
-    // =========================================================
 
     const drawTableHeader = () => {
       const headerY = doc.y;
@@ -357,10 +309,6 @@ export const downloadAttendancePdf = async (req, res) => {
 
     drawTableHeader();
 
-    // =========================================================
-    // 13. TABLE ROWS
-    // =========================================================
-
     attendanceRecords.forEach((item, rowIndex) => {
       // Check page space
       if (doc.y + rowHeight > 750) {
@@ -380,10 +328,6 @@ export const downloadAttendancePdf = async (req, res) => {
 
       doc.font("Helvetica").fontSize(8).fill("#000000");
 
-      // -------------------------------------------------------
-      // NAME
-      // -------------------------------------------------------
-
       doc.text(item.name || "Unknown", x, rowY, {
         width: columns[0].width,
         height: rowHeight,
@@ -393,10 +337,6 @@ export const downloadAttendancePdf = async (req, res) => {
 
       x += columns[0].width;
 
-      // -------------------------------------------------------
-      // DATE
-      // -------------------------------------------------------
-
       doc.text(formatDate(item.date), x, rowY, {
         width: columns[1].width,
         height: rowHeight,
@@ -404,10 +344,6 @@ export const downloadAttendancePdf = async (req, res) => {
       });
 
       x += columns[1].width;
-
-      // -------------------------------------------------------
-      // TIME
-      // -------------------------------------------------------
 
       doc.text(item.time || "-", x, rowY, {
         width: columns[2].width,
@@ -417,10 +353,6 @@ export const downloadAttendancePdf = async (req, res) => {
 
       x += columns[2].width;
 
-      // -------------------------------------------------------
-      // STATUS
-      // -------------------------------------------------------
-
       doc.text(item.status || "-", x, rowY, {
         width: columns[3].width,
         height: rowHeight,
@@ -429,10 +361,6 @@ export const downloadAttendancePdf = async (req, res) => {
 
       x += columns[3].width;
 
-      // -------------------------------------------------------
-      // MATCHED
-      // -------------------------------------------------------
-
       doc.text(item.matched ? "Matched" : "Failed", x, rowY, {
         width: columns[4].width,
         height: rowHeight,
@@ -440,10 +368,6 @@ export const downloadAttendancePdf = async (req, res) => {
       });
 
       x += columns[4].width;
-
-      // -------------------------------------------------------
-      // CONFIDENCE
-      // -------------------------------------------------------
 
       let confidence = "-";
 
@@ -472,10 +396,6 @@ export const downloadAttendancePdf = async (req, res) => {
       doc.y = rowY + rowHeight;
     });
 
-    // =========================================================
-    // 14. FOOTER
-    // =========================================================
-
     doc.moveDown(2);
 
     doc.moveTo(30, doc.y).lineTo(565, doc.y).lineWidth(0.5).stroke();
@@ -503,10 +423,6 @@ export const downloadAttendancePdf = async (req, res) => {
         },
       );
 
-    // =========================================================
-    // 15. PAGE NUMBERS
-    // =========================================================
-
     const range = doc.bufferedPageRange();
 
     for (let i = range.start; i < range.start + range.count; i++) {
@@ -522,17 +438,9 @@ export const downloadAttendancePdf = async (req, res) => {
         });
     }
 
-    // =========================================================
-    // 16. FINISH PDF
-    // =========================================================
-
     doc.end();
 
     await pdfReady;
-
-    // =========================================================
-    // 17. SEND PDF
-    // =========================================================
 
     const pdfBuffer = Buffer.concat(pdfChunks);
 
