@@ -181,7 +181,7 @@ export default function AdminReportPage() {
               onClick={handleDownloadPDF}
               className="flex items-center gap-2 rounded-lg  px-4 py-2 text-black cursor-pointer shadow-2xl bg-gray-100"
             >
-              📥 Download PDF
+              📥 Download PDF.
             </button>
           </div>
 
