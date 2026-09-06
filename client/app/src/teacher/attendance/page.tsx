@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import { useEffect, useState } from "react";
@@ -155,9 +156,20 @@ export default function AdminReportPage() {
 
       link.remove();
       window.URL.revokeObjectURL(url);
-    } catch (error) {
-      console.error("PDF download error:", error);
-      alert("Failed to download attendance report");
+    } catch (error: any) {
+      let message = error.message || "Failed to download attendance report";
+
+      if (error.response?.data instanceof Blob) {
+        try {
+          const errorText = await error.response.data.text();
+          const errorData = JSON.parse(errorText);
+          message = errorData.message || message;
+        } catch {}
+      } else {
+        message = error.response?.data?.message || message;
+      }
+
+      alert(message);
     }
   };
 
