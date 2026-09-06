@@ -122,6 +122,45 @@ export default function AdminReportPage() {
     },
   ];
 
+  const handleDownloadPDF = async () => {
+    try {
+      const token = localStorage.getItem("token");
+
+      const res = await axios.get(
+        `${apiBaseUrl}/employee/report/attendance-report`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+          withCredentials: true,
+
+          responseType: "blob",
+        },
+      );
+
+      const blob = new Blob([res.data], {
+        type: "application/pdf",
+      });
+
+      const url = window.URL.createObjectURL(blob);
+
+      const link = document.createElement("a");
+
+      link.href = url;
+      link.download = "Attendance_Report.pdf";
+
+      document.body.appendChild(link);
+
+      link.click();
+
+      link.remove();
+      window.URL.revokeObjectURL(url);
+    } catch (error) {
+      console.error("PDF download error:", error);
+      alert("Failed to download attendance report");
+    }
+  };
+
   if (loading) {
     return (
       <div className="flex h-screen items-center justify-center">
@@ -134,7 +173,15 @@ export default function AdminReportPage() {
     <div className="min-h-screen bg-slate-100 p-6">
       <div className="mx-auto max-w-7xl">
         <div className="mb-8">
-          <h1 className="text-4xl font-bold">Attendance Analytics</h1>
+          <div className=" flex justify-between">
+            <h1 className="text-4xl font-bold">Attendance Analytics</h1>
+            <button
+              onClick={handleDownloadPDF}
+              className="flex items-center gap-2 rounded-lg  px-4 py-2 text-black cursor-pointer shadow-2xl bg-gray-100"
+            >
+              📥 Download PDF.
+            </button>
+          </div>
           <p className="text-slate-500 mt-2">AI Face Recognition Dashboard</p>
         </div>
 
