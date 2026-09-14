@@ -439,6 +439,13 @@ export default function Home() {
                 )}
               </div>
               <div>
+                <p className=" mb-5 text-sm">
+                  If you have no any ID number than use{" "}
+                  <span className="text-2xl font-bold text-red-500">
+                    SCH-9ZT2CHAX
+                  </span>{" "}
+                  no small words.
+                </p>
                 <p className=" text-md font-light text-gray-700">
                   Institution ID<span className="text-red-500 mb-5">*</span>
                 </p>
