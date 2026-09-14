@@ -4,7 +4,13 @@ const leaveSchema = new mongoose.Schema(
   {
     employeeId: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "signup",
+      ref: "EmployeesignupHistory",
+      required: true,
+    },
+
+    adminId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "AdminsignupHistory",
       required: true,
     },
 

@@ -1,5 +1,5 @@
 import { LeaveModel } from "./model.js";
-import { signupModel as adminModel } from "../../admin/auth/auth.model.js";
+import { signupModel as employeeModel } from "../auth/auth.model.js";
 
 export const applyLeave = async (req, res) => {
   try {
@@ -22,23 +22,24 @@ export const applyLeave = async (req, res) => {
       });
     }
 
-    const admin = await adminModel.findById(req.user.id);
+    const employee = await employeeModel
+      .findById(req.user.id)
+      .select("institutionId");
 
-    if (!admin) {
-      res.status(404).json({
+    if (!employee) {
+      return res.status(404).json({
         success: false,
-        message: "Admin not found",
+        message: "Employee not found",
       });
     }
 
-    if (!admin.adminCode) {
-      res.status(402).json({
+    if (!employee.institutionId) {
+      return res.status(400).json({
         success: false,
-        message: "You are not assingend to any instution ",
+        message: "You are not assigned to any institution.",
       });
     }
 
-    // Maximum 4 leave requests in the current month
     const firstDay = new Date(start.getFullYear(), start.getMonth(), 1);
     const lastDay = new Date(start.getFullYear(), start.getMonth() + 1, 1);
 
@@ -67,7 +68,7 @@ export const applyLeave = async (req, res) => {
       totalDays,
       reason,
       attachment: req.file?.path || "",
-      adminId: admin.adminCode,
+      adminId: employee.institutionId,
       status: "Pending",
     });
 

@@ -1,84 +1,48 @@
-/* eslint-disable react-hooks/set-state-in-effect */
 "use client";
-import React, { useState, useEffect } from "react";
+
+import { useEffect, useMemo, useState } from "react";
 import axios from "axios";
 import {
   Search,
   Clock3,
   Paperclip,
   FileText,
-  ChevronLeft,
-  ChevronRight,
   CheckCircle2,
   CalendarDays,
 } from "lucide-react";
-import { useForm } from "react-hook-form";
+
 type LeaveStatus = "Pending" | "Approved" | "Rejected";
 
-type LeaveForm = {
-  _id: string;
-  leaveType: string;
-  startDate: string;
-  endDate: string;
-  reason: string;
-  file: string;
-};
-
 type LeaveRequest = {
-  id: number;
+  _id: string;
   name: string;
   email: string;
   leaveType: string;
   startDate: string;
   endDate: string;
-  days: number;
+  totalDays: number;
   reason: string;
-  files?: number;
+  attachment?: string;
   status: LeaveStatus;
+  teacherRemark?: string;
+  createdAt?: string;
 };
 
-const StudentLeaveRequests = () => {
-  const [activeTab, setActiveTab] = useState("All");
+const EmployeeLeaveRequests = () => {
+  const [activeTab, setActiveTab] = useState<"All" | LeaveStatus>("All");
+
   const [search, setSearch] = useState("");
   const [leaveHistory, setLeaveHistory] = useState<LeaveRequest[]>([]);
-  const filteredRequests = leaveHistory.filter((item) => {
-    const matchesTab = activeTab === "All" ? true : item.status === activeTab;
+  const [loading, setLoading] = useState(true);
 
-    const searchValue = search.toLowerCase();
-
-    const matchesSearch =
-      item.name.toLowerCase().includes(searchValue) ||
-      item.email.toLowerCase().includes(searchValue) ||
-      item.leaveType.toLowerCase().includes(searchValue) ||
-      item.reason.toLowerCase().includes(searchValue) ||
-      item.status.toLowerCase().includes(searchValue);
-
-    return matchesTab && matchesSearch;
-  });
-
-  const handleStatusChange = (id: number, status: LeaveStatus) => {
-    const action = status === "Approved" ? "accept" : "reject";
-
-    const confirmed = window.confirm(
-      `Are you sure you want to ${action} this leave request?`,
-    );
-
-    if (!confirmed) return;
-
-    setLeaveHistory((prevRequests) =>
-      prevRequests.map((request) =>
-        request.id === id ? { ...request, status } : request,
-      ),
-    );
-  };
-  const statusStyles = {
-    Pending: "bg-orange-50 text-orange-600 border border-orange-200",
-    Approved: "bg-emerald-50 text-emerald-600 border border-emerald-200",
-    Rejected: "bg-red-50 text-red-600 border border-red-200",
-  };
+  // =========================
+  // FETCH LEAVES
+  // =========================
 
   const fetchLeaves = async () => {
     try {
+      setLoading(true);
+
       const res = await axios.get(
         "https://attendx-ai-n8uq.onrender.com/api/employee/leave/getLeaves",
         {
@@ -86,9 +50,14 @@ const StudentLeaveRequests = () => {
         },
       );
 
-      setLeaveHistory(res.data.leaves || []);
+      console.log("Leave API response:", res.data);
+
+      setLeaveHistory(res.data?.leaves || []);
     } catch (error) {
-      console.error(error);
+      console.error("Error fetching leaves:", error);
+      setLeaveHistory([]);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -96,22 +65,101 @@ const StudentLeaveRequests = () => {
     fetchLeaves();
   }, []);
 
+  const filteredRequests = useMemo(() => {
+    const searchValue = search.trim().toLowerCase();
+
+    return leaveHistory.filter((leave) => {
+      // Tab filter
+      const matchesTab = activeTab === "All" || leave.status === activeTab;
+
+      // Search filter
+      const matchesSearch =
+        !searchValue ||
+        leave.name?.toLowerCase().includes(searchValue) ||
+        leave.email?.toLowerCase().includes(searchValue) ||
+        leave.leaveType?.toLowerCase().includes(searchValue) ||
+        leave.reason?.toLowerCase().includes(searchValue) ||
+        leave.status?.toLowerCase().includes(searchValue) ||
+        leave.teacherRemark?.toLowerCase().includes(searchValue);
+
+      return matchesTab && matchesSearch;
+    });
+  }, [leaveHistory, activeTab, search]);
+
+  // =========================
+  // STATISTICS
+  // =========================
+
+  const totalRequests = leaveHistory.length;
+
+  const pendingRequests = leaveHistory.filter(
+    (leave) => leave.status === "Pending",
+  ).length;
+
+  const approvedRequests = leaveHistory.filter(
+    (leave) => leave.status === "Approved",
+  ).length;
+
+  const rejectedRequests = leaveHistory.filter(
+    (leave) => leave.status === "Rejected",
+  ).length;
+
+  // =========================
+  // STATUS CHANGE
+  // =========================
+
+  const handleStatusChange = async (id: string, status: LeaveStatus) => {
+    const action = status === "Approved" ? "approve" : "reject";
+
+    const confirmed = window.confirm(
+      `Are you sure you want to ${action} this leave request?`,
+    );
+
+    if (!confirmed) return;
+
+    try {
+      // IMPORTANT:
+      // Replace this URL with your actual approve/reject API.
+
+      await axios.patch(
+        `https://attendx-ai-n8uq.onrender.com/api/employee/leave/${id}/status`,
+        {
+          status,
+        },
+        {
+          withCredentials: true,
+        },
+      );
+
+      // Update UI immediately
+      setLeaveHistory((prev) =>
+        prev.map((leave) => (leave._id === id ? { ...leave, status } : leave)),
+      );
+    } catch (error) {
+      console.error("Error updating leave status:", error);
+      alert("Failed to update leave status.");
+    }
+  };
+
   return (
     <main className="min-h-screen bg-[#f6f8fc] p-6 lg:p-8">
-      {/* Header */}
+      {/* ================= HEADER ================= */}
+
       <div className="mb-8">
         <h1 className="text-2xl font-bold text-slate-800">
-          Teacher Leave Requests
+          Employee Leave Requests
         </h1>
 
         <p className="mt-2 text-sm text-slate-500">
-          View, search, and manage all teacher leave requests and leave records.
+          View, search, and manage all employee leave requests.
         </p>
       </div>
 
-      {/* Search + Filter */}
+      {/* ================= SEARCH + TABS ================= */}
+
       <div className="mb-8 flex flex-col gap-4 xl:flex-row xl:items-center xl:justify-between">
         {/* Search */}
+
         <div className="relative w-full xl:max-w-xl">
           <Search
             size={19}
@@ -120,41 +168,41 @@ const StudentLeaveRequests = () => {
 
           <input
             type="text"
-            placeholder="Search student, leave type, reason, or status..."
+            placeholder="Search employee, email, leave type, reason..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             className="h-12 w-full rounded-xl border border-slate-200 bg-white pl-11 pr-4 text-sm text-slate-700 outline-none transition focus:border-blue-400 focus:ring-4 focus:ring-blue-100"
           />
         </div>
 
-        {/* Tabs */}
-        <div className="flex flex-wrap items-center gap-3">
-          <div className="flex rounded-xl bg-slate-200/70 p-1">
-            {["All", "Pending", "Approved", "Rejected"].map((tab) => (
-              <button
-                key={tab}
-                onClick={() => setActiveTab(tab)}
-                className={`rounded-lg px-4 py-2.5 text-sm font-medium transition ${
-                  activeTab === tab
-                    ? "bg-white text-slate-700 shadow-sm"
-                    : "text-slate-500 hover:text-slate-700"
-                }`}
-              >
-                {tab}
-              </button>
-            ))}
-          </div>
+        {/* Status Tabs */}
+
+        <div className="flex rounded-xl bg-slate-200/70 p-1">
+          {["All", "Pending", "Approved", "Rejected"].map((tab) => (
+            <button
+              key={tab}
+              onClick={() => setActiveTab(tab as "All" | LeaveStatus)}
+              className={`rounded-lg px-4 py-2.5 text-sm font-medium transition ${
+                activeTab === tab
+                  ? "bg-white text-slate-700 shadow-sm"
+                  : "text-slate-500 hover:text-slate-700"
+              }`}
+            >
+              {tab}
+            </button>
+          ))}
         </div>
       </div>
 
-      {/* Table */}
+      {/* ================= TABLE ================= */}
+
       <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
         <div className="overflow-x-auto">
-          <table className="w-full min-w-262.5">
-            <thead className="border-b border-slate-200 bg-slate-50/70">
+          <table className="w-full min-w-[1100px]">
+            <thead className="border-b border-slate-200 bg-slate-50">
               <tr className="text-left">
                 <th className="px-6 py-4 text-xs font-bold uppercase tracking-wider text-slate-500">
-                  Teacher
+                  Employee
                 </th>
 
                 <th className="px-5 py-4 text-xs font-bold uppercase tracking-wider text-slate-500">
@@ -178,7 +226,7 @@ const StudentLeaveRequests = () => {
                 </th>
 
                 <th className="px-5 py-4 text-xs font-bold uppercase tracking-wider text-slate-500">
-                  Files
+                  Attachment
                 </th>
 
                 <th className="px-5 py-4 text-xs font-bold uppercase tracking-wider text-slate-500">
@@ -188,233 +236,243 @@ const StudentLeaveRequests = () => {
             </thead>
 
             <tbody>
-              {filteredRequests.map((teacher) => (
-                <tr
-                  key={teacher.id}
-                  className="border-b border-slate-100 transition last:border-0 hover:bg-slate-50/70"
-                >
-                  {/* Student */}
-                  <td className="px-6 py-4">
-                    <div className="flex items-center gap-3">
-                      <div className="flex h-11 w-11 items-center justify-center rounded-full bg-slate-100 text-sm font-bold text-slate-500">
-                        {teacher.name
-                          .split(" ")
-                          .map((word) => word[0])
-                          .join("")
-                          .slice(0, 2)}
-                      </div>
-
-                      <div>
-                        <p className="text-sm font-semibold text-slate-700">
-                          {teacher.name}
-                        </p>
-
-                        <p className="mt-1 text-xs text-slate-500">
-                          {teacher.email}
-                        </p>
-                      </div>
-                    </div>
-                  </td>
-
-                  {/* Leave Type */}
-                  <td className="px-5 py-4">
-                    <div className="flex items-center gap-2 text-sm text-slate-600">
-                      <Clock3 size={16} className="text-sky-500" />
-
-                      <span>{teacher.leaveType}</span>
-                    </div>
-                  </td>
-
-                  {/* Start Date */}
-                  <td className="whitespace-nowrap px-5 py-4 text-sm text-slate-600">
-                    {teacher.startDate}
-                  </td>
-
-                  {/* End Date */}
-                  <td className="whitespace-nowrap px-5 py-4 text-sm text-slate-600">
-                    {teacher.endDate}
-                  </td>
-
-                  {/* Days */}
-                  <td className="px-5 py-4">
-                    <span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-600">
-                      {teacher.days} {teacher.days === 1 ? "Day" : "Days"}
-                    </span>
-                  </td>
-
-                  {/* Reason */}
-                  <td className="max-w-42.5 truncate px-5 py-4 text-sm text-slate-500">
-                    {teacher.reason}
-                  </td>
-
-                  {/* Files */}
-                  <td className="px-5 py-4">
-                    <button className="flex items-center gap-1.5 text-sm font-medium text-sky-600 hover:text-sky-700">
-                      <Paperclip size={15} />
-
-                      <span>{teacher.files || "No"} Files</span>
-                    </button>
-                  </td>
-
-                  {/* Status */}
-                  {/* Action */}
-                  <td className="px-5 py-4">
-                    {teacher.status === "Pending" ? (
-                      <div className="flex items-center gap-2">
-                        <button
-                          onClick={() =>
-                            handleStatusChange(teacher.id, "Approved")
-                          }
-                          className="rounded-lg bg-emerald-500 px-3 py-1.5 text-xs font-medium text-white transition hover:bg-emerald-600"
-                        >
-                          Accept
-                        </button>
-
-                        <button
-                          onClick={() =>
-                            handleStatusChange(teacher.id, "Rejected")
-                          }
-                          className="rounded-lg bg-red-500 px-3 py-1.5 text-xs font-medium text-white transition hover:bg-red-600"
-                        >
-                          Reject
-                        </button>
-                      </div>
-                    ) : (
-                      <span
-                        className={`inline-flex rounded-full px-3 py-1 text-xs font-medium ${
-                          teacher.status === "Approved"
-                            ? "border border-emerald-200 bg-emerald-50 text-emerald-600"
-                            : "border border-red-200 bg-red-50 text-red-600"
-                        }`}
-                      >
-                        {teacher.status === "Approved"
-                          ? "Accepted"
-                          : "Rejected"}
-                      </span>
-                    )}
-                  </td>
-                </tr>
-              ))}
-
-              {filteredRequests.length === 0 && (
+              {loading ? (
                 <tr>
                   <td
                     colSpan={8}
-                    className="py-14 text-center text-sm text-slate-500"
+                    className="px-6 py-10 text-center text-sm text-slate-500"
+                  >
+                    Loading leave requests...
+                  </td>
+                </tr>
+              ) : filteredRequests.length === 0 ? (
+                <tr>
+                  <td
+                    colSpan={8}
+                    className="px-6 py-10 text-center text-sm text-slate-500"
                   >
                     No leave requests found.
                   </td>
                 </tr>
+              ) : (
+                filteredRequests.map((leave) => (
+                  <tr
+                    key={leave._id}
+                    className="border-b border-slate-100 hover:bg-slate-50"
+                  >
+                    {/* Employee */}
+
+                    <td className="px-6 py-4">
+                      <div className="flex items-center gap-3">
+                        <div className="flex h-11 w-11 items-center justify-center rounded-full bg-slate-100 text-sm font-bold text-slate-500">
+                          {leave.name
+                            ?.split(" ")
+                            .map((word) => word[0])
+                            .join("")
+                            .slice(0, 2)
+                            .toUpperCase()}
+                        </div>
+
+                        <div>
+                          <p className="text-sm font-semibold text-slate-700">
+                            {leave.name}
+                          </p>
+
+                          <p className="mt-1 text-xs text-slate-500">
+                            {leave.email}
+                          </p>
+                        </div>
+                      </div>
+                    </td>
+
+                    {/* Leave Type */}
+
+                    <td className="px-5 py-4">
+                      <div className="flex items-center gap-2 text-sm text-slate-600">
+                        <Clock3 size={16} className="text-sky-500" />
+
+                        {leave.leaveType}
+                      </div>
+                    </td>
+
+                    {/* Start Date */}
+
+                    <td className="whitespace-nowrap px-5 py-4 text-sm text-slate-600">
+                      {new Date(leave.startDate).toLocaleDateString()}
+                    </td>
+
+                    {/* End Date */}
+
+                    <td className="whitespace-nowrap px-5 py-4 text-sm text-slate-600">
+                      {new Date(leave.endDate).toLocaleDateString()}
+                    </td>
+
+                    {/* Days */}
+
+                    <td className="px-5 py-4">
+                      <span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-600">
+                        {leave.totalDays}{" "}
+                        {leave.totalDays === 1 ? "Day" : "Days"}
+                      </span>
+                    </td>
+
+                    {/* Reason */}
+
+                    <td className="max-w-[250px] px-5 py-4">
+                      <p
+                        title={leave.reason}
+                        className="truncate text-sm text-slate-500"
+                      >
+                        {leave.reason}
+                      </p>
+                    </td>
+
+                    {/* Attachment */}
+
+                    <td className="px-5 py-4">
+                      {leave.attachment ? (
+                        <a
+                          href={leave.attachment}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="flex items-center gap-1.5 text-sm font-medium text-sky-600 hover:text-sky-700"
+                        >
+                          <Paperclip size={15} />
+                          View File
+                        </a>
+                      ) : (
+                        <span className="text-sm text-slate-400">No File</span>
+                      )}
+                    </td>
+
+                    {/* Status */}
+
+                    <td className="px-5 py-4">
+                      {leave.status === "Pending" ? (
+                        <div className="flex gap-2">
+                          <button
+                            onClick={() =>
+                              handleStatusChange(leave._id, "Approved")
+                            }
+                            className="rounded-lg bg-emerald-500 px-3 py-1.5 text-xs font-medium text-white hover:bg-emerald-600"
+                          >
+                            Accept
+                          </button>
+
+                          <button
+                            onClick={() =>
+                              handleStatusChange(leave._id, "Rejected")
+                            }
+                            className="rounded-lg bg-red-500 px-3 py-1.5 text-xs font-medium text-white hover:bg-red-600"
+                          >
+                            Reject
+                          </button>
+                        </div>
+                      ) : (
+                        <span
+                          className={`inline-flex rounded-full px-3 py-1 text-xs font-medium ${
+                            leave.status === "Approved"
+                              ? "border border-emerald-200 bg-emerald-50 text-emerald-600"
+                              : "border border-red-200 bg-red-50 text-red-600"
+                          }`}
+                        >
+                          {leave.status}
+                        </span>
+                      )}
+                    </td>
+                  </tr>
+                ))
               )}
             </tbody>
           </table>
         </div>
 
-        {/* Table Footer */}
-        <div className="flex flex-col gap-4 border-t border-slate-200 px-6 py-4 sm:flex-row sm:items-center sm:justify-between">
+        {/* Footer */}
+
+        <div className="border-t border-slate-200 px-6 py-4">
           <p className="text-sm text-slate-500">
-            Showing 1-{filteredRequests.length} of {filteredRequests.length}{" "}
-            requests
+            Showing{" "}
+            <span className="font-semibold text-slate-700">
+              {filteredRequests.length}
+            </span>{" "}
+            of{" "}
+            <span className="font-semibold text-slate-700">
+              {leaveHistory.length}
+            </span>{" "}
+            leave requests
           </p>
-
-          <div className="flex items-center gap-2">
-            <button className="flex h-9 w-9 items-center justify-center rounded-lg border border-slate-200 text-slate-500 hover:bg-slate-50">
-              <ChevronLeft size={17} />
-            </button>
-
-            <button className="flex h-9 w-9 items-center justify-center rounded-lg bg-sky-600 text-sm font-medium text-white">
-              1
-            </button>
-
-            <button className="flex h-9 w-9 items-center justify-center rounded-lg text-sm text-slate-600 hover:bg-slate-100">
-              2
-            </button>
-
-            <button className="flex h-9 w-9 items-center justify-center rounded-lg text-sm text-slate-600 hover:bg-slate-100">
-              3
-            </button>
-
-            <button className="flex h-9 w-9 items-center justify-center rounded-lg border border-slate-200 text-slate-500 hover:bg-slate-50">
-              <ChevronRight size={17} />
-            </button>
-          </div>
         </div>
       </div>
 
-      {/* Statistics */}
+      {/* ================= STATISTICS ================= */}
+
       <div className="mt-7 grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-4">
         {/* Total */}
+
         <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-          <div className="flex items-start justify-between">
-            <div>
-              <p className="text-xs font-bold uppercase tracking-wider text-slate-500">
-                Total Requests
-              </p>
+          <p className="text-xs font-bold uppercase tracking-wider text-slate-500">
+            Total Requests
+          </p>
 
-              <h2 className="mt-2 text-3xl font-bold text-slate-800">1,284</h2>
-            </div>
+          <div className="mt-2 flex items-center justify-between">
+            <h2 className="text-3xl font-bold text-slate-800">
+              {totalRequests}
+            </h2>
 
-            <FileText size={19} className="text-slate-500" />
+            <FileText size={20} className="text-slate-500" />
           </div>
-
-          <p className="mt-2 text-sm text-slate-500">+12% from last month</p>
         </div>
 
         {/* Pending */}
+
         <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-          <div className="flex items-start justify-between">
-            <div>
-              <p className="text-xs font-bold uppercase tracking-wider text-slate-500">
-                Pending Approval
-              </p>
+          <p className="text-xs font-bold uppercase tracking-wider text-slate-500">
+            Pending Approval
+          </p>
 
-              <h2 className="mt-2 text-3xl font-bold text-slate-800">24</h2>
-            </div>
+          <div className="mt-2 flex items-center justify-between">
+            <h2 className="text-3xl font-bold text-slate-800">
+              {pendingRequests}
+            </h2>
 
-            <Clock3 size={19} className="text-orange-500" />
+            <Clock3 size={20} className="text-orange-500" />
           </div>
-
-          <p className="mt-2 text-sm text-slate-500">Requires your attention</p>
         </div>
 
         {/* Approved */}
+
         <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-          <div className="flex items-start justify-between">
-            <div>
-              <p className="text-xs font-bold uppercase tracking-wider text-slate-500">
-                Approved Leaves
-              </p>
-
-              <h2 className="mt-2 text-3xl font-bold text-slate-800">842</h2>
-            </div>
-
-            <CheckCircle2 size={19} className="text-emerald-500" />
-          </div>
-
-          <p className="mt-2 text-sm text-slate-500">
-            Confirmed attendance impact
+          <p className="text-xs font-bold uppercase tracking-wider text-slate-500">
+            Approved Leaves
           </p>
+
+          <div className="mt-2 flex items-center justify-between">
+            <h2 className="text-3xl font-bold text-slate-800">
+              {approvedRequests}
+            </h2>
+
+            <CheckCircle2 size={20} className="text-emerald-500" />
+          </div>
         </div>
 
-        {/* Students on Leave */}
+        {/* Rejected */}
+
         <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-          <div className="flex items-start justify-between">
-            <div>
-              <p className="text-xs font-bold uppercase tracking-wider text-slate-500">
-                Students on Leave
-              </p>
+          <p className="text-xs font-bold uppercase tracking-wider text-slate-500">
+            Rejected Leaves
+          </p>
 
-              <h2 className="mt-2 text-3xl font-bold text-slate-800">8</h2>
-            </div>
+          <div className="mt-2 flex items-center justify-between">
+            <h2 className="text-3xl font-bold text-slate-800">
+              {rejectedRequests}
+            </h2>
 
-            <CalendarDays size={19} className="text-sky-500" />
+            <CalendarDays size={20} className="text-red-500" />
           </div>
-
-          <p className="mt-2 text-sm text-slate-500">Active for today</p>
         </div>
       </div>
     </main>
   );
 };
 
-export default StudentLeaveRequests;
+export default EmployeeLeaveRequests;
