@@ -140,7 +140,7 @@ const EmployeeLeaveRequests = () => {
 
       <div className="mb-8">
         <h1 className="text-2xl font-bold text-slate-800">
-          Student Leave Requests
+          Student Leave Requests.
         </h1>
 
         <p className="mt-2 text-sm text-slate-500">
