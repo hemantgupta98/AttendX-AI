@@ -6,7 +6,7 @@ export const applyLeave = async (req, res) => {
   try {
     const { leaveType, startDate, endDate, reason, file } = req.body;
 
-    if (!leaveType || !startDate || !endDate || !reason || !file) {
+    if (!leaveType || !startDate || !endDate || !reason) {
       return res.status(400).json({
         success: false,
         message: "All fields are required.",
@@ -21,7 +21,7 @@ export const applyLeave = async (req, res) => {
       });
     }
 
-    const Image = await uploadImage(fileInput, "upload-image/Leave");
+    const Image = await uploadImage(fileInput, "upload-image/employeeLeave");
 
     const start = new Date(startDate);
     const end = new Date(endDate);
