@@ -101,7 +101,7 @@ export const applyLeave = async (req, res) => {
 
 export const getStudentLeaves = async (req, res) => {
   try {
-    const isemployeeRequest = Boolean(req.user.institutionId);
+    const isemployeeRequest = Boolean(req.user.adminCode);
     const leavesQuery = LeaveModel.find(
       isemployeeRequest ? {} : { studentId: req.user.id },
     ).sort({ createdAt: -1 });
