@@ -13,6 +13,7 @@ const router = express.Router();
 
 router.post("/apply", verifyToken, upload.single("attachment"), applyLeave);
 router.get("/getLeaves", verifyToken, getEmployeeLeaves);
+router.get("/admin/getLeaves", adminToken, getEmployeeLeaves);
 router.delete("/delete/:id", verifyToken, deleteLeave);
 router.patch("/update/:id", adminToken, updateLeave);
 

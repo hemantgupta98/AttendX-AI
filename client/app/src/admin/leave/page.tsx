@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import axios from "axios";
+import Image from "next/image";
 import {
   Search,
   Clock3,
@@ -26,6 +27,7 @@ type LeaveRequest = {
   status: LeaveStatus;
   teacherRemark?: string;
   createdAt?: string;
+  photo: string;
 };
 
 const EmployeeLeaveRequests = () => {
@@ -44,7 +46,7 @@ const EmployeeLeaveRequests = () => {
       setLoading(true);
 
       const res = await axios.get(
-        "https://attendx-ai-n8uq.onrender.com/api/employee/leave/getLeaves",
+        "https://attendx-ai-n8uq.onrender.com/api/employee/leave/admin/getLeaves",
         {
           withCredentials: true,
         },
@@ -252,14 +254,24 @@ const EmployeeLeaveRequests = () => {
 
                     <td className="px-6 py-4">
                       <div className="flex items-center gap-3">
-                        <div className="flex h-11 w-11 items-center justify-center rounded-full bg-slate-100 text-sm font-bold text-slate-500">
-                          {leave.name
-                            ?.split(" ")
-                            .map((word) => word[0])
-                            .join("")
-                            .slice(0, 2)
-                            .toUpperCase()}
-                        </div>
+                        {leave.photo ? (
+                          <Image
+                            src={leave.photo}
+                            alt={leave.name || "Employee"}
+                            width={44}
+                            height={44}
+                            className="h-11 w-11 rounded-full object-cover"
+                          />
+                        ) : (
+                          <div className="flex h-11 w-11 items-center justify-center rounded-full bg-slate-100 text-sm font-bold text-slate-500">
+                            {leave.name
+                              ?.split(" ")
+                              .map((word) => word[0])
+                              .join("")
+                              .slice(0, 2)
+                              .toUpperCase()}
+                          </div>
+                        )}
 
                         <div>
                           <p className="text-sm font-semibold text-slate-700">
