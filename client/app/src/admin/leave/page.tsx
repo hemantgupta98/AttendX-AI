@@ -86,10 +86,6 @@ const EmployeeLeaveRequests = () => {
     });
   }, [leaveHistory, activeTab, search]);
 
-  // =========================
-  // STATISTICS
-  // =========================
-
   const totalRequests = leaveHistory.length;
 
   const pendingRequests = leaveHistory.filter(
@@ -104,10 +100,6 @@ const EmployeeLeaveRequests = () => {
     (leave) => leave.status === "Rejected",
   ).length;
 
-  // =========================
-  // STATUS CHANGE
-  // =========================
-
   const handleStatusChange = async (id: string, status: LeaveStatus) => {
     const action = status === "Approved" ? "approve" : "reject";
 
@@ -118,11 +110,8 @@ const EmployeeLeaveRequests = () => {
     if (!confirmed) return;
 
     try {
-      // IMPORTANT:
-      // Replace this URL with your actual approve/reject API.
-
       await axios.patch(
-        `https://attendx-ai-n8uq.onrender.com/api/employee/leave/${id}/status`,
+        `https://attendx-ai-n8uq.onrender.com/api/employee/leave/update/${id}`,
         {
           status,
         },
@@ -131,7 +120,6 @@ const EmployeeLeaveRequests = () => {
         },
       );
 
-      // Update UI immediately
       setLeaveHistory((prev) =>
         prev.map((leave) => (leave._id === id ? { ...leave, status } : leave)),
       );
@@ -198,7 +186,7 @@ const EmployeeLeaveRequests = () => {
 
       <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
         <div className="overflow-x-auto">
-          <table className="w-full min-w-[1100px]">
+          <table className="w-full min-w-275">
             <thead className="border-b border-slate-200 bg-slate-50">
               <tr className="text-left">
                 <th className="px-6 py-4 text-xs font-bold uppercase tracking-wider text-slate-500">
@@ -318,7 +306,7 @@ const EmployeeLeaveRequests = () => {
 
                     {/* Reason */}
 
-                    <td className="max-w-[250px] px-5 py-4">
+                    <td className="max-w-62.5 px-5 py-4">
                       <p
                         title={leave.reason}
                         className="truncate text-sm text-slate-500"
