@@ -12,7 +12,7 @@ export const applyLeave = async (req, res) => {
         message: "All fields are required.",
       });
     }
-    const fileInput = req.file?.path || file;
+    const fileInput = req.file?.path || file || req.body.attachment;
 
     if (!fileInput) {
       return res.status(400).json({
@@ -21,7 +21,11 @@ export const applyLeave = async (req, res) => {
       });
     }
 
-    const Image = await uploadImage(fileInput, "upload-image/employeeLeave");
+    const imageUrl =
+      req.file || fileInput !== req.body.attachment
+        ? (await uploadImage(fileInput, "upload-image/employeeLeave"))
+            .secure_url
+        : req.body.attachment;
 
     const start = new Date(startDate);
     const end = new Date(endDate);
@@ -78,7 +82,7 @@ export const applyLeave = async (req, res) => {
       endDate,
       totalDays,
       reason,
-      attachment: Image.secure_url,
+      attachment: imageUrl,
       adminId: employee.institutionId,
       status: "Pending",
     });

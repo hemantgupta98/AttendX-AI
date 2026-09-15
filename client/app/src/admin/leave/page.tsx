@@ -37,10 +37,6 @@ const EmployeeLeaveRequests = () => {
   const [leaveHistory, setLeaveHistory] = useState<LeaveRequest[]>([]);
   const [loading, setLoading] = useState(true);
 
-  // =========================
-  // FETCH LEAVES
-  // =========================
-
   const fetchLeaves = async () => {
     try {
       setLoading(true);
@@ -335,10 +331,10 @@ const EmployeeLeaveRequests = () => {
                           href={leave.attachment}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="flex items-center gap-1.5 text-sm font-medium text-sky-600 hover:text-sky-700"
+                          className="inline-flex items-center gap-1.5 text-sm font-medium text-sky-600 hover:text-sky-700"
                         >
                           <Paperclip size={15} />
-                          View File
+                          View attachment
                         </a>
                       ) : (
                         <span className="text-sm text-slate-400">No File</span>
