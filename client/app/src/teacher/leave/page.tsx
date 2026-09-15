@@ -26,6 +26,9 @@ export default function LeavePage() {
     formState: { errors },
     reset,
   } = useForm<LeaveForm>();
+  const fileRegistration = register("file", {
+    required: "Please upload a document",
+  });
   const reason = watch("reason", "");
 
   const onSubmit = async (data: LeaveForm) => {
@@ -237,10 +240,9 @@ export default function LeavePage() {
                   type="file"
                   className="hidden"
                   accept=".pdf,.jpg,.jpeg,.png"
-                  {...register("file", {
-                    required: "Please upload a document",
-                  })}
+                  {...fileRegistration}
                   onChange={(e) => {
+                    fileRegistration.onChange(e);
                     if (e.target.files?.length) {
                       setFileName(e.target.files[0].name);
                     } else {
