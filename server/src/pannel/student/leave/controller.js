@@ -1,5 +1,6 @@
 import { LeaveModel } from "./model.js";
 import { signupModel as studentModel } from "../auth/auth.model.js";
+import { signupModel as employeeModel } from "../../employee/auth/auth.model.js";
 import { uploadImage } from "../media/cloudinary.js";
 
 export const applyLeave = async (req, res) => {
@@ -58,7 +59,7 @@ export const applyLeave = async (req, res) => {
     const lastDay = new Date(start.getFullYear(), start.getMonth() + 1, 1);
 
     const leaveCount = await LeaveModel.countDocuments({
-      employeeId: req.user.id,
+      employeeId: student.institutionId,
       createdAt: {
         $gte: firstDay,
         $lt: lastDay,
@@ -101,17 +102,30 @@ export const applyLeave = async (req, res) => {
 
 export const getStudentLeaves = async (req, res) => {
   try {
-    const isemployeeRequest = Boolean(req.user.adminCode);
+    const isEmployeeRequest = req.user.role === "employee";
+    const institutionId = isEmployeeRequest
+      ? req.user.institutionId
+      : undefined;
+
+    if (isEmployeeRequest && !institutionId) {
+      return res.status(400).json({
+        success: false,
+        message: "You are not assigned to any institution.",
+      });
+    }
+
     const leavesQuery = LeaveModel.find(
-      isemployeeRequest ? {} : { studentId: req.user.id },
+      isEmployeeRequest
+        ? { employeeId: institutionId }
+        : { studentId: req.user.id },
     ).sort({ createdAt: -1 });
 
-    if (isemployeeRequest) {
+    if (isEmployeeRequest) {
       leavesQuery.populate("studentId", "name email photo");
     }
 
     const leaves = await leavesQuery.lean();
-    const responseLeaves = isemployeeRequest
+    const responseLeaves = isEmployeeRequest
       ? leaves.map((leave) => ({
           ...leave,
           name: leave.studentId?.name || "Unknown student",
@@ -177,8 +191,19 @@ export const updateLeave = async (req, res) => {
       });
     }
 
+    const employee = await employeeModel
+      .findById(req.user.id)
+      .select("institutionId");
+
+    if (!employee?.institutionId) {
+      return res.status(400).json({
+        success: false,
+        message: "You are not assigned to any institution.",
+      });
+    }
+
     const leave = await LeaveModel.findOneAndUpdate(
-      { _id: id, employeeId: req.user.id },
+      { _id: id, employeeId: employee.institutionId },
       { status },
       { new: true, runValidators: true },
     );

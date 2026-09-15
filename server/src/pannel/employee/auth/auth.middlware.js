@@ -57,11 +57,13 @@ export const verifyToken = async (req, res, next) => {
       state: user.state,
       pincode: user.pincode,
       institutionName: user.institutionName,
+      institutionId: user.institutionId,
       employeeID: user.employeeID,
       class: user.class,
       subject: user.subject,
       joiningYear: user.joiningYear,
       email: user.email,
+      role: "employee",
     };
 
     next();
