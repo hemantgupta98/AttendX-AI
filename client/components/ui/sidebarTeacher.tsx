@@ -18,11 +18,16 @@ import {
 const links = [
   { name: "Dashboard", href: "/src/teacher/dashboard", icon: LayoutDashboard },
   { name: "Live Attendance", href: "/src/teacher/liveattendance", icon: Focus },
-  { name: "Student List", href: "/src/teacher/student", icon: UserCheck2 },
-  { name: "Attendance", href: "/src/teacher/attendance", icon: ShieldUserIcon },
-  { name: "Apply Leave", href: "/src/teacher/leave", icon: ChartColumn },
   {
-    name: "Leave & Reports",
+    name: "Attendance-Reports",
+    href: "/src/teacher/attendance",
+    icon: ShieldUserIcon,
+  },
+  { name: "Student List", href: "/src/teacher/student", icon: UserCheck2 },
+
+  { name: "Apply-Leave", href: "/src/teacher/leave", icon: ChartColumn },
+  {
+    name: "Leave-Reports",
     href: "/src/teacher/studentleave",
     icon: FileText,
   },

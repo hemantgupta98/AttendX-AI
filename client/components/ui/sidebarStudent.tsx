@@ -16,8 +16,12 @@ import {
 const links = [
   { name: "Dashboard", href: "/src/student/dashboard", icon: LayoutDashboard },
   { name: "Live Attendance", href: "/src/student/liveattendance", icon: Focus },
-  { name: "Attendance", href: "/src/student/attendance", icon: ShieldUserIcon },
-  { name: "Leave", href: "/src/student/leave", icon: ChartColumn },
+  {
+    name: "Attendance-Reports",
+    href: "/src/student/attendance",
+    icon: ShieldUserIcon,
+  },
+  { name: "Apply-Leave", href: "/src/student/leave", icon: ChartColumn },
   {
     name: "Instution Detials",
     href: "/src/teacher/admin",
