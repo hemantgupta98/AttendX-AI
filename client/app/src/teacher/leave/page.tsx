@@ -6,12 +6,12 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 
 type LeaveForm = {
-  _id: string;
+  _id?: string;
   leaveType: string;
   startDate: string;
   endDate: string;
   reason: string;
-  file: string;
+  file: FileList;
 };
 
 export default function LeavePage() {
@@ -26,21 +26,29 @@ export default function LeavePage() {
     formState: { errors },
     reset,
   } = useForm<LeaveForm>();
-
-  const reason = watch("reason") || "";
+  const reason = watch("reason", "");
 
   const onSubmit = async (data: LeaveForm) => {
     try {
       setLoading(true);
 
+      const attachment = data.file?.[0];
+
+      if (!attachment) {
+        throw new Error("Please upload a document");
+      }
+
+      const payload = new FormData();
+
+      payload.append("leaveType", data.leaveType);
+      payload.append("startDate", data.startDate);
+      payload.append("endDate", data.endDate);
+      payload.append("reason", data.reason);
+      payload.append("attachment", attachment);
+
       const res = await axios.post(
         "https://attendx-ai-n8uq.onrender.com/api/employee/leave/apply",
-        {
-          leaveType: data.leaveType,
-          startDate: data.startDate,
-          endDate: data.endDate,
-          reason: data.reason,
-        },
+        payload,
         {
           withCredentials: true,
         },

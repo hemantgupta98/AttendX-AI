@@ -309,8 +309,8 @@ const EmployeeLeaveRequests = () => {
 
                     {/* Days */}
 
-                    <td className="px-5 py-4">
-                      <span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-600">
+                    <td className="px-0 py-4">
+                      <span className="rounded-full bg-slate-100 px-0 py-0 text-xs font-medium text-slate-600">
                         {leave.totalDays}{" "}
                         {leave.totalDays === 1 ? "Day" : "Days"}
                       </span>

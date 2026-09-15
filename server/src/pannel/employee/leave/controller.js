@@ -1,16 +1,27 @@
 import { LeaveModel } from "./model.js";
 import { signupModel as employeeModel } from "../auth/auth.model.js";
+import { uploadImage } from "../media/cloudinary.js";
 
 export const applyLeave = async (req, res) => {
   try {
-    const { leaveType, startDate, endDate, reason } = req.body;
+    const { leaveType, startDate, endDate, reason, file } = req.body;
 
-    if (!leaveType || !startDate || !endDate || !reason) {
+    if (!leaveType || !startDate || !endDate || !reason || !file) {
       return res.status(400).json({
         success: false,
         message: "All fields are required.",
       });
     }
+    const fileInput = req.file?.path || file;
+
+    if (!fileInput) {
+      return res.status(400).json({
+        success: false,
+        message: "Failed to send file.",
+      });
+    }
+
+    const Image = await uploadImage(fileInput, "upload-image/Leave");
 
     const start = new Date(startDate);
     const end = new Date(endDate);
@@ -67,7 +78,7 @@ export const applyLeave = async (req, res) => {
       endDate,
       totalDays,
       reason,
-      attachment: req.file?.path || "",
+      attachment: Image.secure_url,
       adminId: employee.institutionId,
       status: "Pending",
     });
