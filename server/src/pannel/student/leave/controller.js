@@ -1,8 +1,10 @@
 import { LeaveModel } from "./model.js";
+import { signupModel as studentModel } from "../auth/auth.model.js";
+import { uploadImage } from "../media/cloudinary.js";
 
 export const applyLeave = async (req, res) => {
   try {
-    const { leaveType, startDate, endDate, reason } = req.body;
+    const { leaveType, startDate, endDate, reason, file } = req.body;
 
     if (!leaveType || !startDate || !endDate || !reason) {
       return res.status(400).json({
@@ -10,6 +12,19 @@ export const applyLeave = async (req, res) => {
         message: "All fields are required.",
       });
     }
+    const fileInput = req.file?.path || file || req.body.attachment;
+
+    if (!fileInput) {
+      return res.status(400).json({
+        success: false,
+        message: "Failed to send file.",
+      });
+    }
+
+    const imageUrl =
+      req.file || fileInput !== req.body.attachment
+        ? (await uploadImage(fileInput, "upload-image/studentLeave")).secure_url
+        : req.body.attachment;
 
     const start = new Date(startDate);
     const end = new Date(endDate);
@@ -21,12 +36,29 @@ export const applyLeave = async (req, res) => {
       });
     }
 
-    // Maximum 4 leave requests in the current month
+    const student = await studentModel
+      .findById(req.user.id)
+      .select("institutionId");
+
+    if (!student) {
+      return res.status(404).json({
+        success: false,
+        message: "Student not found",
+      });
+    }
+
+    if (!student.institutionId) {
+      return res.status(400).json({
+        success: false,
+        message: "You are not assigned to any institution.",
+      });
+    }
+
     const firstDay = new Date(start.getFullYear(), start.getMonth(), 1);
     const lastDay = new Date(start.getFullYear(), start.getMonth() + 1, 1);
 
     const leaveCount = await LeaveModel.countDocuments({
-      studentId: req.user.id,
+      employeeId: req.user.id,
       createdAt: {
         $gte: firstDay,
         $lt: lastDay,
@@ -49,17 +81,10 @@ export const applyLeave = async (req, res) => {
       endDate,
       totalDays,
       reason,
-      attachment: req.file?.path || "",
+      attachment: imageUrl,
+      employeeId: student.institutionId,
+      status: "Pending",
     });
-
-    setTimeout(
-      async () => {
-        await LeaveModel.findByIdAndUpdate(leave._id, {
-          status: "Approved",
-        });
-      },
-      5 * 60 * 1000,
-    );
 
     return res.status(201).json({
       success: true,
@@ -76,14 +101,29 @@ export const applyLeave = async (req, res) => {
 
 export const getStudentLeaves = async (req, res) => {
   try {
-    const leaves = await LeaveModel.find({
-      studentId: req.user.id,
-    }).sort({ createdAt: -1 });
+    const isemployeeRequest = Boolean(req.user.institutionId);
+    const leavesQuery = LeaveModel.find(
+      isemployeeRequest ? {} : { studentId: req.user.id },
+    ).sort({ createdAt: -1 });
+
+    if (isemployeeRequest) {
+      leavesQuery.populate("studentId", "name email photo");
+    }
+
+    const leaves = await leavesQuery.lean();
+    const responseLeaves = isemployeeRequest
+      ? leaves.map((leave) => ({
+          ...leave,
+          name: leave.studentId?.name || "Unknown student",
+          email: leave.studentId?.email || "",
+          photo: leave.studentId?.photo || "",
+        }))
+      : leaves;
 
     return res.status(200).json({
       success: true,
-      count: leaves.length,
-      leaves,
+      count: responseLeaves.length,
+      leaves: responseLeaves,
     });
   } catch (error) {
     return res.status(500).json({
@@ -122,5 +162,40 @@ export const deleteLeave = async (req, res) => {
       success: false,
       message: "Failed to delete leave request.",
     });
+  }
+};
+
+export const updateLeave = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { status } = req.body;
+
+    if (!["Approved", "Rejected"].includes(status)) {
+      return res.status(400).json({
+        success: false,
+        message: "Status must be Approved or Rejected.",
+      });
+    }
+
+    const leave = await LeaveModel.findOneAndUpdate(
+      { _id: id, employeeId: req.user.id },
+      { status },
+      { new: true, runValidators: true },
+    );
+
+    if (!leave) {
+      return res.status(404).json({
+        success: false,
+        message: "Leave not found.",
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: "Leave status updated successfully.",
+      leave,
+    });
+  } catch (error) {
+    return res.status(500).json({ success: false, message: error.message });
   }
 };
