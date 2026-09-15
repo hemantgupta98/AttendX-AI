@@ -10,6 +10,7 @@ import {
   FileText,
   CheckCircle2,
   CalendarDays,
+  X,
 } from "lucide-react";
 
 type LeaveStatus = "Pending" | "Approved" | "Rejected";
@@ -36,6 +37,9 @@ const EmployeeLeaveRequests = () => {
   const [search, setSearch] = useState("");
   const [leaveHistory, setLeaveHistory] = useState<LeaveRequest[]>([]);
   const [loading, setLoading] = useState(true);
+  const [previewAttachment, setPreviewAttachment] = useState<string | null>(
+    null,
+  );
 
   const fetchLeaves = async () => {
     try {
@@ -97,6 +101,8 @@ const EmployeeLeaveRequests = () => {
   const rejectedRequests = leaveHistory.filter(
     (leave) => leave.status === "Rejected",
   ).length;
+
+  const isPdfAttachment = (url: string) => /\.pdf(?:$|[?#])/i.test(url);
 
   const handleStatusChange = async (id: string, status: LeaveStatus) => {
     const action = status === "Approved" ? "approve" : "reject";
@@ -327,15 +333,16 @@ const EmployeeLeaveRequests = () => {
 
                     <td className="px-5 py-4">
                       {leave.attachment ? (
-                        <a
-                          href={leave.attachment}
-                          target="_blank"
-                          rel="noopener noreferrer"
+                        <button
+                          type="button"
+                          onClick={() =>
+                            setPreviewAttachment(leave.attachment!)
+                          }
                           className="inline-flex items-center gap-1.5 text-sm font-medium text-sky-600 hover:text-sky-700"
                         >
                           <Paperclip size={15} />
                           View attachment
-                        </a>
+                        </button>
                       ) : (
                         <span className="text-sm text-slate-400">No File</span>
                       )}
@@ -399,6 +406,53 @@ const EmployeeLeaveRequests = () => {
           </p>
         </div>
       </div>
+
+      {previewAttachment && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/70 p-4"
+          role="dialog"
+          aria-modal="true"
+          aria-label="Attachment preview"
+          onClick={() => setPreviewAttachment(null)}
+        >
+          <div
+            className="relative flex h-[90vh] w-full max-w-5xl flex-col overflow-hidden rounded-xl bg-white shadow-2xl"
+            onClick={(event) => event.stopPropagation()}
+          >
+            <div className="flex items-center justify-between border-b border-slate-200 px-4 py-3">
+              <p className="text-sm font-semibold text-slate-700">
+                Attachment preview
+              </p>
+              <button
+                type="button"
+                onClick={() => setPreviewAttachment(null)}
+                aria-label="Close attachment preview"
+                className="rounded-md p-1.5 text-slate-500 hover:bg-slate-100 hover:text-slate-700"
+              >
+                <X size={18} />
+              </button>
+            </div>
+
+            <div className="min-h-0 flex-1 bg-slate-100 p-3">
+              {isPdfAttachment(previewAttachment) ? (
+                <iframe
+                  src={previewAttachment}
+                  title="PDF attachment preview"
+                  className="h-full w-full rounded-md bg-white"
+                />
+              ) : (
+                <div className="flex h-full items-center justify-center overflow-auto">
+                  <img
+                    src={previewAttachment}
+                    alt="Leave attachment"
+                    className="max-h-full max-w-full object-contain"
+                  />
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* ================= STATISTICS ================= */}
 
