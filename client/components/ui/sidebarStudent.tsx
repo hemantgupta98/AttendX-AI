@@ -24,7 +24,7 @@ const links = [
   { name: "Apply-Leave", href: "/src/student/leave", icon: ChartColumn },
   {
     name: "Instution Detials",
-    href: "/src/teacher/admin",
+    href: "/src/student/admin",
     icon: CircleUserRound,
   },
   { name: "Profile", href: "/src/student/profile", icon: CircleUserIcon },
