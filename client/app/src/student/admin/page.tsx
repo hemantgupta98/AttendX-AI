@@ -32,7 +32,7 @@ const page = () => {
 
   const fetchProfile = async () => {
     try {
-      const token = localStorage.getItem("teacherToken");
+      const token = localStorage.getItem("token");
 
       const res = await axios.get(`${apiBaseUrl}/student/auth/getadmin`, {
         headers: {
